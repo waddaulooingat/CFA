@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Windows;
 using GeoTutor.Core.Services;
+using GeoTutor.Core.ViewModels;
 
 namespace GeoTutor;
 
@@ -12,6 +13,8 @@ namespace GeoTutor;
 /// </summary>
 public partial class App : Application
 {
+    public static AudioPlayerService AudioPlayer { get; } = new();
+
     private void Application_Startup(object sender, StartupEventArgs e)
     {
         InitDatabase();

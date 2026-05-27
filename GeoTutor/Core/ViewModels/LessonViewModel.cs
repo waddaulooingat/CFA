@@ -28,14 +28,18 @@ public partial class LessonViewModel : BaseViewModel
     private readonly SessionLoggerService  _sessionLogger;
     private readonly SkillGraphService     _skillGraph;
     private readonly DatabaseService       _database;
+    private readonly AudioPlayerService    _audio;
 
     // -----------------------------------------------------------------------
     // Internal state
     // -----------------------------------------------------------------------
 
     private readonly Stopwatch _answerTimer = new();
-    private Item?  _retryItem;              // problem to show after dialogue ends
-    private bool   _inRetryMode;            // true while showing a retry item
+    private Item?  _retryItem;
+    private bool   _inRetryMode;
+
+    // Raised when a dialogue line requests a canvas action (highlight, morph, etc.)
+    public event Action<CanvasAction>? CanvasActionRequested;
 
     // -----------------------------------------------------------------------
     // Observable properties — lesson / beat
@@ -70,6 +74,15 @@ public partial class LessonViewModel : BaseViewModel
     [ObservableProperty] private bool           _showDialogue;
     [ObservableProperty] private DialogueScript? _activeDialogue;
     [ObservableProperty] private int            _dialogueLineIndex;
+    [ObservableProperty] private bool           _isAudioPlaying;
+
+    public DialogueLine? CurrentDialogueLine =>
+        ActiveDialogue is not null && DialogueLineIndex < ActiveDialogue.Lines.Count
+            ? ActiveDialogue.Lines[DialogueLineIndex]
+            : null;
+
+    partial void OnDialogueLineIndexChanged(int value) => OnPropertyChanged(nameof(CurrentDialogueLine));
+    partial void OnActiveDialogueChanged(DialogueScript? value) => OnPropertyChanged(nameof(CurrentDialogueLine));
 
     // -----------------------------------------------------------------------
     // Observable properties — completion
@@ -86,13 +99,16 @@ public partial class LessonViewModel : BaseViewModel
         DialogueEngineService dialogueEngine,
         SessionLoggerService  sessionLogger,
         SkillGraphService     skillGraph,
-        DatabaseService       database)
+        DatabaseService       database,
+        AudioPlayerService    audio)
     {
         _lessonEngine   = lessonEngine   ?? throw new ArgumentNullException(nameof(lessonEngine));
         _dialogueEngine = dialogueEngine ?? throw new ArgumentNullException(nameof(dialogueEngine));
         _sessionLogger  = sessionLogger  ?? throw new ArgumentNullException(nameof(sessionLogger));
         _skillGraph     = skillGraph     ?? throw new ArgumentNullException(nameof(skillGraph));
         _database       = database       ?? throw new ArgumentNullException(nameof(database));
+        _audio          = audio          ?? throw new ArgumentNullException(nameof(audio));
+        _audio.PlaybackEnded += () => IsAudioPlaying = false;
     }
 
     // -----------------------------------------------------------------------
@@ -229,20 +245,37 @@ public partial class LessonViewModel : BaseViewModel
         DialogueLineIndex++;
         if (DialogueLineIndex >= ActiveDialogue.Lines.Count)
         {
-            // Dialogue exhausted — present retry problem if one was specified.
+            _audio.Stop();
             ShowDialogue = false;
             PresentRetryItem();
+            return;
         }
+
+        PlayCurrentDialogueLine();
     }
 
-    /// <summary>
-    /// Skips the remaining dialogue lines and moves straight to the retry problem.
-    /// </summary>
     [RelayCommand]
     private void SkipDialogue()
     {
+        _audio.Stop();
         ShowDialogue = false;
         PresentRetryItem();
+    }
+
+    private void PlayCurrentDialogueLine()
+    {
+        if (ActiveDialogue is null || DialogueLineIndex >= ActiveDialogue.Lines.Count) return;
+
+        var line = ActiveDialogue.Lines[DialogueLineIndex];
+
+        if (line.AudioFilePath is not null)
+        {
+            IsAudioPlaying = true;
+            _audio.Play(line.AudioFilePath);
+        }
+
+        if (line.Action is not null)
+            CanvasActionRequested?.Invoke(line.Action);
     }
 
     // -----------------------------------------------------------------------
@@ -342,6 +375,9 @@ public partial class LessonViewModel : BaseViewModel
         ActiveDialogue    = script;
         DialogueLineIndex = 0;
         ShowDialogue      = true;
+
+        // Play line 0 immediately
+        PlayCurrentDialogueLine();
 
         // Pre-store the retry item so PresentRetryItem can access it.
         if (!string.IsNullOrEmpty(script.RetryProblemId))

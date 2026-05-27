@@ -1,5 +1,10 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:conv="clr-namespace:GeoTutor.Converters">
+
+    <conv:BoolToVisibleConverter   x:Key="BoolToVisibleConverter"/>
+    <conv:BoolToCollapsedConverter x:Key="BoolToCollapsedConverter"/>
+    <conv:NullToCollapsedConverter x:Key="NullToCollapsed"/>
 
     <!-- ================================================================
          Catppuccin Mocha colour palette
