@@ -126,29 +126,44 @@
                             Visibility="Collapsed"
                             Margin="16,0,16,0">
 
-                    <TextBlock Text="ALGEBRA BASELINE"
+                    <TextBlock Text="PREREQUISITES BASELINE"
                                FontSize="10" FontWeight="SemiBold"
                                Foreground="#6C7086"
                                LetterSpacing="1"
                                Margin="0,4,0,12"/>
 
-                    <TextBlock Text="8 skill areas"
+                    <TextBlock Text="14 skill areas · ~39 items"
                                FontSize="14" Foreground="#CDD6F4"
                                Margin="0,0,0,4"/>
-                    <TextBlock Text="~5–10 minutes"
+                    <TextBlock Text="~10–15 minutes"
                                FontSize="12" Foreground="#6C7086"
-                               Margin="0,0,0,16"/>
+                               Margin="0,0,0,12"/>
+
+                    <Border Background="#313244"
+                            CornerRadius="6"
+                            Padding="10,8"
+                            Margin="0,0,0,8">
+                        <StackPanel>
+                            <TextBlock Text="§3.1 Algebra (8 skills)"
+                                       FontSize="11" FontWeight="SemiBold"
+                                       Foreground="#89B4FA"
+                                       Margin="0,0,0,4"/>
+                            <TextBlock FontSize="11" Foreground="#9399B2" TextWrapping="Wrap">
+                                Linear/quadratic equations, systems, factoring, exponents, functions, slope, distance
+                            </TextBlock>
+                        </StackPanel>
+                    </Border>
 
                     <Border Background="#313244"
                             CornerRadius="6"
                             Padding="10,8">
                         <StackPanel>
-                            <TextBlock Text="What this checks:"
+                            <TextBlock Text="§3.2 Geometry (6 skills)"
                                        FontSize="11" FontWeight="SemiBold"
-                                       Foreground="#89B4FA"
+                                       Foreground="#94E2D5"
                                        Margin="0,0,0,4"/>
                             <TextBlock FontSize="11" Foreground="#9399B2" TextWrapping="Wrap">
-                                Linear &amp; quadratic equations, systems, factoring, exponents, functions, slope, distance/midpoint
+                                Angle vocab, transversals, triangle basics, coordinate plane, logic, area/perimeter
                             </TextBlock>
                         </StackPanel>
                     </Border>

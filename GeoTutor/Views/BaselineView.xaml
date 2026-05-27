@@ -14,7 +14,7 @@
                         VerticalAlignment="Center"
                         Width="520">
 
-                <TextBlock Text="Algebra Prerequisite Check"
+                <TextBlock Text="Prerequisites Check"
                            FontSize="28" FontWeight="Bold"
                            Foreground="#CDD6F4"
                            HorizontalAlignment="Center"
@@ -26,13 +26,13 @@
                            Foreground="#A6ADC8"
                            LineHeight="24"
                            Margin="0,0,0,32">
-                    Before starting Geometry, let's quickly check your
-                    algebra skills. This short assessment covers
-                    8 key areas — it takes about 5–10 minutes and
+                    Before starting Honors Geometry, let's check your
+                    algebra and geometry foundations. This short assessment
+                    covers 14 key areas — it takes about 10–15 minutes and
                     helps us personalise your learning path.
                 </TextBlock>
 
-                <!-- Topics covered -->
+                <!-- Topics covered — two columns -->
                 <Border Background="#313244"
                         CornerRadius="8"
                         BorderBrush="#45475A"
@@ -40,20 +40,36 @@
                         Padding="20,16"
                         Margin="0,0,0,32">
                     <StackPanel>
-                        <TextBlock Text="TOPICS COVERED"
+                        <TextBlock Text="ALGEBRA PREREQUISITES  (§3.1)"
                                    FontSize="10" FontWeight="SemiBold"
-                                   Foreground="#6C7086"
+                                   Foreground="#89B4FA"
                                    LetterSpacing="1"
-                                   Margin="0,0,0,10"/>
+                                   Margin="0,0,0,8"/>
                         <UniformGrid Columns="2" Rows="4">
-                            <TextBlock Text="✦  Linear equations"   Foreground="#CDD6F4" FontSize="13" Margin="0,3"/>
-                            <TextBlock Text="✦  Systems of equations" Foreground="#CDD6F4" FontSize="13" Margin="0,3"/>
-                            <TextBlock Text="✦  Factoring"          Foreground="#CDD6F4" FontSize="13" Margin="0,3"/>
-                            <TextBlock Text="✦  Quadratic formula"  Foreground="#CDD6F4" FontSize="13" Margin="0,3"/>
+                            <TextBlock Text="✦  Linear equations"       Foreground="#CDD6F4" FontSize="13" Margin="0,3"/>
+                            <TextBlock Text="✦  Systems of equations"   Foreground="#CDD6F4" FontSize="13" Margin="0,3"/>
+                            <TextBlock Text="✦  Factoring"              Foreground="#CDD6F4" FontSize="13" Margin="0,3"/>
+                            <TextBlock Text="✦  Quadratic formula"      Foreground="#CDD6F4" FontSize="13" Margin="0,3"/>
                             <TextBlock Text="✦  Exponents &amp; radicals" Foreground="#CDD6F4" FontSize="13" Margin="0,3"/>
-                            <TextBlock Text="✦  Function notation"  Foreground="#CDD6F4" FontSize="13" Margin="0,3"/>
-                            <TextBlock Text="✦  Slope &amp; lines"  Foreground="#CDD6F4" FontSize="13" Margin="0,3"/>
+                            <TextBlock Text="✦  Function notation"      Foreground="#CDD6F4" FontSize="13" Margin="0,3"/>
+                            <TextBlock Text="✦  Slope &amp; lines"      Foreground="#CDD6F4" FontSize="13" Margin="0,3"/>
                             <TextBlock Text="✦  Distance &amp; midpoint" Foreground="#CDD6F4" FontSize="13" Margin="0,3"/>
+                        </UniformGrid>
+
+                        <Separator Background="#45475A" Height="1" Margin="0,12"/>
+
+                        <TextBlock Text="GEOMETRY PREREQUISITES  (§3.2)"
+                                   FontSize="10" FontWeight="SemiBold"
+                                   Foreground="#94E2D5"
+                                   LetterSpacing="1"
+                                   Margin="0,0,0,8"/>
+                        <UniformGrid Columns="2" Rows="3">
+                            <TextBlock Text="✦  Angle vocabulary"       Foreground="#CDD6F4" FontSize="13" Margin="0,3"/>
+                            <TextBlock Text="✦  Parallel lines"         Foreground="#CDD6F4" FontSize="13" Margin="0,3"/>
+                            <TextBlock Text="✦  Triangle basics"        Foreground="#CDD6F4" FontSize="13" Margin="0,3"/>
+                            <TextBlock Text="✦  Coordinate plane"       Foreground="#CDD6F4" FontSize="13" Margin="0,3"/>
+                            <TextBlock Text="✦  Logical reasoning"      Foreground="#CDD6F4" FontSize="13" Margin="0,3"/>
+                            <TextBlock Text="✦  Area &amp; perimeter"   Foreground="#CDD6F4" FontSize="13" Margin="0,3"/>
                         </UniformGrid>
                     </StackPanel>
                 </Border>
