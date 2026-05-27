@@ -25,106 +25,177 @@
                 Background="#181825"
                 BorderBrush="#45475A"
                 BorderThickness="0,0,1,0">
-            <StackPanel Margin="16">
+            <DockPanel Margin="0">
 
-                <TextBlock Text="GeoTutor"
-                           FontSize="22" FontWeight="Bold"
-                           Foreground="#89B4FA"
-                           Margin="0,8,0,4"/>
+                <!-- App title area -->
+                <StackPanel DockPanel.Dock="Top" Margin="16,16,16,0">
+                    <TextBlock Text="GeoTutor"
+                               FontSize="22" FontWeight="Bold"
+                               Foreground="#89B4FA"
+                               Margin="0,0,0,2"/>
+                    <TextBlock Text="Phase 1"
+                               FontSize="11"
+                               Foreground="#6C7086"
+                               Margin="0,0,0,16"/>
 
-                <TextBlock Text="Phase 1 — Scene Viewer"
-                           FontSize="11"
-                           Foreground="#6C7086"
-                           Margin="0,0,0,24"/>
+                    <!-- ── Navigation ───────────────────────────── -->
+                    <TextBlock Text="NAVIGATE"
+                               FontSize="10" FontWeight="SemiBold"
+                               Foreground="#6C7086"
+                               LetterSpacing="1"
+                               Margin="0,0,0,6"/>
 
-                <TextBlock Text="SAMPLE SCENES"
-                           FontSize="10" FontWeight="SemiBold"
-                           Foreground="#6C7086"
-                           LetterSpacing="1"
-                           Margin="0,0,0,8"/>
+                    <Button x:Name="NavSceneBtn"
+                            Content="Scene Viewer"
+                            Click="Nav_SceneViewer_Click"
+                            Style="{StaticResource NavButtonActive}"
+                            Margin="0,0,0,2"/>
 
-                <TextBlock Text="{Binding SceneTitle}"
-                           FontSize="14"
-                           Foreground="#CDD6F4"
-                           TextWrapping="Wrap"
-                           Margin="0,0,0,4"/>
+                    <Button x:Name="NavBaselineBtn"
+                            Content="Algebra Baseline"
+                            Click="Nav_Baseline_Click"
+                            Style="{StaticResource NavButton}"
+                            Margin="0,0,0,12"/>
 
-                <TextBlock Text="{Binding SceneCounter}"
-                           FontSize="12"
-                           Foreground="#6C7086"
-                           Margin="0,0,0,20"/>
+                    <Separator Style="{StaticResource DarkSeparator}"/>
+                </StackPanel>
 
-                <!-- Navigation buttons -->
-                <Button Content="← Previous"
-                        Command="{Binding PreviousCommand}"
-                        Style="{StaticResource SecondaryButtonStyle}"
-                        Margin="0,0,0,8"/>
+                <!-- ── Scene Viewer Controls (dynamic section) ── -->
+                <StackPanel x:Name="SceneControls"
+                            DockPanel.Dock="Top"
+                            Margin="16,0,16,0">
 
-                <Button Content="Next →"
-                        Command="{Binding NextCommand}"
-                        Style="{StaticResource PrimaryButtonStyle}"/>
+                    <TextBlock Text="SAMPLE SCENES"
+                               FontSize="10" FontWeight="SemiBold"
+                               Foreground="#6C7086"
+                               LetterSpacing="1"
+                               Margin="0,4,0,8"/>
 
-                <!-- Phase badge -->
-                <Border Background="#313244"
-                        CornerRadius="6"
-                        Padding="10,8"
-                        Margin="0,32,0,0">
-                    <StackPanel>
-                        <TextBlock Text="Phase 1 complete:"
-                                   FontSize="11" FontWeight="SemiBold"
-                                   Foreground="#A6E3A1"
-                                   Margin="0,0,0,4"/>
-                        <TextBlock FontSize="11" Foreground="#9399B2" TextWrapping="Wrap">
-                            <Run>✓</Run><Run Foreground="#CDD6F4"> WPF shell + MVVM</Run>
-                        </TextBlock>
-                        <TextBlock FontSize="11" Foreground="#9399B2" TextWrapping="Wrap">
-                            <Run>✓</Run><Run Foreground="#CDD6F4"> SQLite schema</Run>
-                        </TextBlock>
-                        <TextBlock FontSize="11" Foreground="#9399B2" TextWrapping="Wrap">
-                            <Run>✓</Run><Run Foreground="#CDD6F4"> SkiaSharp renderer</Run>
-                        </TextBlock>
-                        <TextBlock FontSize="11" Foreground="#9399B2" TextWrapping="Wrap">
-                            <Run>✓</Run><Run Foreground="#CDD6F4"> 15 templates</Run>
-                        </TextBlock>
-                        <TextBlock FontSize="11" Foreground="#9399B2" TextWrapping="Wrap">
-                            <Run>✓</Run><Run Foreground="#CDD6F4"> 5 sample scenes</Run>
-                        </TextBlock>
-                    </StackPanel>
-                </Border>
+                    <TextBlock Text="{Binding SceneTitle}"
+                               FontSize="14"
+                               Foreground="#CDD6F4"
+                               TextWrapping="Wrap"
+                               Margin="0,0,0,4"/>
 
-            </StackPanel>
+                    <TextBlock Text="{Binding SceneCounter}"
+                               FontSize="12"
+                               Foreground="#6C7086"
+                               Margin="0,0,0,20"/>
+
+                    <Button Content="← Previous"
+                            Command="{Binding PreviousCommand}"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            Margin="0,0,0,8"/>
+
+                    <Button Content="Next →"
+                            Command="{Binding NextCommand}"
+                            Style="{StaticResource PrimaryButtonStyle}"/>
+
+                    <!-- Phase badge -->
+                    <Border Background="#313244"
+                            CornerRadius="6"
+                            Padding="10,8"
+                            Margin="0,24,0,0">
+                        <StackPanel>
+                            <TextBlock Text="Phase 1 complete:"
+                                       FontSize="11" FontWeight="SemiBold"
+                                       Foreground="#A6E3A1"
+                                       Margin="0,0,0,4"/>
+                            <TextBlock FontSize="11" Foreground="#9399B2" TextWrapping="Wrap">
+                                <Run>✓</Run><Run Foreground="#CDD6F4"> WPF shell + MVVM</Run>
+                            </TextBlock>
+                            <TextBlock FontSize="11" Foreground="#9399B2" TextWrapping="Wrap">
+                                <Run>✓</Run><Run Foreground="#CDD6F4"> SQLite schema</Run>
+                            </TextBlock>
+                            <TextBlock FontSize="11" Foreground="#9399B2" TextWrapping="Wrap">
+                                <Run>✓</Run><Run Foreground="#CDD6F4"> SkiaSharp renderer</Run>
+                            </TextBlock>
+                            <TextBlock FontSize="11" Foreground="#9399B2" TextWrapping="Wrap">
+                                <Run>✓</Run><Run Foreground="#CDD6F4"> 15 templates</Run>
+                            </TextBlock>
+                            <TextBlock FontSize="11" Foreground="#9399B2" TextWrapping="Wrap">
+                                <Run>✓</Run><Run Foreground="#CDD6F4"> 5 sample scenes</Run>
+                            </TextBlock>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- ── Baseline Controls (shown in baseline mode) ── -->
+                <StackPanel x:Name="BaselineSideControls"
+                            DockPanel.Dock="Top"
+                            Visibility="Collapsed"
+                            Margin="16,0,16,0">
+
+                    <TextBlock Text="ALGEBRA BASELINE"
+                               FontSize="10" FontWeight="SemiBold"
+                               Foreground="#6C7086"
+                               LetterSpacing="1"
+                               Margin="0,4,0,12"/>
+
+                    <TextBlock Text="8 skill areas"
+                               FontSize="14" Foreground="#CDD6F4"
+                               Margin="0,0,0,4"/>
+                    <TextBlock Text="~5–10 minutes"
+                               FontSize="12" Foreground="#6C7086"
+                               Margin="0,0,0,16"/>
+
+                    <Border Background="#313244"
+                            CornerRadius="6"
+                            Padding="10,8">
+                        <StackPanel>
+                            <TextBlock Text="What this checks:"
+                                       FontSize="11" FontWeight="SemiBold"
+                                       Foreground="#89B4FA"
+                                       Margin="0,0,0,4"/>
+                            <TextBlock FontSize="11" Foreground="#9399B2" TextWrapping="Wrap">
+                                Linear &amp; quadratic equations, systems, factoring, exponents, functions, slope, distance/midpoint
+                            </TextBlock>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <StackPanel DockPanel.Dock="Bottom"/>
+            </DockPanel>
         </Border>
 
-        <!-- ── Canvas area ─────────────────────────────────────── -->
+        <!-- ── Main content area ──────────────────────────────── -->
         <Grid Grid.Column="1" Background="#1E1E2E">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
 
-            <!-- Top bar -->
-            <Border Grid.Row="0"
-                    Background="#181825"
-                    BorderBrush="#45475A"
-                    BorderThickness="0,0,0,1"
-                    Padding="20,12">
-                <TextBlock Text="{Binding SceneTitle}"
-                           FontSize="16" FontWeight="SemiBold"
-                           Foreground="#CDD6F4"/>
-            </Border>
+            <!-- Scene Viewer panel -->
+            <Grid x:Name="Phase1Panel">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
 
-            <!-- Scene canvas -->
-            <Border Grid.Row="1"
-                    Margin="24"
-                    Background="#313244"
-                    BorderBrush="#45475A"
-                    BorderThickness="1"
-                    CornerRadius="8"
-                    ClipToBounds="True">
-                <scene:SceneControl Scene="{Binding CurrentScene}"
-                                    HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Stretch"/>
-            </Border>
+                <!-- Top bar -->
+                <Border Grid.Row="0"
+                        Background="#181825"
+                        BorderBrush="#45475A"
+                        BorderThickness="0,0,0,1"
+                        Padding="20,12">
+                    <TextBlock Text="{Binding SceneTitle}"
+                               FontSize="16" FontWeight="SemiBold"
+                               Foreground="#CDD6F4"/>
+                </Border>
+
+                <!-- Scene canvas -->
+                <Border Grid.Row="1"
+                        Margin="24"
+                        Background="#313244"
+                        BorderBrush="#45475A"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        ClipToBounds="True">
+                    <scene:SceneControl Scene="{Binding CurrentScene}"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Stretch"/>
+                </Border>
+            </Grid>
+
+            <!-- Baseline panel (DataContext set in code-behind) -->
+            <views:BaselineView x:Name="BaselinePanel"
+                                Visibility="Collapsed"/>
         </Grid>
     </Grid>
 </Window>

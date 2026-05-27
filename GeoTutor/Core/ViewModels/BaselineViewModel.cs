@@ -2,6 +2,7 @@ namespace GeoTutor.Core.ViewModels;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -9,6 +10,9 @@ using CommunityToolkit.Mvvm.Input;
 using GeoTutor.Core.Models;
 using GeoTutor.Core.Services;
 using Microsoft.Data.Sqlite;
+
+/// <summary>Summary row shown in the results screen.</summary>
+public record SkillResultItem(string SkillName, string Level, string LevelColor);
 
 public partial class BaselineViewModel : BaseViewModel
 {
@@ -40,6 +44,46 @@ public partial class BaselineViewModel : BaseViewModel
     [ObservableProperty] private string _feedbackMessage = "";
 
     // -----------------------------------------------------------------------
+    // Observable properties — UI state
+    // -----------------------------------------------------------------------
+
+    [ObservableProperty] private bool _isStarted;
+    [ObservableProperty] private bool _isMultipleChoice;
+    [ObservableProperty] private List<string> _choices = [];
+    [ObservableProperty] private int _selectedChoiceIndex = -1;
+    [ObservableProperty] private List<SkillResultItem> _resultSummary = [];
+
+    /// <summary>True while questions are being presented (not yet on results screen).</summary>
+    public bool IsAssessing => IsStarted && !IsComplete;
+
+    partial void OnIsStartedChanged(bool value)  => OnPropertyChanged(nameof(IsAssessing));
+    partial void OnIsCompleteChanged(bool value) => OnPropertyChanged(nameof(IsAssessing));
+
+    partial void OnSelectedChoiceIndexChanged(int value)
+    {
+        if (value >= 0)
+            UserAnswer = value.ToString();
+    }
+
+    partial void OnCurrentItemChanged(Item? value)
+    {
+        SelectedChoiceIndex = -1;
+        IsMultipleChoice    = false;
+        Choices             = [];
+        if (value is null) return;
+        try
+        {
+            using var doc = JsonDocument.Parse(value.AnswerJson);
+            if (doc.RootElement.TryGetProperty("choices", out var cp))
+            {
+                Choices          = cp.EnumerateArray().Select(c => c.GetString() ?? "").ToList();
+                IsMultipleChoice = true;
+            }
+        }
+        catch { }
+    }
+
+    // -----------------------------------------------------------------------
     // Constructor
     // -----------------------------------------------------------------------
 
@@ -62,11 +106,13 @@ public partial class BaselineViewModel : BaseViewModel
     private async Task StartBaseline()
     {
         SetBusy(true, "Preparing assessment…");
+        IsStarted        = true;
         IsComplete       = false;
         ItemsCompleted   = 0;
         UserAnswer       = "";
         FeedbackMessage  = "";
         Result           = null;
+        ResultSummary    = [];
         _answers.Clear();
 
         await Task.Run(() => BuildAssessmentQueue());
@@ -162,6 +208,9 @@ public partial class BaselineViewModel : BaseViewModel
 
         string skillId = _assessmentQueue[_queueIndex++];
         var skill = _skillGraphService.GetSkill(skillId);
+
+        SelectedChoiceIndex = -1;
+        UserAnswer          = "";
 
         // Try to fetch a library item for this skill from the database.
         Item? item = await Task.Run(() => FetchItemForSkill(skillId));
@@ -263,6 +312,24 @@ public partial class BaselineViewModel : BaseViewModel
         Result          = baselineResult;
         IsComplete      = true;
         FeedbackMessage = "Baseline assessment complete!";
+
+        ResultSummary = skillScores
+            .OrderByDescending(kvp => (int)kvp.Value)
+            .Select(kvp =>
+            {
+                string name = _skillGraphService.GetSkill(kvp.Key)?.Name ?? kvp.Key;
+                var (lvlText, lvlColor) = kvp.Value switch
+                {
+                    MasteryLevel.Mastered   => ("Mastered",    "#A6E3A1"),
+                    MasteryLevel.Solid      => ("Solid",       "#74C7EC"),
+                    MasteryLevel.Developing => ("Developing",  "#F9E2AF"),
+                    MasteryLevel.Shaky      => ("Shaky",       "#FAB387"),
+                    _                       => ("Unknown",     "#6C7086"),
+                };
+                return new SkillResultItem(name, lvlText, lvlColor);
+            })
+            .ToList();
+
         SetBusy(false);
     }
 
