@@ -66,6 +66,12 @@
                             Content="Unit 2 — Parallel Lines"
                             Click="Nav_Unit2_Click"
                             Style="{StaticResource NavButton}"
+                            Margin="0,0,0,2"/>
+
+                    <Button x:Name="NavUnit3Btn"
+                            Content="Unit 3 — Congruence"
+                            Click="Nav_Unit3_Click"
+                            Style="{StaticResource NavButton}"
                             Margin="0,0,0,12"/>
 
                     <Separator Style="{StaticResource DarkSeparator}"/>
@@ -287,6 +293,79 @@
 
                     <Button Content="Angle Relationships"
                             Tag="geo-u2-angle-relationships"
+                            Click="StartLesson_Click"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            HorizontalContentAlignment="Left"
+                            Padding="10,8"
+                            Margin="0,0,0,0"/>
+                </StackPanel>
+
+                <!-- ── Unit 3 Controls (shown in congruence lesson mode) ── -->
+                <StackPanel x:Name="Unit3SideControls"
+                            DockPanel.Dock="Top"
+                            Visibility="Collapsed"
+                            Margin="16,0,16,0">
+
+                    <TextBlock Text="UNIT 3 — CONGRUENCE"
+                               FontSize="10" FontWeight="SemiBold"
+                               Foreground="#6C7086"
+                               LetterSpacing="1"
+                               Margin="0,4,0,12"/>
+
+                    <TextBlock Text="Select a skill to practise:"
+                               FontSize="12" Foreground="#A6ADC8"
+                               Margin="0,0,0,8"/>
+
+                    <Button Content="SSS Postulate"
+                            Tag="geo-u3-sss"
+                            Click="StartLesson_Click"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            HorizontalContentAlignment="Left"
+                            Padding="10,8"
+                            Margin="0,0,0,6"/>
+
+                    <Button Content="SAS Postulate"
+                            Tag="geo-u3-sas"
+                            Click="StartLesson_Click"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            HorizontalContentAlignment="Left"
+                            Padding="10,8"
+                            Margin="0,0,0,6"/>
+
+                    <Button Content="ASA Postulate"
+                            Tag="geo-u3-asa"
+                            Click="StartLesson_Click"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            HorizontalContentAlignment="Left"
+                            Padding="10,8"
+                            Margin="0,0,0,6"/>
+
+                    <Button Content="AAS Theorem"
+                            Tag="geo-u3-aas"
+                            Click="StartLesson_Click"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            HorizontalContentAlignment="Left"
+                            Padding="10,8"
+                            Margin="0,0,0,6"/>
+
+                    <Button Content="HL Theorem"
+                            Tag="geo-u3-hl"
+                            Click="StartLesson_Click"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            HorizontalContentAlignment="Left"
+                            Padding="10,8"
+                            Margin="0,0,0,6"/>
+
+                    <Button Content="CPCTC"
+                            Tag="geo-u3-cpctc"
+                            Click="StartLesson_Click"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            HorizontalContentAlignment="Left"
+                            Padding="10,8"
+                            Margin="0,0,0,6"/>
+
+                    <Button Content="Congruence Proofs"
+                            Tag="geo-u3-congruence-proofs"
                             Click="StartLesson_Click"
                             Style="{StaticResource SecondaryButtonStyle}"
                             HorizontalContentAlignment="Left"

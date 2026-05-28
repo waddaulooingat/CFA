@@ -49,6 +49,7 @@ public partial class MainWindow : Window
         BaselineSideControls.Visibility = Visibility.Collapsed;
         Unit1SideControls.Visibility   = Visibility.Collapsed;
         Unit2SideControls.Visibility   = Visibility.Collapsed;
+        Unit3SideControls.Visibility   = Visibility.Collapsed;
     }
 
     private void ClearNavStyles()
@@ -58,6 +59,7 @@ public partial class MainWindow : Window
         NavBaselineBtn.Style = normal;
         NavUnit1Btn.Style    = normal;
         NavUnit2Btn.Style    = normal;
+        NavUnit3Btn.Style    = normal;
     }
 
     // -----------------------------------------------------------------------
@@ -100,6 +102,15 @@ public partial class MainWindow : Window
         NavUnit2Btn.Style = (System.Windows.Style)FindResource("NavButtonActive");
     }
 
+    private void Nav_Unit3_Click(object sender, RoutedEventArgs e)
+    {
+        HideAllPanels();
+        ClearNavStyles();
+        LessonPanel.Visibility       = Visibility.Visible;
+        Unit3SideControls.Visibility = Visibility.Visible;
+        NavUnit3Btn.Style = (System.Windows.Style)FindResource("NavButtonActive");
+    }
+
     private async void StartLesson_Click(object sender, RoutedEventArgs e)
     {
         if (_lessonVm is null) return;
@@ -107,14 +118,16 @@ public partial class MainWindow : Window
 
         string skillId = btn.Tag as string ?? "geo-u1-definitions";
 
-        // Determine which unit's sidebar to keep visible based on the skill prefix.
-        bool isUnit2 = skillId.StartsWith("geo-u2-", StringComparison.Ordinal);
-
         HideAllPanels();
         ClearNavStyles();
         LessonPanel.Visibility = Visibility.Visible;
 
-        if (isUnit2)
+        if (skillId.StartsWith("geo-u3-", StringComparison.Ordinal))
+        {
+            Unit3SideControls.Visibility = Visibility.Visible;
+            NavUnit3Btn.Style = (System.Windows.Style)FindResource("NavButtonActive");
+        }
+        else if (skillId.StartsWith("geo-u2-", StringComparison.Ordinal))
         {
             Unit2SideControls.Visibility = Visibility.Visible;
             NavUnit2Btn.Style = (System.Windows.Style)FindResource("NavButtonActive");
