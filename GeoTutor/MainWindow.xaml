@@ -60,6 +60,12 @@
                             Content="Unit 1 — Foundations"
                             Click="Nav_Unit1_Click"
                             Style="{StaticResource NavButton}"
+                            Margin="0,0,0,2"/>
+
+                    <Button x:Name="NavUnit2Btn"
+                            Content="Unit 2 — Parallel Lines"
+                            Click="Nav_Unit2_Click"
+                            Style="{StaticResource NavButton}"
                             Margin="0,0,0,12"/>
 
                     <Separator Style="{StaticResource DarkSeparator}"/>
@@ -224,6 +230,63 @@
 
                     <Button Content="Counterexamples"
                             Tag="geo-u1-counterexample"
+                            Click="StartLesson_Click"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            HorizontalContentAlignment="Left"
+                            Padding="10,8"
+                            Margin="0,0,0,0"/>
+                </StackPanel>
+
+                <!-- ── Unit 2 Controls (shown in parallel lines lesson mode) ── -->
+                <StackPanel x:Name="Unit2SideControls"
+                            DockPanel.Dock="Top"
+                            Visibility="Collapsed"
+                            Margin="16,0,16,0">
+
+                    <TextBlock Text="UNIT 2 — PARALLEL LINES"
+                               FontSize="10" FontWeight="SemiBold"
+                               Foreground="#6C7086"
+                               LetterSpacing="1"
+                               Margin="0,4,0,12"/>
+
+                    <TextBlock Text="Select a skill to practise:"
+                               FontSize="12" Foreground="#A6ADC8"
+                               Margin="0,0,0,8"/>
+
+                    <Button Content="Identifying Parallel Lines"
+                            Tag="geo-u2-parallel-identify"
+                            Click="StartLesson_Click"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            HorizontalContentAlignment="Left"
+                            Padding="10,8"
+                            Margin="0,0,0,6"/>
+
+                    <Button Content="Transversal Angle Pairs"
+                            Tag="geo-u2-transversal-angles"
+                            Click="StartLesson_Click"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            HorizontalContentAlignment="Left"
+                            Padding="10,8"
+                            Margin="0,0,0,6"/>
+
+                    <Button Content="Proving Lines Parallel"
+                            Tag="geo-u2-parallel-proofs"
+                            Click="StartLesson_Click"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            HorizontalContentAlignment="Left"
+                            Padding="10,8"
+                            Margin="0,0,0,6"/>
+
+                    <Button Content="Perpendicular Lines"
+                            Tag="geo-u2-perpendicular"
+                            Click="StartLesson_Click"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            HorizontalContentAlignment="Left"
+                            Padding="10,8"
+                            Margin="0,0,0,6"/>
+
+                    <Button Content="Angle Relationships"
+                            Tag="geo-u2-angle-relationships"
                             Click="StartLesson_Click"
                             Style="{StaticResource SecondaryButtonStyle}"
                             HorizontalContentAlignment="Left"

@@ -48,6 +48,7 @@ public partial class MainWindow : Window
         SceneControls.Visibility       = Visibility.Collapsed;
         BaselineSideControls.Visibility = Visibility.Collapsed;
         Unit1SideControls.Visibility   = Visibility.Collapsed;
+        Unit2SideControls.Visibility   = Visibility.Collapsed;
     }
 
     private void ClearNavStyles()
@@ -56,6 +57,7 @@ public partial class MainWindow : Window
         NavSceneBtn.Style    = normal;
         NavBaselineBtn.Style = normal;
         NavUnit1Btn.Style    = normal;
+        NavUnit2Btn.Style    = normal;
     }
 
     // -----------------------------------------------------------------------
@@ -84,10 +86,18 @@ public partial class MainWindow : Window
     {
         HideAllPanels();
         ClearNavStyles();
-        // Show a placeholder message in the lesson panel until a skill is selected.
         LessonPanel.Visibility       = Visibility.Visible;
         Unit1SideControls.Visibility = Visibility.Visible;
         NavUnit1Btn.Style = (System.Windows.Style)FindResource("NavButtonActive");
+    }
+
+    private void Nav_Unit2_Click(object sender, RoutedEventArgs e)
+    {
+        HideAllPanels();
+        ClearNavStyles();
+        LessonPanel.Visibility       = Visibility.Visible;
+        Unit2SideControls.Visibility = Visibility.Visible;
+        NavUnit2Btn.Style = (System.Windows.Style)FindResource("NavButtonActive");
     }
 
     private async void StartLesson_Click(object sender, RoutedEventArgs e)
@@ -97,14 +107,24 @@ public partial class MainWindow : Window
 
         string skillId = btn.Tag as string ?? "geo-u1-definitions";
 
-        // Ensure the lesson panel is shown.
+        // Determine which unit's sidebar to keep visible based on the skill prefix.
+        bool isUnit2 = skillId.StartsWith("geo-u2-", StringComparison.Ordinal);
+
         HideAllPanels();
         ClearNavStyles();
-        LessonPanel.Visibility       = Visibility.Visible;
-        Unit1SideControls.Visibility = Visibility.Visible;
-        NavUnit1Btn.Style = (System.Windows.Style)FindResource("NavButtonActive");
+        LessonPanel.Visibility = Visibility.Visible;
 
-        // Load the lesson for the selected skill.
+        if (isUnit2)
+        {
+            Unit2SideControls.Visibility = Visibility.Visible;
+            NavUnit2Btn.Style = (System.Windows.Style)FindResource("NavButtonActive");
+        }
+        else
+        {
+            Unit1SideControls.Visibility = Visibility.Visible;
+            NavUnit1Btn.Style = (System.Windows.Style)FindResource("NavButtonActive");
+        }
+
         await _lessonVm.LoadLessonCommand.ExecuteAsync(skillId);
     }
 }

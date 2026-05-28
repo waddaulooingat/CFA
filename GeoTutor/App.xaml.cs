@@ -54,6 +54,7 @@ public partial class App : Application
             SeedGeometryPrereqSkills(db);
             SeedGeometryPrereqItems(db);
             SeedUnit1Items(db);
+            SeedUnit2Items(db);
 
             // Wire offline-safe lesson services (LLM/TTS gracefully return null when key is empty).
             var logger    = new SessionLoggerService(db);
@@ -127,6 +128,13 @@ public partial class App : Application
     /// </summary>
     private static void SeedUnit1Items(DatabaseService db) =>
         SeedItemList(db, Unit1Items.All);
+
+    /// <summary>
+    /// Inserts the 15 Unit 2 library items (difficulties 1–3 for each of the
+    /// 5 Parallel Lines &amp; Transversals skills) into gt_items.
+    /// </summary>
+    private static void SeedUnit2Items(DatabaseService db) =>
+        SeedItemList(db, Unit2Items.All);
 
     /// <summary>
     /// Inserts the 15 hard-coded geometry prerequisite items into gt_items
