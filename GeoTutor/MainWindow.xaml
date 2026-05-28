@@ -52,8 +52,14 @@
                             Margin="0,0,0,2"/>
 
                     <Button x:Name="NavBaselineBtn"
-                            Content="Algebra Baseline"
+                            Content="Prerequisites Baseline"
                             Click="Nav_Baseline_Click"
+                            Style="{StaticResource NavButton}"
+                            Margin="0,0,0,2"/>
+
+                    <Button x:Name="NavUnit1Btn"
+                            Content="Unit 1 — Foundations"
+                            Click="Nav_Unit1_Click"
                             Style="{StaticResource NavButton}"
                             Margin="0,0,0,12"/>
 
@@ -169,6 +175,63 @@
                     </Border>
                 </StackPanel>
 
+                <!-- ── Unit 1 Controls (shown in lesson mode) ── -->
+                <StackPanel x:Name="Unit1SideControls"
+                            DockPanel.Dock="Top"
+                            Visibility="Collapsed"
+                            Margin="16,0,16,0">
+
+                    <TextBlock Text="UNIT 1 — FOUNDATIONS"
+                               FontSize="10" FontWeight="SemiBold"
+                               Foreground="#6C7086"
+                               LetterSpacing="1"
+                               Margin="0,4,0,12"/>
+
+                    <TextBlock Text="Select a skill to practise:"
+                               FontSize="12" Foreground="#A6ADC8"
+                               Margin="0,0,0,8"/>
+
+                    <Button Content="Definitions &amp; Basics"
+                            Tag="geo-u1-definitions"
+                            Click="StartLesson_Click"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            HorizontalContentAlignment="Left"
+                            Padding="10,8"
+                            Margin="0,0,0,6"/>
+
+                    <Button Content="Angle Types"
+                            Tag="geo-u1-angles"
+                            Click="StartLesson_Click"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            HorizontalContentAlignment="Left"
+                            Padding="10,8"
+                            Margin="0,0,0,6"/>
+
+                    <Button Content="If-Then Logic"
+                            Tag="geo-u1-logic-ifthen"
+                            Click="StartLesson_Click"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            HorizontalContentAlignment="Left"
+                            Padding="10,8"
+                            Margin="0,0,0,6"/>
+
+                    <Button Content="Converse &amp; Contrapositive"
+                            Tag="geo-u1-converse"
+                            Click="StartLesson_Click"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            HorizontalContentAlignment="Left"
+                            Padding="10,8"
+                            Margin="0,0,0,6"/>
+
+                    <Button Content="Counterexamples"
+                            Tag="geo-u1-counterexample"
+                            Click="StartLesson_Click"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            HorizontalContentAlignment="Left"
+                            Padding="10,8"
+                            Margin="0,0,0,0"/>
+                </StackPanel>
+
                 <StackPanel DockPanel.Dock="Bottom"/>
             </DockPanel>
         </Border>
@@ -211,6 +274,10 @@
             <!-- Baseline panel (DataContext set in code-behind) -->
             <views:BaselineView x:Name="BaselinePanel"
                                 Visibility="Collapsed"/>
+
+            <!-- Lesson panel (DataContext set in code-behind when a skill is selected) -->
+            <views:LessonView x:Name="LessonPanel"
+                              Visibility="Collapsed"/>
         </Grid>
     </Grid>
 </Window>

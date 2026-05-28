@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using System.Windows;
@@ -18,9 +19,12 @@ public partial class App : Application
 {
     public static AudioPlayerService AudioPlayer { get; } = new();
 
-    /// <summary>Shared database service kept alive for the process lifetime.</summary>
-    public static DatabaseService? Database { get; private set; }
-    public static SkillGraphService? Skills { get; private set; }
+    /// <summary>Shared services kept alive for the process lifetime.</summary>
+    public static DatabaseService?      Database       { get; private set; }
+    public static SkillGraphService?    Skills         { get; private set; }
+    public static SessionLoggerService? SessionLogger  { get; private set; }
+    public static LessonEngineService?  LessonEngine   { get; private set; }
+    public static DialogueEngineService? DialogueEngine { get; private set; }
 
     private void Application_Startup(object sender, StartupEventArgs e)
     {
@@ -49,10 +53,21 @@ public partial class App : Application
             SeedAlgebraItems(db);
             SeedGeometryPrereqSkills(db);
             SeedGeometryPrereqItems(db);
+            SeedUnit1Items(db);
+
+            // Wire offline-safe lesson services (LLM/TTS gracefully return null when key is empty).
+            var logger    = new SessionLoggerService(db);
+            var llm       = new LlmGatewayService(db, "");    // offline: returns null on all calls
+            var tts       = new TtsService(db, "", "eastus"); // offline: no audio synthesis
+            var dialogue  = new DialogueEngineService(llm, tts, logger, db);
+            var lesson    = new LessonEngineService(llm, skills, logger, db);
 
             // Keep alive for the duration of the app.
-            Database = db;
-            Skills   = skills;
+            Database       = db;
+            Skills         = skills;
+            SessionLogger  = logger;
+            LessonEngine   = lesson;
+            DialogueEngine = dialogue;
         }
         catch
         {
@@ -107,60 +122,35 @@ public partial class App : Application
     }
 
     /// <summary>
+    /// Inserts the 15 Unit 1 library items (difficulties 1–3 for each of the
+    /// 5 Foundations &amp; Logical Reasoning skills) into gt_items.
+    /// </summary>
+    private static void SeedUnit1Items(DatabaseService db) =>
+        SeedItemList(db, Unit1Items.All);
+
+    /// <summary>
     /// Inserts the 15 hard-coded geometry prerequisite items into gt_items
     /// if they are not already present (idempotent via INSERT OR IGNORE).
     /// </summary>
-    private static void SeedGeometryPrereqItems(DatabaseService db)
-    {
-        var conn = db.GetConnection();
-        using var tx = conn.BeginTransaction();
-        try
-        {
-            foreach (var item in GeometryPrereqItems.All)
-            {
-                using var cmd = conn.CreateCommand();
-                cmd.Transaction = tx;
-                cmd.CommandText = """
-                    INSERT OR IGNORE INTO gt_items
-                        (id, template, params_json, prompt, answer_json,
-                         hints_json, solution_steps_json, skill_id, difficulty, source, item_type)
-                    VALUES
-                        (@id, @tpl, @params, @prompt, @answer,
-                         @hints, @steps, @skill, @diff, @src, @type);
-                    """;
-                cmd.Parameters.AddWithValue("@id",     item.Id);
-                cmd.Parameters.AddWithValue("@tpl",    item.Template);
-                cmd.Parameters.AddWithValue("@params", item.ParamsJson);
-                cmd.Parameters.AddWithValue("@prompt", item.Prompt);
-                cmd.Parameters.AddWithValue("@answer", item.AnswerJson);
-                cmd.Parameters.AddWithValue("@hints",  JsonSerializer.Serialize(item.Hints));
-                cmd.Parameters.AddWithValue("@steps",  JsonSerializer.Serialize(item.SolutionSteps));
-                cmd.Parameters.AddWithValue("@skill",  item.SkillId);
-                cmd.Parameters.AddWithValue("@diff",   item.Difficulty);
-                cmd.Parameters.AddWithValue("@src",    item.Source);
-                cmd.Parameters.AddWithValue("@type",   item.Type.ToString());
-                cmd.ExecuteNonQuery();
-            }
-            tx.Commit();
-        }
-        catch
-        {
-            tx.Rollback();
-        }
-    }
+    private static void SeedGeometryPrereqItems(DatabaseService db) =>
+        SeedItemList(db, GeometryPrereqItems.All);
 
     /// <summary>
-    /// Inserts the 24 hard-coded algebra prerequisite items into gt_items
-    /// if they are not already present (idempotent via INSERT OR IGNORE).
+    /// Inserts the 24 hard-coded algebra prerequisite items into gt_items.
     /// </summary>
-    private static void SeedAlgebraItems(DatabaseService db)
+    private static void SeedAlgebraItems(DatabaseService db) =>
+        SeedItemList(db, AlgebraItems.All);
+
+    /// <summary>
+    /// Shared item seeder — INSERT OR IGNORE for every item in the list.
+    /// </summary>
+    private static void SeedItemList(DatabaseService db, IEnumerable<Item> source)
     {
         var conn = db.GetConnection();
-
         using var tx = conn.BeginTransaction();
         try
         {
-            foreach (var item in AlgebraItems.All)
+            foreach (var item in source)
             {
                 using var cmd = conn.CreateCommand();
                 cmd.Transaction = tx;
@@ -172,7 +162,6 @@ public partial class App : Application
                         (@id, @tpl, @params, @prompt, @answer,
                          @hints, @steps, @skill, @diff, @src, @type);
                     """;
-
                 cmd.Parameters.AddWithValue("@id",     item.Id);
                 cmd.Parameters.AddWithValue("@tpl",    item.Template);
                 cmd.Parameters.AddWithValue("@params", item.ParamsJson);
@@ -184,10 +173,8 @@ public partial class App : Application
                 cmd.Parameters.AddWithValue("@diff",   item.Difficulty);
                 cmd.Parameters.AddWithValue("@src",    item.Source);
                 cmd.Parameters.AddWithValue("@type",   item.Type.ToString());
-
                 cmd.ExecuteNonQuery();
             }
-
             tx.Commit();
         }
         catch

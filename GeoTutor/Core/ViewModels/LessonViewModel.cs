@@ -136,7 +136,9 @@ public partial class LessonViewModel : BaseViewModel
 
         _dialogueEngine.ResetEscalation();
 
-        CurrentLesson = await Task.Run(() => _lessonEngine.BuildLesson(skillId));
+        var skill = _skillGraph.GetSkill(skillId);
+        int band  = skill?.DifficultyBand ?? 1;
+        CurrentLesson = await _lessonEngine.BuildLessonAsync(skillId, band).ConfigureAwait(false);
 
         if (CurrentLesson is null || CurrentLesson.Beats.Count == 0)
         {

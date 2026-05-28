@@ -1,45 +1,110 @@
 namespace GeoTutor;
 
 using System.Windows;
+using System.Windows.Controls;
 using GeoTutor.Core.ViewModels;
 
 public partial class MainWindow : Window
 {
     private BaselineViewModel? _baselineVm;
+    private LessonViewModel?   _lessonVm;
 
     public MainWindow()
     {
         InitializeComponent();
 
-        // Wire baseline VM if the DB was initialised successfully.
         if (App.Database is not null && App.Skills is not null)
         {
             _baselineVm = new BaselineViewModel(App.Database, App.Skills);
             BaselinePanel.DataContext = _baselineVm;
         }
+
+        if (App.LessonEngine   is not null &&
+            App.DialogueEngine is not null &&
+            App.SessionLogger  is not null &&
+            App.Skills         is not null &&
+            App.Database       is not null)
+        {
+            _lessonVm = new LessonViewModel(
+                App.LessonEngine,
+                App.DialogueEngine,
+                App.SessionLogger,
+                App.Skills,
+                App.Database,
+                App.AudioPlayer);
+            LessonPanel.DataContext = _lessonVm;
+        }
     }
 
     // -----------------------------------------------------------------------
-    // Navigation
+    // Navigation helpers
+    // -----------------------------------------------------------------------
+
+    private void HideAllPanels()
+    {
+        Phase1Panel.Visibility         = Visibility.Collapsed;
+        BaselinePanel.Visibility       = Visibility.Collapsed;
+        LessonPanel.Visibility         = Visibility.Collapsed;
+        SceneControls.Visibility       = Visibility.Collapsed;
+        BaselineSideControls.Visibility = Visibility.Collapsed;
+        Unit1SideControls.Visibility   = Visibility.Collapsed;
+    }
+
+    private void ClearNavStyles()
+    {
+        var normal = (System.Windows.Style)FindResource("NavButton");
+        NavSceneBtn.Style    = normal;
+        NavBaselineBtn.Style = normal;
+        NavUnit1Btn.Style    = normal;
+    }
+
+    // -----------------------------------------------------------------------
+    // Navigation handlers
     // -----------------------------------------------------------------------
 
     private void Nav_SceneViewer_Click(object sender, RoutedEventArgs e)
     {
-        Phase1Panel.Visibility         = Visibility.Visible;
-        BaselinePanel.Visibility       = Visibility.Collapsed;
-        SceneControls.Visibility       = Visibility.Visible;
-        BaselineSideControls.Visibility = Visibility.Collapsed;
-        NavSceneBtn.Style    = (System.Windows.Style)FindResource("NavButtonActive");
-        NavBaselineBtn.Style = (System.Windows.Style)FindResource("NavButton");
+        HideAllPanels();
+        ClearNavStyles();
+        Phase1Panel.Visibility   = Visibility.Visible;
+        SceneControls.Visibility = Visibility.Visible;
+        NavSceneBtn.Style = (System.Windows.Style)FindResource("NavButtonActive");
     }
 
     private void Nav_Baseline_Click(object sender, RoutedEventArgs e)
     {
-        Phase1Panel.Visibility          = Visibility.Collapsed;
+        HideAllPanels();
+        ClearNavStyles();
         BaselinePanel.Visibility        = Visibility.Visible;
-        SceneControls.Visibility        = Visibility.Collapsed;
         BaselineSideControls.Visibility = Visibility.Visible;
-        NavSceneBtn.Style    = (System.Windows.Style)FindResource("NavButton");
         NavBaselineBtn.Style = (System.Windows.Style)FindResource("NavButtonActive");
+    }
+
+    private void Nav_Unit1_Click(object sender, RoutedEventArgs e)
+    {
+        HideAllPanels();
+        ClearNavStyles();
+        // Show a placeholder message in the lesson panel until a skill is selected.
+        LessonPanel.Visibility       = Visibility.Visible;
+        Unit1SideControls.Visibility = Visibility.Visible;
+        NavUnit1Btn.Style = (System.Windows.Style)FindResource("NavButtonActive");
+    }
+
+    private async void StartLesson_Click(object sender, RoutedEventArgs e)
+    {
+        if (_lessonVm is null) return;
+        if (sender is not Button btn) return;
+
+        string skillId = btn.Tag as string ?? "geo-u1-definitions";
+
+        // Ensure the lesson panel is shown.
+        HideAllPanels();
+        ClearNavStyles();
+        LessonPanel.Visibility       = Visibility.Visible;
+        Unit1SideControls.Visibility = Visibility.Visible;
+        NavUnit1Btn.Style = (System.Windows.Style)FindResource("NavButtonActive");
+
+        // Load the lesson for the selected skill.
+        await _lessonVm.LoadLessonCommand.ExecuteAsync(skillId);
     }
 }

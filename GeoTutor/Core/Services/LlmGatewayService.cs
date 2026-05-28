@@ -39,15 +39,16 @@ public class LlmGatewayService
     public LlmGatewayService(DatabaseService db, string apiKey)
     {
         _db     = db ?? throw new ArgumentNullException(nameof(db));
-        _apiKey = !string.IsNullOrWhiteSpace(apiKey)
-                    ? apiKey
-                    : throw new ArgumentNullException(nameof(apiKey));
+        _apiKey = apiKey ?? "";   // empty string = offline mode; callers receive null returns
 
         _http = new HttpClient();
-        _http.DefaultRequestHeaders.Add("x-api-key", _apiKey);
-        _http.DefaultRequestHeaders.Add("anthropic-version", AnthropicVer);
-        _http.DefaultRequestHeaders.Accept.Add(
-            new MediaTypeWithQualityHeaderValue("application/json"));
+        if (!string.IsNullOrWhiteSpace(_apiKey))
+        {
+            _http.DefaultRequestHeaders.Add("x-api-key", _apiKey);
+            _http.DefaultRequestHeaders.Add("anthropic-version", AnthropicVer);
+            _http.DefaultRequestHeaders.Accept.Add(
+                new MediaTypeWithQualityHeaderValue("application/json"));
+        }
         _http.Timeout = TimeSpan.FromSeconds(90);
     }
 
@@ -62,6 +63,8 @@ public class LlmGatewayService
     /// </summary>
     public async Task<LessonPlan?> GenerateLessonPlanAsync(string skillId, int difficultyBand)
     {
+        if (string.IsNullOrWhiteSpace(_apiKey)) return null;
+
         string cacheKey = $"{skillId}:{difficultyBand}";
         var cached = LoadCachedLessonPlan(cacheKey);
         if (cached is not null)
@@ -112,6 +115,8 @@ public class LlmGatewayService
     public async Task<LlmEnvelope?> GenerateItemAsync(
         string skillId, int difficultyBand, string seed = "")
     {
+        if (string.IsNullOrWhiteSpace(_apiKey)) return null;
+
         string cacheKey = $"{skillId}:{difficultyBand}:{seed}";
         var cached = LoadCachedEnvelope(cacheKey);
         if (cached is not null)
@@ -164,6 +169,8 @@ public class LlmGatewayService
     public async Task<string> ClassifyErrorAsync(
         string prompt, string studentAnswer, string correctAnswer)
     {
+        if (string.IsNullOrWhiteSpace(_apiKey)) return "sign-error";
+
         string user = $"""
             Geometry problem: {prompt}
             Student answer:   {studentAnswer}
@@ -186,6 +193,8 @@ public class LlmGatewayService
     public async Task<DialogueScript?> GenerateDialogueAsync(
         string errorCategory, string problemId, string sceneSpecJson)
     {
+        if (string.IsNullOrWhiteSpace(_apiKey)) return null;
+
         string cacheKey = $"{errorCategory}:{problemId}";
         var cached = LoadCachedDialogue(cacheKey);
         if (cached is not null)

@@ -48,11 +48,9 @@ public class TtsService
     /// <param name="azureRegion">Azure region slug, e.g. "eastus".</param>
     public TtsService(DatabaseService db, string azureSubscriptionKey, string azureRegion)
     {
-        _db              = db              ?? throw new ArgumentNullException(nameof(db));
-        _subscriptionKey = azureSubscriptionKey
-                           ?? throw new ArgumentNullException(nameof(azureSubscriptionKey));
-        _region          = azureRegion
-                           ?? throw new ArgumentNullException(nameof(azureRegion));
+        _db              = db ?? throw new ArgumentNullException(nameof(db));
+        _subscriptionKey = azureSubscriptionKey ?? "";  // empty = TTS disabled; returns null
+        _region          = azureRegion          ?? "";
 
         // Resolve cache directory — create on first use.
         string appData   = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -75,6 +73,9 @@ public class TtsService
     {
         if (string.IsNullOrWhiteSpace(text))
             throw new ArgumentException("text must not be empty.", nameof(text));
+
+        if (string.IsNullOrWhiteSpace(_subscriptionKey))
+            return null;  // TTS disabled in offline mode
 
         string voice    = VoiceName(speaker);
         string hash     = ComputeHash(voice, text);
