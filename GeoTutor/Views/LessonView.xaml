@@ -93,7 +93,6 @@
                         <StackPanel Visibility="{Binding ShowDialogue, Converter={StaticResource BoolToCollapsedConverter}}">
 
                             <TextBox Text="{Binding UserAnswer, UpdateSourceTrigger=PropertyChanged}"
-                                     PlaceholderText="Your answer…"
                                      FontSize="15"
                                      Margin="0,0,0,8">
                                 <TextBox.InputBindings>
@@ -162,7 +161,7 @@
                                              Maximum="{Binding ActiveDialogue.Lines.Count}"
                                              Margin="0,0,0,0"/>
 
-                                <StackPanel Padding="14,12">
+                                <StackPanel Margin="14,12">
 
                                     <!-- Current speaker badge -->
                                     <Border HorizontalAlignment="Left"

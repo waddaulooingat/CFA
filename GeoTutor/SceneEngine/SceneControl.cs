@@ -1,34 +1,29 @@
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using GeoTutor.SceneEngine.Models;
 using SkiaSharp;
-using SkiaSharp.Views.WPF;
 
 namespace GeoTutor.SceneEngine;
 
 /// <summary>
-/// A WPF UserControl that renders a <see cref="SceneSpec"/> using SkiaSharp and provides
-/// interactive drag support for points marked <see cref="ScenePoint.Draggable"/>.
-///
-/// Usage (code-behind or code-only host):
-/// <code>
-///   var ctrl = new SceneControl();
-///   ctrl.Scene = mySpec;
-///   ctrl.PointDragged += (id, wx, wy) => { /* update model */ };
-///   ctrl.PointSelected += (id) => { /* highlight point */ };
-/// </code>
-/// No XAML file — the visual tree is built entirely in code.
+/// A WPF UserControl that renders a <see cref="SceneSpec"/> using SkiaSharp into a
+/// <see cref="WriteableBitmap"/> and provides interactive drag support for points
+/// marked <see cref="ScenePoint.Draggable"/>.
 /// </summary>
-public sealed class SceneControl : System.Windows.Controls.UserControl
+public sealed class SceneControl : UserControl
 {
-    // ── SKElement ─────────────────────────────────────────────────────────────
+    // ── Rendering ─────────────────────────────────────────────────────────────
 
-    private readonly SKElement _skElement;
+    private readonly Image _image;
+    private WriteableBitmap? _bitmap;
 
     // ── Drag state ────────────────────────────────────────────────────────────
 
-    private string?   _dragPointId;
-    private SKPoint   _lastMouseScreen;
+    private string?  _dragPointId;
+    private SKPoint  _lastMouseScreen;
 
     // ── Hit-test radius (screen pixels) ──────────────────────────────────────
 
@@ -40,22 +35,21 @@ public sealed class SceneControl : System.Windows.Controls.UserControl
 
     public SceneControl()
     {
-        _skElement = new SKElement
+        _image = new Image
         {
-            Focusable   = true,
+            Stretch             = Stretch.Fill,
+            Focusable           = true,
             SnapsToDevicePixels = true,
         };
 
-        _skElement.PaintSurface += OnPaintSurface;
+        _image.MouseDown  += OnMouseDown;
+        _image.MouseMove  += OnMouseMove;
+        _image.MouseUp    += OnMouseUp;
+        _image.MouseLeave += OnMouseLeave;
 
-        // WPF mouse events are on the element, not on this UserControl, to avoid
-        // double-hit-testing through the visual tree.
-        _skElement.MouseDown  += OnMouseDown;
-        _skElement.MouseMove  += OnMouseMove;
-        _skElement.MouseUp    += OnMouseUp;
-        _skElement.MouseLeave += OnMouseLeave;
+        Content = _image;
 
-        Content = _skElement;
+        SizeChanged += (_, _) => Render();
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -85,8 +79,8 @@ public sealed class SceneControl : System.Windows.Controls.UserControl
     private static void OnSceneChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         var ctrl = (SceneControl)d;
-        ctrl._dragPointId = null;   // cancel any in-progress drag on scene change
-        ctrl._skElement.InvalidateVisual();
+        ctrl._dragPointId = null;
+        ctrl.Render();
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -109,28 +103,52 @@ public sealed class SceneControl : System.Windows.Controls.UserControl
     // Rendering
     // ─────────────────────────────────────────────────────────────────────────
 
-    private void OnPaintSurface(object? sender, SKPaintSurfaceEventArgs e)
+    private void Render()
     {
-        var canvas  = e.Surface.Canvas;
-        var info    = e.Info;
+        double dpi     = GetDpi();
+        int    width   = (int)(ActualWidth  * dpi);
+        int    height  = (int)(ActualHeight * dpi);
+        if (width <= 0 || height <= 0) return;
 
-        canvas.Clear(SKColors.White);
+        if (_bitmap == null || _bitmap.PixelWidth != width || _bitmap.PixelHeight != height)
+        {
+            double screenDpi = dpi * 96.0;
+            _bitmap      = new WriteableBitmap(width, height, screenDpi, screenDpi, PixelFormats.Bgra32, null);
+            _image.Source = _bitmap;
+        }
 
-        var spec = Scene;
-        if (spec == null) return;
+        _bitmap.Lock();
+        try
+        {
+            var info = new SKImageInfo(width, height, SKColorType.Bgra8888, SKAlphaType.Premul);
+            using var surface = SKSurface.Create(info, _bitmap.BackBuffer, _bitmap.BackBufferStride);
+            var canvas = surface.Canvas;
 
-        using var bmp = SceneRenderer.Render(spec, info.Width, info.Height);
-        canvas.DrawBitmap(bmp, 0, 0);
+            canvas.Clear(SKColors.White);
+
+            var spec = Scene;
+            if (spec != null)
+            {
+                using var bmp = SceneRenderer.Render(spec, width, height);
+                canvas.DrawBitmap(bmp, 0, 0);
+            }
+
+            canvas.Flush();
+            _bitmap.AddDirtyRect(new Int32Rect(0, 0, width, height));
+        }
+        finally
+        {
+            _bitmap.Unlock();
+        }
     }
 
     // ─────────────────────────────────────────────────────────────────────────
     // Coordinate helpers
     // ─────────────────────────────────────────────────────────────────────────
 
-    /// <summary>Converts a WPF Point (logical pixels) to SkiaSharp physical pixels.</summary>
     private SKPoint ToSkia(Point wpf)
     {
-        double dpi   = GetDpi();
+        double dpi = GetDpi();
         return new SKPoint((float)(wpf.X * dpi), (float)(wpf.Y * dpi));
     }
 
@@ -140,24 +158,24 @@ public sealed class SceneControl : System.Windows.Controls.UserControl
         return source?.CompositionTarget?.TransformToDevice.M11 ?? 1.0;
     }
 
-    /// <summary>Converts physical screen pixels to world coordinates.</summary>
     private (double wx, double wy) ToWorld(SKPoint screen)
     {
-        var vp = Scene?.Viewport ?? new Viewport();
-        double widthPx  = _skElement.ActualWidth  * GetDpi();
-        double heightPx = _skElement.ActualHeight * GetDpi();
+        var    vp      = Scene?.Viewport ?? new Viewport();
+        double dpi     = GetDpi();
+        double widthPx  = ActualWidth  * dpi;
+        double heightPx = ActualHeight * dpi;
 
         double wx = vp.XMin + screen.X / widthPx  * (vp.XMax - vp.XMin);
         double wy = vp.YMin + (1.0 - screen.Y / heightPx) * (vp.YMax - vp.YMin);
         return (wx, wy);
     }
 
-    /// <summary>Returns the screen position (physical px) of a world point.</summary>
     private SKPoint PointToScreen(ScenePoint pt)
     {
-        var vp = Scene?.Viewport ?? new Viewport();
-        double widthPx  = _skElement.ActualWidth  * GetDpi();
-        double heightPx = _skElement.ActualHeight * GetDpi();
+        var    vp      = Scene?.Viewport ?? new Viewport();
+        double dpi     = GetDpi();
+        double widthPx  = ActualWidth  * dpi;
+        double heightPx = ActualHeight * dpi;
 
         float sx = (float)((pt.X - vp.XMin) / (vp.XMax - vp.XMin) * widthPx);
         float sy = (float)((1.0 - (pt.Y - vp.YMin) / (vp.YMax - vp.YMin)) * heightPx);
@@ -168,10 +186,6 @@ public sealed class SceneControl : System.Windows.Controls.UserControl
     // Hit testing
     // ─────────────────────────────────────────────────────────────────────────
 
-    /// <summary>
-    /// Returns the first point within <see cref="HitRadius"/> of <paramref name="pos"/>,
-    /// prioritising draggable points, or null if none is nearby.
-    /// </summary>
     private ScenePoint? HitTest(SKPoint pos)
     {
         if (Scene == null) return null;
@@ -181,14 +195,13 @@ public sealed class SceneControl : System.Windows.Controls.UserControl
 
         foreach (var pt in Scene.Points)
         {
-            var  sc      = PointToScreen(pt);
+            var   sc     = PointToScreen(pt);
             float dx     = sc.X - pos.X;
             float dy     = sc.Y - pos.Y;
             float distSq = dx * dx + dy * dy;
 
             if (distSq <= bestDistSq)
             {
-                // Prefer draggable points when distances tie.
                 if (best == null || (pt.Draggable && !best.Draggable) || distSq < bestDistSq)
                 {
                     best       = pt;
@@ -208,20 +221,19 @@ public sealed class SceneControl : System.Windows.Controls.UserControl
     {
         if (Scene == null) return;
 
-        var skPos = ToSkia(e.GetPosition(_skElement));
+        var skPos = ToSkia(e.GetPosition(_image));
         var hit   = HitTest(skPos);
 
         if (hit == null) return;
 
-        // Notify selection unconditionally.
         PointSelected?.Invoke(hit.Id);
 
         if (!hit.Draggable) return;
 
-        _dragPointId      = hit.Id;
-        _lastMouseScreen  = skPos;
+        _dragPointId     = hit.Id;
+        _lastMouseScreen = skPos;
 
-        _skElement.CaptureMouse();
+        _image.CaptureMouse();
         e.Handled = true;
     }
 
@@ -234,12 +246,11 @@ public sealed class SceneControl : System.Windows.Controls.UserControl
             return;
         }
 
-        var skPos = ToSkia(e.GetPosition(_skElement));
+        var skPos = ToSkia(e.GetPosition(_image));
         _lastMouseScreen = skPos;
 
         var (wx, wy) = ToWorld(skPos);
 
-        // Mutate the point directly so the next render picks up the change.
         var pt = Scene.Points.FirstOrDefault(p => p.Id == _dragPointId);
         if (pt != null)
         {
@@ -249,8 +260,7 @@ public sealed class SceneControl : System.Windows.Controls.UserControl
 
         PointDragged?.Invoke(_dragPointId, wx, wy);
 
-        // Schedule re-render.
-        _skElement.InvalidateVisual();
+        Render();
         e.Handled = true;
     }
 
@@ -268,7 +278,7 @@ public sealed class SceneControl : System.Windows.Controls.UserControl
     private void EndDrag()
     {
         _dragPointId = null;
-        if (_skElement.IsMouseCaptured)
-            _skElement.ReleaseMouseCapture();
+        if (_image.IsMouseCaptured)
+            _image.ReleaseMouseCapture();
     }
 }

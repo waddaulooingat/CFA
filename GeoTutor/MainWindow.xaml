@@ -42,7 +42,6 @@
                     <TextBlock Text="NAVIGATE"
                                FontSize="10" FontWeight="SemiBold"
                                Foreground="#6C7086"
-                               LetterSpacing="1"
                                Margin="0,0,0,6"/>
 
                     <Button x:Name="NavSceneBtn"
@@ -68,7 +67,7 @@
                     <TextBlock Text="SAMPLE SCENES"
                                FontSize="10" FontWeight="SemiBold"
                                Foreground="#6C7086"
-                               LetterSpacing="1"
+
                                Margin="0,4,0,8"/>
 
                     <TextBlock Text="{Binding SceneTitle}"
@@ -129,7 +128,7 @@
                     <TextBlock Text="PREREQUISITES BASELINE"
                                FontSize="10" FontWeight="SemiBold"
                                Foreground="#6C7086"
-                               LetterSpacing="1"
+
                                Margin="0,4,0,12"/>
 
                     <TextBlock Text="14 skill areas · ~39 items"

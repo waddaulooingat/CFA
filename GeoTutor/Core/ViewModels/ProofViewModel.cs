@@ -54,8 +54,7 @@ public partial class ProofViewModel : BaseViewModel
     /// Loads a proof exercise for the given skill and difficulty band, then
     /// initialises an empty placement list with one slot per step.
     /// </summary>
-    [RelayCommand]
-    private async Task LoadProof(string skillId, int difficultyBand)
+    public async Task LoadProof(string skillId, int difficultyBand)
     {
         SetBusy(true, "Loading proof…");
 
@@ -64,7 +63,7 @@ public partial class ProofViewModel : BaseViewModel
         FeedbackMessage   = "";
         ValidationResult  = null;
 
-        Exercise = await Task.Run(() => _proofBeatService.GetExercise(skillId, difficultyBand));
+        Exercise = await _proofBeatService.GenerateProofAsync(skillId, difficultyBand);
 
         if (Exercise is null)
         {
@@ -74,7 +73,7 @@ public partial class ProofViewModel : BaseViewModel
         }
 
         // Create one empty placement slot per step.
-        Placements = Enumerable.Range(1, Exercise.Steps.Count)
+        Placements = Enumerable.Range(1, Exercise.CorrectSteps.Count)
             .Select(i => new ProofPlacement { StepNumber = i })
             .ToList();
 
@@ -83,7 +82,7 @@ public partial class ProofViewModel : BaseViewModel
             skillId,
             difficultyBand,
             exerciseId = Exercise.Id,
-            stepCount  = Exercise.Steps.Count,
+            stepCount  = Exercise.CorrectSteps.Count,
         });
 
         SetBusy(false);
@@ -93,8 +92,7 @@ public partial class ProofViewModel : BaseViewModel
     /// Places a statement/reason pair into the specified step slot.
     /// Replaces any existing placement at that step.
     /// </summary>
-    [RelayCommand]
-    private void PlaceItem(int stepNumber, string statementId, string reasonId)
+    public void PlaceItem(int stepNumber, string statementId, string reasonId)
     {
         if (Exercise is null) return;
 
@@ -102,7 +100,7 @@ public partial class ProofViewModel : BaseViewModel
         if (idx < 0) return;
 
         // Create a new list so the ObservableProperty change notification fires.
-        var updated = [.. Placements];
+        List<ProofPlacement> updated = [.. Placements];
         updated[idx] = new ProofPlacement
         {
             StepNumber  = stepNumber,
@@ -123,15 +121,14 @@ public partial class ProofViewModel : BaseViewModel
         int idx = Placements.FindIndex(p => p.StepNumber == stepNumber);
         if (idx < 0) return;
 
-        var updated = [.. Placements];
+        List<ProofPlacement> updated = [.. Placements];
         updated[idx] = new ProofPlacement { StepNumber = stepNumber };
         Placements = updated;
     }
 
     /// <summary>
     /// Validates the student's current placements against the correct step
-    /// sequence.  Populates <see cref="ValidationResult"/> with per-step
-    /// feedback and sets <see cref="IsComplete"/> when all steps are correct.
+    /// sequence.
     /// </summary>
     [RelayCommand]
     private async Task Validate()
@@ -143,7 +140,7 @@ public partial class ProofViewModel : BaseViewModel
         var result = await Task.Run(() => _proofBeatService.Validate(Exercise, Placements));
         ValidationResult = result;
 
-        if (result.AllCorrect)
+        if (result.IsComplete)
         {
             IsComplete      = true;
             FeedbackMessage = "Proof complete — excellent reasoning!";
@@ -157,7 +154,7 @@ public partial class ProofViewModel : BaseViewModel
         }
         else
         {
-            int wrong = result.StepResults.Count(s => !s.IsCorrect);
+            int wrong = Exercise.CorrectSteps.Count - result.CorrectCount;
             FeedbackMessage = wrong == 1
                 ? "One step needs to be fixed."
                 : $"{wrong} steps need to be fixed.";
@@ -165,10 +162,7 @@ public partial class ProofViewModel : BaseViewModel
             _sessionLogger.Log("proof_validate_fail", new
             {
                 exerciseId    = Exercise.Id,
-                wrongSteps    = result.StepResults
-                                      .Where(s => !s.IsCorrect)
-                                      .Select(s => s.StepNumber)
-                                      .ToList(),
+                firstWrongStep = result.FirstWrongStep,
             });
         }
 
@@ -177,14 +171,12 @@ public partial class ProofViewModel : BaseViewModel
 
     /// <summary>
     /// Reveals a hint for the first incorrect or empty step.
-    /// Records the hint reveal in the session log.
     /// </summary>
     [RelayCommand]
     private void RevealHint()
     {
         if (Exercise is null) return;
 
-        // Find the first step that is either empty or marked wrong.
         ProofPlacement? targetSlot = ValidationResult is not null
             ? FindFirstWrongSlot()
             : FindFirstEmptySlot();
@@ -195,12 +187,15 @@ public partial class ProofViewModel : BaseViewModel
             return;
         }
 
-        var step = Exercise.Steps.FirstOrDefault(s => s.StepNumber == targetSlot.StepNumber);
+        var step = Exercise.CorrectSteps.FirstOrDefault(s => s.StepNumber == targetSlot.StepNumber);
         if (step is null) return;
 
-        // Show the correct statement as a hint, leave reason for the student.
+        // Look up the statement text from the bank using the step's StatementId.
+        string statementText = Exercise.StatementBank
+            .FirstOrDefault(item => item.Id == step.StatementId)?.Text ?? step.StatementId;
+
         FeedbackMessage = $"Hint for step {step.StepNumber}: " +
-                          $"The statement should be \"{step.StatementText}\".";
+                          $"The statement should be \"{statementText}\".";
         HintsUsed++;
 
         _sessionLogger.Log("proof_hint", new
@@ -223,80 +218,12 @@ public partial class ProofViewModel : BaseViewModel
     {
         if (ValidationResult is null) return FindFirstEmptySlot();
 
-        foreach (var sr in ValidationResult.StepResults.Where(s => !s.IsCorrect))
+        if (ValidationResult.FirstWrongStep.HasValue)
         {
-            var slot = Placements.FirstOrDefault(p => p.StepNumber == sr.StepNumber);
+            var slot = Placements.FirstOrDefault(p => p.StepNumber == ValidationResult.FirstWrongStep.Value);
             if (slot is not null) return slot;
         }
 
         return FindFirstEmptySlot();
     }
-}
-
-// ---------------------------------------------------------------------------
-// Proof domain models
-// ---------------------------------------------------------------------------
-
-/// <summary>A complete two-column proof exercise.</summary>
-public class ProofExercise
-{
-    public string            Id            { get; set; } = "";
-    public string            SkillId       { get; set; } = "";
-    public int               DifficultyBand{ get; set; } = 1;
-    public string            Title         { get; set; } = "";
-    public string            GivenText     { get; set; } = "";
-    public string            ProveText     { get; set; } = "";
-
-    /// <summary>Ordered correct steps (ground truth).</summary>
-    public List<ProofStep>   Steps         { get; set; } = [];
-
-    /// <summary>Pool of statement tiles available to the student.</summary>
-    public List<ProofTile>   StatementPool { get; set; } = [];
-
-    /// <summary>Pool of reason tiles available to the student.</summary>
-    public List<ProofTile>   ReasonPool    { get; set; } = [];
-}
-
-/// <summary>One correct step in the proof (statement + reason).</summary>
-public class ProofStep
-{
-    public int    StepNumber     { get; set; }
-    public string StatementId   { get; set; } = "";
-    public string StatementText { get; set; } = "";
-    public string ReasonId      { get; set; } = "";
-    public string ReasonText    { get; set; } = "";
-}
-
-/// <summary>A draggable tile shown in the statement or reason pool.</summary>
-public class ProofTile
-{
-    public string Id   { get; set; } = "";
-    public string Text { get; set; } = "";
-}
-
-/// <summary>
-/// The student's placement of a statement/reason into a specific step row.
-/// </summary>
-public class ProofPlacement
-{
-    public int    StepNumber  { get; set; }
-    public string StatementId { get; set; } = "";
-    public string ReasonId    { get; set; } = "";
-}
-
-/// <summary>The outcome of validating all student placements.</summary>
-public class ProofValidationResult
-{
-    public bool                       AllCorrect   { get; set; }
-    public List<ProofStepResult>      StepResults  { get; set; } = [];
-}
-
-/// <summary>Per-step validation feedback.</summary>
-public class ProofStepResult
-{
-    public int    StepNumber        { get; set; }
-    public bool   IsCorrect         { get; set; }
-    public bool   StatementCorrect  { get; set; }
-    public bool   ReasonCorrect     { get; set; }
-    public string? HintText         { get; set; }
 }

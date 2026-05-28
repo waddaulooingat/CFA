@@ -92,7 +92,6 @@ public partial class TestViewModel : BaseViewModel
     /// Loads a fresh set of test items for the given skill at the specified
     /// difficulty band and presents the first one.
     /// </summary>
-    [RelayCommand]
     private async Task LoadTest(string skillId, int difficultyBand)
     {
         SetBusy(true, "Loading test…");

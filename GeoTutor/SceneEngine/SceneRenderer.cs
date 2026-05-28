@@ -153,8 +153,8 @@ public static class SceneRenderer
         float cx = toSX(center.X);
         float cy = toSY(center.Y);
         // The radius in screen pixels: use the x-axis scale (assumes aspect ≈ 1).
-        float rx = arc.Radius * (toSX(center.X + 1) - cx);   // delta in screen X per 1 world unit
-        float ry = arc.Radius * (cy - toSY(center.Y + 1));   // delta in screen Y per 1 world unit (flipped)
+        float rx = (float)(arc.Radius * (toSX(center.X + 1) - cx));   // delta in screen X per 1 world unit
+        float ry = (float)(arc.Radius * (cy - toSY(center.Y + 1)));  // delta in screen Y per 1 world unit (flipped)
 
         using var paint = new SKPaint
         {
