@@ -183,7 +183,6 @@
                     <TextBlock Text="UNIT 1 — FOUNDATIONS"
                                FontSize="10" FontWeight="SemiBold"
                                Foreground="#6C7086"
-                               LetterSpacing="1"
                                Margin="0,4,0,12"/>
 
                     <TextBlock Text="Select a skill to practise:"
