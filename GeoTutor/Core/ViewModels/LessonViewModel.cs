@@ -138,7 +138,11 @@ public partial class LessonViewModel : BaseViewModel
 
         var skill = _skillGraph.GetSkill(skillId);
         int band  = skill?.DifficultyBand ?? 1;
+<<<<<<< HEAD
         CurrentLesson = await _lessonEngine.BuildLessonAsync(skillId, band);
+=======
+        CurrentLesson = await _lessonEngine.BuildLessonAsync(skillId, band).ConfigureAwait(false);
+>>>>>>> 292cd86d45361b3257868a869a3e043797f910b5
 
         if (CurrentLesson is null || CurrentLesson.Beats.Count == 0)
         {

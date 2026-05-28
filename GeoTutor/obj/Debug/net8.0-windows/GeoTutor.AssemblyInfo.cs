@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GeoTutor")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a8ad045eef88119c06f66536e5ba08f23f13bb5c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+35300440e5fe07a999079524058b6c76ee79c84f")]
 [assembly: System.Reflection.AssemblyProductAttribute("GeoTutor")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GeoTutor")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
