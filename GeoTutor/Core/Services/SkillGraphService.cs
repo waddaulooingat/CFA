@@ -344,6 +344,76 @@ public class SkillGraphService
     // Skill seed data — 80 geo + 8 algebra prerequisite skills
     // -----------------------------------------------------------------------
 
+    // -----------------------------------------------------------------------
+    // Migration: replace old geo-u1-* placeholder IDs with content-pack IDs
+    // -----------------------------------------------------------------------
+
+    /// <summary>
+    /// Idempotent migration that replaces the five old Unit 1 skill IDs with
+    /// the canonical IDs from unit-01-skills.json.  Safe to call on every startup.
+    /// </summary>
+    public void MigrateUnit1Skills()
+    {
+        var conn = _db.GetConnection();
+
+        // Old IDs that are no longer used.
+        var obsolete = new[]
+        {
+            "geo-u1-definitions",
+            "geo-u1-angles",
+            "geo-u1-logic-ifthen",
+            "geo-u1-converse",
+            "geo-u1-counterexample",
+        };
+
+        // New IDs from unit-01-skills.json.
+        var newSkills = BuildSkillSeed()
+            .Where(s => s.Id.StartsWith("geo-u1-", StringComparison.Ordinal))
+            .ToList();
+
+        using var tx = conn.BeginTransaction();
+        try
+        {
+            // Remove old rows (won't exist on a fresh install — no-op then).
+            foreach (var id in obsolete)
+            {
+                using var del = conn.CreateCommand();
+                del.Transaction  = tx;
+                del.CommandText  = "DELETE FROM gt_skills WHERE id = @id;";
+                del.Parameters.AddWithValue("@id", id);
+                del.ExecuteNonQuery();
+            }
+
+            // Insert new rows (INSERT OR IGNORE so re-runs are safe).
+            foreach (var s in newSkills)
+            {
+                using var ins = conn.CreateCommand();
+                ins.Transaction = tx;
+                ins.CommandText = """
+                    INSERT OR IGNORE INTO gt_skills
+                        (id, name, unit, prereq_ids, difficulty_band, current_mastery, last_seen, is_unlocked)
+                    VALUES
+                        (@id, @name, @unit, @prereq_ids, @diff, @mastery, NULL, @unlocked);
+                    """;
+                ins.Parameters.AddWithValue("@id",        s.Id);
+                ins.Parameters.AddWithValue("@name",      s.Name);
+                ins.Parameters.AddWithValue("@unit",      s.Unit);
+                ins.Parameters.AddWithValue("@prereq_ids", JsonSerializer.Serialize(s.PrereqIds));
+                ins.Parameters.AddWithValue("@diff",      s.DifficultyBand);
+                ins.Parameters.AddWithValue("@mastery",   s.CurrentMastery);
+                ins.Parameters.AddWithValue("@unlocked",  s.PrereqIds.Count == 0 ? 1 : 0);
+                ins.ExecuteNonQuery();
+            }
+
+            tx.Commit();
+        }
+        catch
+        {
+            tx.Rollback();
+            throw;
+        }
+    }
+
     private static List<Skill> BuildSkillSeed()
     {
         // Helper: unit 0 = algebra prereq pseudo-unit rendered before geo work begins
@@ -372,23 +442,23 @@ public class SkillGraphService
             S("alg-distance-midpoint", "Distance and midpoint formulas",      0, 1, "alg-slope-lines"),
 
             // ----------------------------------------------------------------
-            // Unit 1 — Foundations & Logical Reasoning (5 nodes)
+            // Unit 1 — Foundations & Logical Reasoning (5 nodes, from unit-01-skills.json)
             // ----------------------------------------------------------------
-            S("geo-u1-definitions",   "Points, lines, planes, basic definitions", 1),
-            S("geo-u1-angles",        "Angle types: acute, obtuse, right, straight", 1, 1, "geo-u1-definitions"),
-            S("geo-u1-logic-ifthen",  "If-then statements, hypothesis/conclusion",  1, 1, "geo-u1-definitions"),
-            S("geo-u1-converse",      "Converse, inverse, contrapositive",           1, 1, "geo-u1-logic-ifthen"),
-            S("geo-u1-counterexample","Counterexamples and logical negation",        1, 1, "geo-u1-logic-ifthen"),
+            S("geo-u1-point-line-plane",  "Points, Lines, and Planes",  1),
+            S("geo-u1-segments-and-rays", "Segments and Rays",          1, 1, "geo-u1-point-line-plane"),
+            S("geo-u1-angle-measure",     "Angle Measure and Types",    1, 1, "geo-u1-point-line-plane"),
+            S("geo-u1-if-then-logic",     "If-Then Logic",              1, 1, "geo-u1-point-line-plane"),
+            S("geo-u1-counterexamples",   "Counterexamples",            1, 1, "geo-u1-if-then-logic"),
 
             // ----------------------------------------------------------------
             // Unit 2 — Parallel Lines & Transversals (5 nodes)
             // ----------------------------------------------------------------
             S("geo-u2-parallel-identify",   "Identifying parallel lines",                      2, 1,
-                "geo-u1-angles"),
+                "geo-u1-angle-measure"),
             S("geo-u2-transversal-angles",  "Corresponding, alternate interior/exterior, co-interior", 2, 1,
                 "geo-u2-parallel-identify"),
             S("geo-u2-parallel-proofs",     "Proving lines parallel",                          2, 2,
-                "geo-u2-transversal-angles", "geo-u1-logic-ifthen"),
+                "geo-u2-transversal-angles", "geo-u1-if-then-logic"),
             S("geo-u2-perpendicular",       "Perpendicular lines and distance",                2, 1,
                 "geo-u2-parallel-identify"),
             S("geo-u2-angle-relationships", "Angle pair relationships in parallel line setups", 2, 2,
@@ -398,7 +468,7 @@ public class SkillGraphService
             // Unit 3 — Triangle Congruence (7 nodes)
             // ----------------------------------------------------------------
             S("geo-u3-sss",               "SSS congruence postulate",          3, 1,
-                "geo-u1-angles", "geo-u2-angle-relationships"),
+                "geo-u1-angle-measure", "geo-u2-angle-relationships"),
             S("geo-u3-sas",               "SAS congruence postulate",          3, 1,
                 "geo-u3-sss"),
             S("geo-u3-asa",               "ASA congruence postulate",          3, 1,
@@ -410,7 +480,7 @@ public class SkillGraphService
             S("geo-u3-cpctc",             "CPCTC",                             3, 2,
                 "geo-u3-sss", "geo-u3-sas", "geo-u3-asa"),
             S("geo-u3-congruence-proofs", "Triangle congruence proofs",        3, 3,
-                "geo-u3-cpctc", "geo-u1-converse"),
+                "geo-u3-cpctc", "geo-u1-if-then-logic"),
 
             // ----------------------------------------------------------------
             // Unit 4 — Triangle Properties (7 nodes)
@@ -484,7 +554,7 @@ public class SkillGraphService
             // Unit 8 — Circles (8 nodes)
             // ----------------------------------------------------------------
             S("geo-u8-circle-basics",      "Center, radius, diameter, chord, arc",    8, 1,
-                "geo-u1-definitions"),
+                "geo-u1-point-line-plane"),
             S("geo-u8-arc-measure",        "Arc measure and arc length",              8, 2,
                 "geo-u8-circle-basics", "alg-linear-eq"),
             S("geo-u8-chord-relationships","Chord-chord angle, intersecting chords",  8, 2,
@@ -522,7 +592,7 @@ public class SkillGraphService
             // Unit 10 — Transformations (6 nodes)
             // ----------------------------------------------------------------
             S("geo-u10-translation", "Translations",                        10, 1,
-                "geo-u1-definitions", "alg-slope-lines"),
+                "geo-u1-point-line-plane", "alg-slope-lines"),
             S("geo-u10-reflection",  "Reflections",                         10, 1,
                 "geo-u10-translation"),
             S("geo-u10-rotation",    "Rotations",                           10, 2,
@@ -566,11 +636,11 @@ public class SkillGraphService
             // Unit 13 — Two-Column Proofs (4 nodes)
             // ----------------------------------------------------------------
             S("geo-u13-proof-structure", "Proof structure: given, prove, statements, reasons", 13, 1,
-                "geo-u1-logic-ifthen", "geo-u1-converse"),
+                "geo-u1-if-then-logic"),
             S("geo-u13-segment-proofs",  "Segment addition, midpoint proofs",                  13, 2,
-                "geo-u13-proof-structure", "geo-u1-definitions"),
+                "geo-u13-proof-structure", "geo-u1-point-line-plane"),
             S("geo-u13-angle-proofs",    "Angle addition, supplementary/complementary proofs", 13, 2,
-                "geo-u13-proof-structure", "geo-u1-angles"),
+                "geo-u13-proof-structure", "geo-u1-angle-measure"),
             S("geo-u13-triangle-proofs", "Triangle congruence two-column proofs",              13, 3,
                 "geo-u13-segment-proofs", "geo-u13-angle-proofs", "geo-u3-congruence-proofs"),
 

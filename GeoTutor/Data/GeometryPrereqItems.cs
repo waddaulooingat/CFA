@@ -8,9 +8,9 @@ using GeoTutor.Core.Models;
 /// skill IDs; three require new unit-0 skill nodes seeded via App.xaml.cs.
 ///
 /// Skill ID mapping:
-///   geo-u1-angles               → angle vocabulary (comp, supp, vertical)
+///   geo-u1-angle-measure        → angle vocabulary (comp, supp, vertical)
 ///   geo-u2-transversal-angles   → parallel lines / transversal angle pairs
-///   geo-u1-logic-ifthen         → if-then statements, converse, counterexample
+///   geo-u1-if-then-logic        → if-then statements, converse, counterexample
 ///   geo-prereq-triangle-basics  → triangle angle sum and classification
 ///   geo-prereq-coord-plane      → coordinate plane fluency
 ///   geo-prereq-area-perimeter   → area, perimeter, and circumference basics
@@ -27,7 +27,7 @@ public static class GeometryPrereqItems
         items.Add(new Item
         {
             Id         = "geo-prereq-angles-001",
-            SkillId    = "geo-u1-angles",
+            SkillId    = "geo-u1-angle-measure",
             Template   = "text",
             ParamsJson = "{}",
             Prompt     = "Two angles are complementary (they add up to 90°). One angle measures 35°. What is the measure of the other angle, in degrees?",
@@ -41,7 +41,7 @@ public static class GeometryPrereqItems
         items.Add(new Item
         {
             Id         = "geo-prereq-angles-002",
-            SkillId    = "geo-u1-angles",
+            SkillId    = "geo-u1-angle-measure",
             Template   = "text",
             ParamsJson = "{}",
             Prompt     = "Two angles are supplementary (they add up to 180°). One angle measures 112°. What is the measure of the other angle, in degrees?",
@@ -55,7 +55,7 @@ public static class GeometryPrereqItems
         items.Add(new Item
         {
             Id         = "geo-prereq-angles-003",
-            SkillId    = "geo-u1-angles",
+            SkillId    = "geo-u1-angle-measure",
             Template   = "text",
             ParamsJson = "{}",
             Prompt     = "Two straight lines intersect, forming four angles. One angle measures 74°. Which of the following is the measure of the vertical angle (the angle directly opposite)?",
@@ -101,7 +101,7 @@ public static class GeometryPrereqItems
         items.Add(new Item
         {
             Id         = "geo-prereq-logic-001",
-            SkillId    = "geo-u1-logic-ifthen",
+            SkillId    = "geo-u1-if-then-logic",
             Template   = "text",
             ParamsJson = "{}",
             Prompt     = "Consider the statement: \"If a figure is a square, then it has four right angles.\"  What is the hypothesis of this conditional statement?",
@@ -115,7 +115,7 @@ public static class GeometryPrereqItems
         items.Add(new Item
         {
             Id         = "geo-prereq-logic-002",
-            SkillId    = "geo-u1-logic-ifthen",
+            SkillId    = "geo-u1-if-then-logic",
             Template   = "text",
             ParamsJson = "{}",
             Prompt     = "Which of the following is a counterexample to the statement: \"All quadrilaterals are rectangles\"?",

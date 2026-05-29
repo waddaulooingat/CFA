@@ -70,6 +70,14 @@ public class LessonEngineService
         string lessonId = $"lesson:{skillId}:{difficultyBand}:{DateTime.UtcNow:yyyyMMddHHmmss}";
         _logger.LogLessonStart(skillId, lessonId);
 
+        // 0. Try the content pack first (authored beats with real prose + raw scenes).
+        if (ContentPackService.TryBuildLesson(skillId, out var cpLesson) && cpLesson is not null)
+        {
+            cpLesson.Id = lessonId;
+            PersistLesson(cpLesson);
+            return cpLesson;
+        }
+
         // 1. Try the LLM route.
         LessonPlan? plan = await _llm.GenerateLessonPlanAsync(skillId, difficultyBand)
                                      .ConfigureAwait(false);

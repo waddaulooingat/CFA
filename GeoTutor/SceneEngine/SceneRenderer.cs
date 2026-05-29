@@ -108,7 +108,19 @@ public static class SceneRenderer
         var pFrom = toScreen(from.X, from.Y);
         var pTo   = toScreen(to.X,   to.Y);
 
-        if (seg.Kind == SegmentKind.Segment)
+        // Extend string (content pack format) overrides the Kind enum.
+        SegmentKind effectiveKind = seg.Kind;
+        if (!string.IsNullOrEmpty(seg.Extend))
+        {
+            effectiveKind = seg.Extend.ToLowerInvariant() switch
+            {
+                "both"  => SegmentKind.Line,
+                "right" => SegmentKind.Ray,
+                _       => SegmentKind.Segment,
+            };
+        }
+
+        if (effectiveKind == SegmentKind.Segment)
         {
             canvas.DrawLine(pFrom, pTo, paint);
         }
@@ -121,19 +133,37 @@ public static class SceneRenderer
             if (len < 1e-10) return;
             double ux = dx / len;
             double uy = dy / len;
-            double extend = 1000;  // world units — well outside any viewport
+            double extendDist = 1000;  // world units — well outside any viewport
 
-            if (seg.Kind == SegmentKind.Ray)
+            if (effectiveKind == SegmentKind.Ray)
             {
-                var far = toScreen(to.X + ux * extend, to.Y + uy * extend);
+                var far = toScreen(to.X + ux * extendDist, to.Y + uy * extendDist);
                 canvas.DrawLine(pFrom, far, paint);
             }
             else // Line
             {
-                var nearFar = toScreen(from.X - ux * extend, from.Y - uy * extend);
-                var farFar  = toScreen(to.X   + ux * extend, to.Y   + uy * extend);
+                var nearFar = toScreen(from.X - ux * extendDist, from.Y - uy * extendDist);
+                var farFar  = toScreen(to.X   + ux * extendDist, to.Y   + uy * extendDist);
                 canvas.DrawLine(nearFar, farFar, paint);
             }
+        }
+
+        // Draw segment label if present, nudged above the midpoint.
+        if (!string.IsNullOrEmpty(seg.Label))
+        {
+            float lx  = toSX((from.X + to.X) / 2.0);
+            float ly  = toSY((from.Y + to.Y) / 2.0) - MathF.Max(12f, scale * 0.22f);
+            float sz  = MathF.Max(9f, scale * 0.26f);
+            using var lblPaint = new SKPaint
+            {
+                IsAntialias = true,
+                Color       = LabelDefault,
+                TextSize    = sz,
+                Typeface    = SKTypeface.FromFamilyName("Arial", SKFontStyleWeight.Normal,
+                                                         SKFontStyleWidth.Normal, SKFontStyleSlant.Italic),
+                TextAlign   = SKTextAlign.Center,
+            };
+            canvas.DrawText(seg.Label, lx, ly, lblPaint);
         }
     }
 
@@ -217,6 +247,22 @@ public static class SceneRenderer
 
         canvas.DrawCircle(px, py, r, fillPaint);
         canvas.DrawCircle(px, py, r, strokePaint);
+
+        // Draw embedded label if present, above-right of the dot.
+        if (!string.IsNullOrEmpty(pt.Label))
+        {
+            float offset    = MathF.Max(8f, scale * 0.18f);
+            float labelSize = MathF.Max(10f, scale * 0.32f);
+            using var labelPaint = new SKPaint
+            {
+                IsAntialias = true,
+                Color       = LabelDefault,
+                TextSize    = labelSize,
+                Typeface    = SKTypeface.FromFamilyName("Arial", SKFontStyleWeight.SemiBold,
+                                                         SKFontStyleWidth.Normal, SKFontStyleSlant.Upright),
+            };
+            canvas.DrawText(pt.Label, px + offset, py - offset, labelPaint);
+        }
     }
 
     // ── Labels ────────────────────────────────────────────────────────────────

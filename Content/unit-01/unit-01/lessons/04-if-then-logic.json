@@ -1,0 +1,278 @@
+{
+  "skillId": "geo-u1-if-then-logic",
+  "lessonVersion": 1,
+  "beats": [
+    {
+      "id": "concept",
+      "type": "Concept",
+      "title": "If-Then Logic",
+      "scene": "scene_log_concept",
+      "proseRef": "04-if-then-logic.md#concept"
+    },
+    {
+      "id": "manipulate",
+      "type": "Manipulate",
+      "title": "Drag the triangle, watch the statements",
+      "scene": "scene_log_manipulate",
+      "instruction": "Drag vertex C to reshape the triangle. Watch which conditions are true (green) and false (red) at any moment. Try to find a position where all three sides are equal AND all three angles are equal at the same time. Try another where two sides are equal but no angle is 90°. The goal is feel, not points.",
+      "successCondition": {
+        "type": "explorationGoal",
+        "milestones": [
+          { "id": "found-equilateral", "test": "allSidesEqual" },
+          { "id": "found-right-isoceles", "test": "hasRightAngleAndTwoEqualSides" },
+          { "id": "found-scalene", "test": "noSidesEqual" }
+        ],
+        "completeWhenAll": true
+      },
+      "successMessage": "Good — you've felt the linkage between sides and angles.",
+      "maxAttempts": null
+    },
+    {
+      "id": "worked",
+      "type": "WorkedExample",
+      "title": "Converse, inverse, contrapositive",
+      "scene": null,
+      "steps": [
+        {
+          "order": 1,
+          "text": "Original: 'If a polygon is a square, then it has four sides.' Hypothesis p = 'is a square'; conclusion q = 'has four sides.'",
+          "canvasAction": null
+        },
+        {
+          "order": 2,
+          "text": "Converse (swap): 'If a polygon has four sides, then it is a square.'",
+          "canvasAction": null
+        },
+        {
+          "order": 3,
+          "text": "Inverse (negate both): 'If a polygon is not a square, then it does not have four sides.'",
+          "canvasAction": null
+        },
+        {
+          "order": 4,
+          "text": "Contrapositive (swap and negate): 'If a polygon does not have four sides, then it is not a square.'",
+          "canvasAction": null
+        },
+        {
+          "order": 5,
+          "text": "Truth values: original = TRUE; converse = FALSE (rectangle is a counterexample); inverse = FALSE; contrapositive = TRUE. Original and contrapositive match; converse and inverse match.",
+          "canvasAction": null
+        }
+      ]
+    },
+    {
+      "id": "check",
+      "type": "Check",
+      "items": [
+        {
+          "id": "log-check-1",
+          "kind": "multipleChoice",
+          "prompt": "In 'If a number is even, then it is divisible by 2,' what is the hypothesis?",
+          "choices": ["a number", "is divisible by 2", "a number is even", "the number"],
+          "answerIndex": 2,
+          "explanation": "The hypothesis is the 'if' part — 'a number is even.'"
+        },
+        {
+          "id": "log-check-2",
+          "kind": "multipleChoice",
+          "prompt": "Which is the CONVERSE of 'If p, then q'?",
+          "choices": ["If q, then p.", "If not p, then not q.", "If not q, then not p.", "p and q."],
+          "answerIndex": 0,
+          "explanation": "Converse swaps hypothesis and conclusion."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "type": "Practice",
+      "items": [
+        {
+          "id": "log-prac-1",
+          "kind": "multipleChoice",
+          "prompt": "Which is the CONTRAPOSITIVE of 'If it rains, then the game is canceled'?",
+          "choices": [
+            "If the game is canceled, then it rains.",
+            "If it does not rain, then the game is not canceled.",
+            "If the game is not canceled, then it does not rain.",
+            "It rains and the game is canceled."
+          ],
+          "answerIndex": 2,
+          "hints": [
+            "Contrapositive = swap AND negate.",
+            "Start with 'If not q, then not p.'",
+            "q = 'game is canceled,' p = 'it rains.' So: 'If the game is not canceled, then it does not rain.'"
+          ]
+        },
+        {
+          "id": "log-prac-2",
+          "kind": "multipleChoice",
+          "prompt": "Which is the INVERSE of 'If a shape is a triangle, then it has three sides'?",
+          "choices": [
+            "If a shape has three sides, then it is a triangle.",
+            "If a shape is not a triangle, then it does not have three sides.",
+            "If a shape does not have three sides, then it is not a triangle.",
+            "A shape is a triangle iff it has three sides."
+          ],
+          "answerIndex": 1,
+          "hints": [
+            "Inverse = negate both, do not swap.",
+            "Form: 'If not p, then not q.'",
+            "Negate the hypothesis and the conclusion in place."
+          ]
+        },
+        {
+          "id": "log-prac-3",
+          "kind": "multipleChoice",
+          "prompt": "Original: 'If two angles are vertical, then they are congruent.' Truth value?",
+          "choices": ["True", "False"],
+          "answerIndex": 0,
+          "hints": [
+            "This is a standard geometry theorem.",
+            "Vertical angles are the opposite angles formed by two intersecting lines.",
+            "Vertical angles are always congruent — true."
+          ]
+        },
+        {
+          "id": "log-prac-4",
+          "kind": "multipleChoice",
+          "prompt": "The converse of the statement in question 3 is 'If two angles are congruent, then they are vertical.' Truth value?",
+          "choices": ["True", "False"],
+          "answerIndex": 1,
+          "hints": [
+            "Find a counterexample: two congruent angles that aren't vertical.",
+            "Two right angles on opposite ends of a room are both 90° and congruent, but they aren't vertical angles.",
+            "False — congruent angles need not be vertical."
+          ]
+        },
+        {
+          "id": "log-prac-5",
+          "kind": "multipleChoice",
+          "prompt": "A conditional and its ______ are always logically equivalent.",
+          "choices": ["converse", "inverse", "contrapositive", "biconditional"],
+          "answerIndex": 2,
+          "hints": [
+            "Which derivative pairs with the original in truth value?",
+            "Original pairs with one of them; converse pairs with inverse.",
+            "Original ⇔ contrapositive."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reflection",
+      "type": "Reflection",
+      "proseRef": "04-if-then-logic.md#reflection"
+    }
+  ],
+  "scenes": {
+    "scene_log_concept": {
+      "viewport": { "xMin": -1, "xMax": 11, "yMin": -1, "yMax": 7 },
+      "annotations": [
+        { "type": "text", "x": 5, "y": 5, "text": "If p, then q.", "size": "large" },
+        { "type": "text", "x": 5, "y": 4, "text": "Converse: If q, then p." },
+        { "type": "text", "x": 5, "y": 3, "text": "Inverse: If ~p, then ~q." },
+        { "type": "text", "x": 5, "y": 2, "text": "Contrapositive: If ~q, then ~p." }
+      ]
+    },
+    "scene_log_manipulate": {
+      "viewport": { "xMin": -1, "xMax": 11, "yMin": -1, "yMax": 7 },
+      "points": [
+        { "id": "A", "x": 2, "y": 2, "label": "A", "draggable": false },
+        { "id": "B", "x": 8, "y": 2, "label": "B", "draggable": false },
+        { "id": "C", "x": 5, "y": 5, "label": "C", "draggable": true }
+      ],
+      "segments": [
+        { "id": "AB", "from": "A", "to": "B" },
+        { "id": "BC", "from": "B", "to": "C" },
+        { "id": "CA", "from": "C", "to": "A" }
+      ],
+      "measurements": [
+        { "type": "length", "from": "A", "to": "B", "show": true, "label": "AB" },
+        { "type": "length", "from": "B", "to": "C", "show": true, "label": "BC" },
+        { "type": "length", "from": "C", "to": "A", "show": true, "label": "CA" },
+        { "type": "angleMeasure", "vertex": "A", "sides": ["B", "C"], "show": true, "label": "∠A" },
+        { "type": "angleMeasure", "vertex": "B", "sides": ["A", "C"], "show": true, "label": "∠B" },
+        { "type": "angleMeasure", "vertex": "C", "sides": ["A", "B"], "show": true, "label": "∠C" }
+      ],
+      "liveStatements": [
+        { "id": "all-sides-equal", "label": "All sides equal", "test": "AB == BC == CA" },
+        { "id": "all-angles-equal", "label": "All angles equal", "test": "angleA == angleB == angleC" },
+        { "id": "has-right-angle", "label": "Has a right angle", "test": "anyAngle == 90" },
+        { "id": "two-sides-equal", "label": "At least two sides equal", "test": "anyTwoSidesEqual" }
+      ]
+    }
+  },
+  "testItems": [
+    {
+      "id": "log-test-1",
+      "kind": "multipleChoice",
+      "category": "procedural",
+      "prompt": "In 'If a triangle is equilateral, then all sides are congruent,' what is the conclusion?",
+      "choices": ["a triangle", "is equilateral", "all sides are congruent", "a triangle is equilateral"],
+      "answerIndex": 2,
+      "difficulty": 1
+    },
+    {
+      "id": "log-test-2",
+      "kind": "multipleChoice",
+      "category": "procedural",
+      "prompt": "Which is the converse of 'If p, then q'?",
+      "choices": ["If q, then p.", "If not p, then not q.", "If not q, then not p.", "p and q."],
+      "answerIndex": 0,
+      "difficulty": 1
+    },
+    {
+      "id": "log-test-3",
+      "kind": "multipleChoice",
+      "category": "conceptual",
+      "prompt": "A statement is logically equivalent to its…",
+      "choices": ["converse", "inverse", "contrapositive", "negation"],
+      "answerIndex": 2,
+      "difficulty": 2
+    },
+    {
+      "id": "log-test-4",
+      "kind": "multipleChoice",
+      "category": "conceptual",
+      "prompt": "A biconditional p ⇔ q is true when…",
+      "choices": [
+        "p is true.",
+        "q is true.",
+        "both p → q and q → p are true.",
+        "either p or q is true."
+      ],
+      "answerIndex": 2,
+      "difficulty": 2
+    },
+    {
+      "id": "log-test-5",
+      "kind": "multipleChoice",
+      "category": "transfer",
+      "prompt": "Original: 'If a quadrilateral is a rhombus, then its diagonals are perpendicular.' This is TRUE. Which of the following must also be true?",
+      "choices": [
+        "If diagonals are perpendicular, then the quadrilateral is a rhombus.",
+        "If a quadrilateral is not a rhombus, then its diagonals are not perpendicular.",
+        "If diagonals are not perpendicular, then the quadrilateral is not a rhombus.",
+        "All quadrilaterals are rhombuses."
+      ],
+      "answerIndex": 2,
+      "explanation": "The contrapositive shares the truth value of the original.",
+      "difficulty": 3
+    },
+    {
+      "id": "log-test-6",
+      "kind": "multipleChoice",
+      "category": "transfer",
+      "prompt": "Which definition is best written as a biconditional?",
+      "choices": [
+        "A point lies on a line.",
+        "An angle is acute iff its measure is less than 90°.",
+        "Two points determine a line.",
+        "Squares are quadrilaterals."
+      ],
+      "answerIndex": 1,
+      "explanation": "Definitions work both ways: acute ⇔ measure < 90°. The others are one-directional statements or postulates.",
+      "difficulty": 3
+    }
+  ]
+}

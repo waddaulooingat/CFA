@@ -51,11 +51,10 @@ public class BaselineAssessmentService
     // Geometry track: 8 early skills from units 1-2
     private static readonly string[] GeometryClusterIds =
     [
-        "geo-u1-definitions",
-        "geo-u1-angles",
-        "geo-u1-logic-ifthen",
-        "geo-u1-converse",
-        "geo-u1-counterexample",
+        "geo-u1-point-line-plane",
+        "geo-u1-angle-measure",
+        "geo-u1-if-then-logic",
+        "geo-u1-counterexamples",
         "geo-u2-parallel-identify",
         "geo-u2-transversal-angles",
         "geo-u2-perpendicular",

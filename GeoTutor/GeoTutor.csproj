@@ -22,4 +22,12 @@
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
   </ItemGroup>
 
+  <!-- Copy content pack files alongside the executable -->
+  <ItemGroup>
+    <Content Include="..\Content\**\*"
+             CopyToOutputDirectory="PreserveNewest">
+      <Link>Content\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </Content>
+  </ItemGroup>
+
 </Project>

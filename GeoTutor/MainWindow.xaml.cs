@@ -116,7 +116,7 @@ public partial class MainWindow : Window
         if (_lessonVm is null) return;
         if (sender is not Button btn) return;
 
-        string skillId = btn.Tag as string ?? "geo-u1-definitions";
+        string skillId = btn.Tag as string ?? "geo-u1-point-line-plane";
 
         HideAllPanels();
         ClearNavStyles();

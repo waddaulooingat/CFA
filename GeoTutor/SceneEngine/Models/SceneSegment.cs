@@ -10,4 +10,6 @@ public class SceneSegment
     public SegmentKind Kind { get; set; } = SegmentKind.Segment;
     public bool Highlighted { get; set; }
     public int CongruenceTicks { get; set; }  // 0 = none, 1–3 = tick marks
+    public string? Label { get; set; }        // embedded label from raw scene spec
+    public string? Extend { get; set; }       // "both" = Line, "right" = Ray (content pack format)
 }

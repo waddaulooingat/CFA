@@ -8,4 +8,5 @@ public class ScenePoint
     public bool Draggable { get; set; }
     public bool Computed { get; set; }   // updated by constraint solver
     public bool Highlighted { get; set; }
+    public string? Label { get; set; }   // embedded label from raw scene spec
 }

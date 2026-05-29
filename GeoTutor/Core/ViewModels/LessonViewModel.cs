@@ -303,8 +303,10 @@ public partial class LessonViewModel : BaseViewModel
             CurrentBeat.Type.ToString(),
             CurrentBeat.SceneSpecId);
 
-        // Load scene spec for this beat if one is referenced.
-        if (!string.IsNullOrEmpty(CurrentBeat.SceneSpecId))
+        // Load scene spec for this beat: prefer inline scene, then DB lookup.
+        if (CurrentBeat.Scene is not null)
+            CurrentScene = CurrentBeat.Scene;
+        else if (!string.IsNullOrEmpty(CurrentBeat.SceneSpecId))
             CurrentScene = LoadSceneSpec(CurrentBeat.SceneSpecId);
         else
             CurrentScene = null;

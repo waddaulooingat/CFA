@@ -7,12 +7,11 @@ using GeoTutor.Core.Models;
 /// 3 items per skill (difficulties 1, 2, 3) × 5 skills = 15 items.
 /// Used by LessonEngineService.BuildFallbackBeats when the LLM is offline.
 ///
-/// Skills covered:
-///   geo-u1-definitions   — Points, lines, planes, basic definitions
-///   geo-u1-angles        — Angle types: acute, obtuse, right, straight
-///   geo-u1-logic-ifthen  — If-then statements, hypothesis/conclusion
-///   geo-u1-converse      — Converse, inverse, contrapositive
-///   geo-u1-counterexample— Counterexamples and logical negation
+/// Skills covered (new IDs from unit-01-skills.json):
+///   geo-u1-point-line-plane  — Points, Lines, and Planes
+///   geo-u1-angle-measure     — Angle Measure and Types
+///   geo-u1-if-then-logic     — If-Then Logic (+ converse / contrapositive items)
+///   geo-u1-counterexamples   — Counterexamples
 /// </summary>
 public static class Unit1Items
 {
@@ -27,7 +26,7 @@ public static class Unit1Items
         items.Add(new Item
         {
             Id         = "u1-def-001",
-            SkillId    = "geo-u1-definitions",
+            SkillId    = "geo-u1-point-line-plane",
             Template   = "text",
             ParamsJson = "{}",
             Prompt     = "A portion of a line that has exactly two endpoints is called a ___.",
@@ -50,7 +49,7 @@ public static class Unit1Items
         items.Add(new Item
         {
             Id         = "u1-def-002",
-            SkillId    = "geo-u1-definitions",
+            SkillId    = "geo-u1-point-line-plane",
             Template   = "text",
             ParamsJson = "{}",
             Prompt     = "Two distinct lines in the same plane that never intersect are called ___.",
@@ -72,7 +71,7 @@ public static class Unit1Items
         items.Add(new Item
         {
             Id         = "u1-def-003",
-            SkillId    = "geo-u1-definitions",
+            SkillId    = "geo-u1-point-line-plane",
             Template   = "text",
             ParamsJson = "{}",
             Prompt     = "Point B lies between points A and C on a segment. AB = 2x + 3, BC = x + 7, and AC = 28. What is the value of x?",
@@ -98,7 +97,7 @@ public static class Unit1Items
         items.Add(new Item
         {
             Id         = "u1-ang-001",
-            SkillId    = "geo-u1-angles",
+            SkillId    = "geo-u1-angle-measure",
             Template   = "text",
             ParamsJson = "{}",
             Prompt     = "An angle that measures less than 90° is called a ___ angle.",
@@ -122,7 +121,7 @@ public static class Unit1Items
         items.Add(new Item
         {
             Id         = "u1-ang-002",
-            SkillId    = "geo-u1-angles",
+            SkillId    = "geo-u1-angle-measure",
             Template   = "text",
             ParamsJson = "{}",
             Prompt     = "∠ABC and ∠CBD are a linear pair. m∠CBD = x + 30° and m∠ABC = 3x + 10°. What is m∠ABC in degrees?",
@@ -147,7 +146,7 @@ public static class Unit1Items
         items.Add(new Item
         {
             Id         = "u1-ang-003",
-            SkillId    = "geo-u1-angles",
+            SkillId    = "geo-u1-angle-measure",
             Template   = "text",
             ParamsJson = "{}",
             Prompt     = "The measure of an angle's supplement is 30° more than twice the angle's complement. What is the measure of the angle in degrees?",
@@ -174,7 +173,7 @@ public static class Unit1Items
         items.Add(new Item
         {
             Id         = "u1-logic-001",
-            SkillId    = "geo-u1-logic-ifthen",
+            SkillId    = "geo-u1-if-then-logic",
             Template   = "text",
             ParamsJson = "{}",
             Prompt     = "In the conditional statement 'If today is Friday, then tomorrow is Saturday', what is the conclusion?",
@@ -196,7 +195,7 @@ public static class Unit1Items
         items.Add(new Item
         {
             Id         = "u1-logic-002",
-            SkillId    = "geo-u1-logic-ifthen",
+            SkillId    = "geo-u1-if-then-logic",
             Template   = "text",
             ParamsJson = "{}",
             Prompt     = "The conditional 'If a shape is a square, then it has four equal sides' is true. A shape has four equal sides. Can we logically conclude it is a square?",
@@ -220,7 +219,7 @@ public static class Unit1Items
         items.Add(new Item
         {
             Id         = "u1-logic-003",
-            SkillId    = "geo-u1-logic-ifthen",
+            SkillId    = "geo-u1-if-then-logic",
             Template   = "text",
             ParamsJson = "{}",
             Prompt     = "Which argument form is logically VALID? (p → q means 'if p then q')",
@@ -245,7 +244,7 @@ public static class Unit1Items
         items.Add(new Item
         {
             Id         = "u1-conv-001",
-            SkillId    = "geo-u1-converse",
+            SkillId    = "geo-u1-if-then-logic",
             Template   = "text",
             ParamsJson = "{}",
             Prompt     = "What is the converse of: 'If it is snowing, then school is cancelled'?",
@@ -267,7 +266,7 @@ public static class Unit1Items
         items.Add(new Item
         {
             Id         = "u1-conv-002",
-            SkillId    = "geo-u1-converse",
+            SkillId    = "geo-u1-if-then-logic",
             Template   = "text",
             ParamsJson = "{}",
             Prompt     = "What is the contrapositive of: 'If ∠A is a right angle, then m∠A = 90°'?",
@@ -289,7 +288,7 @@ public static class Unit1Items
         items.Add(new Item
         {
             Id         = "u1-conv-003",
-            SkillId    = "geo-u1-converse",
+            SkillId    = "geo-u1-if-then-logic",
             Template   = "text",
             ParamsJson = "{}",
             Prompt     = "A conditional statement is true. Which of the following must ALSO be true?",
@@ -313,7 +312,7 @@ public static class Unit1Items
         items.Add(new Item
         {
             Id         = "u1-cex-001",
-            SkillId    = "geo-u1-counterexample",
+            SkillId    = "geo-u1-counterexamples",
             Template   = "text",
             ParamsJson = "{}",
             Prompt     = "Which of the following is a counterexample to the statement 'All rectangles are squares'?",
@@ -336,7 +335,7 @@ public static class Unit1Items
         items.Add(new Item
         {
             Id         = "u1-cex-002",
-            SkillId    = "geo-u1-counterexample",
+            SkillId    = "geo-u1-counterexamples",
             Template   = "text",
             ParamsJson = "{}",
             Prompt     = "Which value of n is a counterexample to the statement 'For all integers n, n² > n'?",
@@ -358,7 +357,7 @@ public static class Unit1Items
         items.Add(new Item
         {
             Id         = "u1-cex-003",
-            SkillId    = "geo-u1-counterexample",
+            SkillId    = "geo-u1-counterexamples",
             Template   = "text",
             ParamsJson = "{}",
             Prompt     = "The statement 'If a quadrilateral has four equal angles, then it has four equal sides' is false. Which of the following is a counterexample?",

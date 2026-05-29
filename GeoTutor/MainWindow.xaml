@@ -201,16 +201,24 @@
                                FontSize="12" Foreground="#A6ADC8"
                                Margin="0,0,0,8"/>
 
-                    <Button Content="Definitions &amp; Basics"
-                            Tag="geo-u1-definitions"
+                    <Button Content="Points, Lines, Planes"
+                            Tag="geo-u1-point-line-plane"
                             Click="StartLesson_Click"
                             Style="{StaticResource SecondaryButtonStyle}"
                             HorizontalContentAlignment="Left"
                             Padding="10,8"
                             Margin="0,0,0,6"/>
 
-                    <Button Content="Angle Types"
-                            Tag="geo-u1-angles"
+                    <Button Content="Segments and Rays"
+                            Tag="geo-u1-segments-and-rays"
+                            Click="StartLesson_Click"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            HorizontalContentAlignment="Left"
+                            Padding="10,8"
+                            Margin="0,0,0,6"/>
+
+                    <Button Content="Angle Measure"
+                            Tag="geo-u1-angle-measure"
                             Click="StartLesson_Click"
                             Style="{StaticResource SecondaryButtonStyle}"
                             HorizontalContentAlignment="Left"
@@ -218,15 +226,7 @@
                             Margin="0,0,0,6"/>
 
                     <Button Content="If-Then Logic"
-                            Tag="geo-u1-logic-ifthen"
-                            Click="StartLesson_Click"
-                            Style="{StaticResource SecondaryButtonStyle}"
-                            HorizontalContentAlignment="Left"
-                            Padding="10,8"
-                            Margin="0,0,0,6"/>
-
-                    <Button Content="Converse &amp; Contrapositive"
-                            Tag="geo-u1-converse"
+                            Tag="geo-u1-if-then-logic"
                             Click="StartLesson_Click"
                             Style="{StaticResource SecondaryButtonStyle}"
                             HorizontalContentAlignment="Left"
@@ -234,7 +234,7 @@
                             Margin="0,0,0,6"/>
 
                     <Button Content="Counterexamples"
-                            Tag="geo-u1-counterexample"
+                            Tag="geo-u1-counterexamples"
                             Click="StartLesson_Click"
                             Style="{StaticResource SecondaryButtonStyle}"
                             HorizontalContentAlignment="Left"
