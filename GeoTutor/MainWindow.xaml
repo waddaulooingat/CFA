@@ -251,7 +251,6 @@
                     <TextBlock Text="UNIT 2 — PARALLEL LINES"
                                FontSize="10" FontWeight="SemiBold"
                                Foreground="#6C7086"
-                               LetterSpacing="1"
                                Margin="0,4,0,12"/>
 
                     <TextBlock Text="Select a skill to practise:"
@@ -308,7 +307,6 @@
                     <TextBlock Text="UNIT 3 — CONGRUENCE"
                                FontSize="10" FontWeight="SemiBold"
                                Foreground="#6C7086"
-                               LetterSpacing="1"
                                Margin="0,4,0,12"/>
 
                     <TextBlock Text="Select a skill to practise:"
