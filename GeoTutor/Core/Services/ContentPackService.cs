@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using GeoTutor.Core.Models;
 using GeoTutor.SceneEngine.Models;
 
@@ -88,12 +89,19 @@ public static class ContentPackService
 
         foreach (var kv in scenesEl.EnumerateObject())
         {
-            string specJson = kv.Value.GetRawText();
-            var spec = JsonSerializer.Deserialize<SceneSpec>(specJson, CaseInsensitive);
-            if (spec is not null)
+            try
             {
-                spec.Id = kv.Name;
-                scenes[kv.Name] = spec;
+                string specJson = kv.Value.GetRawText();
+                var spec = JsonSerializer.Deserialize<SceneSpec>(specJson, CaseInsensitive);
+                if (spec is not null)
+                {
+                    spec.Id = kv.Name;
+                    scenes[kv.Name] = spec;
+                }
+            }
+            catch
+            {
+                // Skip malformed individual scenes — don't fail the whole lesson.
             }
         }
 
@@ -182,7 +190,7 @@ public static class ContentPackService
             sb.AppendLine(lines[i]);
         }
 
-        return sb.ToString().Trim();
+        return StripMarkdown(sb.ToString().Trim());
     }
 
     private static string ExtractStepsProse(JsonElement stepsEl)
@@ -199,6 +207,33 @@ public static class ContentPackService
             }
         }
         return sb.ToString().Trim();
+    }
+
+    private static string StripMarkdown(string text)
+    {
+        if (string.IsNullOrEmpty(text)) return text;
+
+        // Remove fenced code blocks
+        text = Regex.Replace(text, @"```[\s\S]*?```", "", RegexOptions.Multiline);
+        // Remove inline code
+        text = Regex.Replace(text, @"`[^`]+`", m => m.Value.Trim('`'));
+        // Remove LaTeX display blocks $$...$$
+        text = Regex.Replace(text, @"\$\$[\s\S]*?\$\$", "[formula]");
+        // Remove inline LaTeX $...$
+        text = Regex.Replace(text, @"\$[^\$\n]+\$", "[formula]");
+        // Strip bold/italic markers: ***text***, **text**, *text*, __text__, _text_
+        text = Regex.Replace(text, @"\*{1,3}([^\*\n]+)\*{1,3}", "$1");
+        text = Regex.Replace(text, @"_{1,2}([^_\n]+)_{1,2}", "$1");
+        // Strip headings — turn ## Heading into just Heading
+        text = Regex.Replace(text, @"^#{1,6}\s+", "", RegexOptions.Multiline);
+        // Strip markdown links: [text](url) → text
+        text = Regex.Replace(text, @"\[([^\]]+)\]\([^\)]+\)", "$1");
+        // Strip horizontal rules
+        text = Regex.Replace(text, @"^\s*[-*_]{3,}\s*$", "", RegexOptions.Multiline);
+        // Collapse 3+ blank lines down to 2
+        text = Regex.Replace(text, @"\n{3,}", "\n\n");
+
+        return text.Trim();
     }
 
     private static string NormalizeSlug(string text)

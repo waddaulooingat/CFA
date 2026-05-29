@@ -88,7 +88,6 @@ public partial class MainWindow : Window
     {
         HideAllPanels();
         ClearNavStyles();
-        LessonPanel.Visibility       = Visibility.Visible;
         Unit1SideControls.Visibility = Visibility.Visible;
         NavUnit1Btn.Style = (System.Windows.Style)FindResource("NavButtonActive");
     }
@@ -97,7 +96,6 @@ public partial class MainWindow : Window
     {
         HideAllPanels();
         ClearNavStyles();
-        LessonPanel.Visibility       = Visibility.Visible;
         Unit2SideControls.Visibility = Visibility.Visible;
         NavUnit2Btn.Style = (System.Windows.Style)FindResource("NavButtonActive");
     }
@@ -106,7 +104,6 @@ public partial class MainWindow : Window
     {
         HideAllPanels();
         ClearNavStyles();
-        LessonPanel.Visibility       = Visibility.Visible;
         Unit3SideControls.Visibility = Visibility.Visible;
         NavUnit3Btn.Style = (System.Windows.Style)FindResource("NavButtonActive");
     }

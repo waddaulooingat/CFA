@@ -384,16 +384,22 @@ public class SkillGraphService
                 del.ExecuteNonQuery();
             }
 
-            // Insert new rows (INSERT OR IGNORE so re-runs are safe).
+            // Upsert new rows — update metadata if row already exists, but
+            // never touch current_mastery or last_seen (those track student progress).
             foreach (var s in newSkills)
             {
                 using var ins = conn.CreateCommand();
                 ins.Transaction = tx;
                 ins.CommandText = """
-                    INSERT OR IGNORE INTO gt_skills
+                    INSERT INTO gt_skills
                         (id, name, unit, prereq_ids, difficulty_band, current_mastery, last_seen, is_unlocked)
                     VALUES
-                        (@id, @name, @unit, @prereq_ids, @diff, @mastery, NULL, @unlocked);
+                        (@id, @name, @unit, @prereq_ids, @diff, @mastery, NULL, @unlocked)
+                    ON CONFLICT(id) DO UPDATE SET
+                        name           = excluded.name,
+                        unit           = excluded.unit,
+                        prereq_ids     = excluded.prereq_ids,
+                        difficulty_band = excluded.difficulty_band;
                     """;
                 ins.Parameters.AddWithValue("@id",        s.Id);
                 ins.Parameters.AddWithValue("@name",      s.Name);
