@@ -132,9 +132,10 @@ public static class SceneRenderer
         {
             effectiveKind = seg.Extend.ToLowerInvariant() switch
             {
-                "both"  => SegmentKind.Line,
-                "right" => SegmentKind.Ray,
-                _       => SegmentKind.Segment,
+                "both"    => SegmentKind.Line,
+                "right"   => SegmentKind.Ray,
+                "endonly" => SegmentKind.Ray,   // extend only beyond the 'to' endpoint
+                _         => SegmentKind.Segment,
             };
         }
 
@@ -195,14 +196,7 @@ public static class SceneRenderer
         Func<double, float> toSY,
         float scale)
     {
-        if (!ptMap.TryGetValue(arc.Center, out var center)) return;
         if (arc.Radius <= 0) return;
-
-        float cx = toSX(center.X);
-        float cy = toSY(center.Y);
-        // The radius in screen pixels: use the x-axis scale (assumes aspect ≈ 1).
-        float rx = (float)(arc.Radius * (toSX(center.X + 1) - cx));   // delta in screen X per 1 world unit
-        float ry = (float)(arc.Radius * (cy - toSY(center.Y + 1)));  // delta in screen Y per 1 world unit (flipped)
 
         using var paint = new SKPaint
         {
@@ -212,22 +206,103 @@ public static class SceneRenderer
             StrokeWidth = arc.Highlighted ? 3f : 2f,
         };
 
+        // ── Content-pack format: angle-mark arc via vertex / from / to ────────
+        if (!string.IsNullOrEmpty(arc.Vertex) &&
+            !string.IsNullOrEmpty(arc.From)   &&
+            !string.IsNullOrEmpty(arc.To))
+        {
+            if (!ptMap.TryGetValue(arc.Vertex, out var vPt)   ||
+                !ptMap.TryGetValue(arc.From,   out var fromPt) ||
+                !ptMap.TryGetValue(arc.To,     out var toPt))
+                return;
+
+            float cx = toSX(vPt.X);
+            float cy = toSY(vPt.Y);
+
+            // Use the tighter axis so the arc looks circular even on non-square viewports.
+            float scaleX   = Math.Abs(toSX(vPt.X + 1) - cx);
+            float scaleY   = Math.Abs(toSY(vPt.Y) - toSY(vPt.Y + 1));
+            float radiusPx = (float)(arc.Radius * Math.Min(scaleX, scaleY));
+            if (radiusPx <= 0) return;
+
+            // Arm vectors in world space (Y-up).
+            double v1x = fromPt.X - vPt.X, v1y = fromPt.Y - vPt.Y;
+            double v2x = toPt.X  - vPt.X, v2y = toPt.Y  - vPt.Y;
+
+            // Start angle and sweep in math convention (CCW from +x, world Y-up).
+            double startDeg = Math.Atan2(v1y, v1x) * 180.0 / Math.PI;
+            double endDeg   = Math.Atan2(v2y, v2x) * 180.0 / Math.PI;
+            double sweepDeg = endDeg - startDeg;
+
+            // Normalize to the interior (shorter) arc in (-180°, 180°].
+            sweepDeg = ((sweepDeg % 360.0) + 360.0) % 360.0;   // → [0, 360)
+            if (sweepDeg > 180.0) sweepDeg -= 360.0;            // → (-180, 180]
+
+            if (Math.Abs(sweepDeg) < 0.01) return;
+
+            var rect = new SKRect(cx - radiusPx, cy - radiusPx,
+                                  cx + radiusPx, cy + radiusPx);
+            // Negate: math CCW / Y-up → SkiaSharp CW / Y-down.
+            using var path = new SKPath();
+            path.AddArc(rect, -(float)startDeg, -(float)sweepDeg);
+            canvas.DrawPath(path, paint);
+
+            // Arc label at the bisector direction.
+            if (!string.IsNullOrEmpty(arc.Label))
+            {
+                double len1 = Math.Sqrt(v1x * v1x + v1y * v1y);
+                double len2 = Math.Sqrt(v2x * v2x + v2y * v2y);
+                if (len1 > 1e-10 && len2 > 1e-10)
+                {
+                    double bisX = v1x / len1 + v2x / len2;
+                    double bisY = v1y / len1 + v2y / len2;
+                    double bisLen = Math.Sqrt(bisX * bisX + bisY * bisY);
+                    if (bisLen < 1e-10) { bisX = -v1y / len1; bisY = v1x / len1; }
+                    else { bisX /= bisLen; bisY /= bisLen; }
+
+                    float nudge  = radiusPx * 1.7f;
+                    float labelX = cx + (float)bisX * nudge;
+                    float labelY = cy - (float)bisY * nudge;  // Y-flip for screen
+
+                    float sz = MathF.Max(9f, scale * 0.28f);
+                    using var lblPaint = new SKPaint
+                    {
+                        IsAntialias = true,
+                        Color       = LabelDefault,
+                        TextSize    = sz,
+                        Typeface    = SKTypeface.FromFamilyName("Arial", SKFontStyleWeight.Normal,
+                                                                 SKFontStyleWidth.Normal, SKFontStyleSlant.Upright),
+                        TextAlign   = SKTextAlign.Center,
+                    };
+                    canvas.DrawText(arc.Label, labelX, labelY, lblPaint);
+                }
+            }
+
+            return;
+        }
+
+        // ── Center-based format (legacy / programmatic) ───────────────────────
+        if (string.IsNullOrEmpty(arc.Center)) return;
+        if (!ptMap.TryGetValue(arc.Center, out var centerPt)) return;
+
+        float _cx = toSX(centerPt.X);
+        float _cy = toSY(centerPt.Y);
+        float _rx = (float)(arc.Radius * (toSX(centerPt.X + 1) - _cx));
+        float _ry = (float)(arc.Radius * (_cy - toSY(centerPt.Y + 1)));
+
         bool isFullCircle = Math.Abs(arc.SweepAngleDeg - 360.0) < 0.01;
 
         if (isFullCircle)
         {
-            canvas.DrawOval(cx, cy, Math.Abs(rx), Math.Abs(ry), paint);
+            canvas.DrawOval(_cx, _cy, Math.Abs(_rx), Math.Abs(_ry), paint);
         }
         else
         {
-            var rect = new SKRect(cx - Math.Abs(rx), cy - Math.Abs(ry),
-                                  cx + Math.Abs(rx), cy + Math.Abs(ry));
-            // SkiaSharp arcs: angle measured clockwise from +x in screen space.
-            // Our world Y is flipped, so negate angles to match standard math orientation.
-            float startScreen = -(float)arc.StartAngleDeg;
-            float sweepScreen = -(float)arc.SweepAngleDeg;
+            var rect = new SKRect(_cx - Math.Abs(_rx), _cy - Math.Abs(_ry),
+                                  _cx + Math.Abs(_rx), _cy + Math.Abs(_ry));
+            // SkiaSharp uses screen convention (CW positive, Y-down); negate to convert from math convention.
             using var path = new SKPath();
-            path.AddArc(rect, startScreen, sweepScreen);
+            path.AddArc(rect, -(float)arc.StartAngleDeg, -(float)arc.SweepAngleDeg);
             canvas.DrawPath(path, paint);
         }
     }
