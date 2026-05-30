@@ -94,6 +94,13 @@ public sealed class SceneControl : UserControl
     public event Action<string, double, double>? PointDragged;
 
     /// <summary>
+    /// Fired once when the mouse is released after dragging a point.
+    /// Use this for success-condition evaluation (single check on drop).
+    /// Arguments: (pointId, finalWorldX, finalWorldY).
+    /// </summary>
+    public event Action<string, double, double>? PointDropped;
+
+    /// <summary>
     /// Fired on MouseDown when a draggable or non-draggable point is clicked.
     /// Argument: pointId.
     /// </summary>
@@ -277,6 +284,12 @@ public sealed class SceneControl : UserControl
 
     private void EndDrag()
     {
+        if (_dragPointId != null && Scene != null)
+        {
+            var (wx, wy) = ToWorld(_lastMouseScreen);
+            PointDropped?.Invoke(_dragPointId, wx, wy);
+        }
+
         _dragPointId = null;
         if (_image.IsMouseCaptured)
             _image.ReleaseMouseCapture();

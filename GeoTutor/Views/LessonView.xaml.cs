@@ -25,6 +25,7 @@ public partial class LessonView : UserControl
         {
             _vm.CanvasActionRequested -= OnCanvasAction;
             Canvas.PointDragged       -= OnCanvasPointDragged;
+            Canvas.PointDropped       -= OnCanvasPointDropped;
         }
 
         _vm = e.NewValue as LessonViewModel;
@@ -33,10 +34,16 @@ public partial class LessonView : UserControl
         {
             _vm.CanvasActionRequested += OnCanvasAction;
             Canvas.PointDragged       += OnCanvasPointDragged;
+            Canvas.PointDropped       += OnCanvasPointDropped;
         }
     }
 
+    // Continuous drag: used for live measurement label updates (renderer re-draws on each move).
     private void OnCanvasPointDragged(string pointId, double wx, double wy)
+        => _vm?.OnPointDragged(pointId, wx, wy);
+
+    // Drag-end: authoritative success-condition check after the user releases the point.
+    private void OnCanvasPointDropped(string pointId, double wx, double wy)
         => _vm?.OnPointDragged(pointId, wx, wy);
 
     // -----------------------------------------------------------------------

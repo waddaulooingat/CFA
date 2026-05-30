@@ -145,14 +145,25 @@
 
                         <!-- ══════════════════════════════════════════
                              MANIPULATE SUCCESS BANNER
+                             Default Collapsed; DataTrigger reveals it
+                             when ManipulateSucceeded turns true.
                         ══════════════════════════════════════════ -->
-                        <Border Visibility="{Binding ManipulateSucceeded, Converter={StaticResource BoolToVisibleConverter}}"
-                                Background="#1C3D2E"
+                        <Border Background="#1C3D2E"
                                 BorderBrush="#A6E3A1"
                                 BorderThickness="1"
                                 CornerRadius="8"
                                 Padding="14,10"
                                 Margin="0,8,0,0">
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ManipulateSucceeded}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
                             <StackPanel>
                                 <TextBlock Text="✓ Success"
                                            FontSize="12" FontWeight="SemiBold"
