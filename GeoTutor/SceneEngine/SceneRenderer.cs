@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using GeoTutor.SceneEngine.Models;
 using SkiaSharp;
 
@@ -20,7 +21,10 @@ public static class SceneRenderer
     private static readonly SKColor LabelDefault      = new(0x22, 0x22, 0x22);
     private static readonly SKColor LabelTemporary    = new(0xAA, 0xAA, 0xAA);
     private static readonly SKColor MeasureColor      = new(0xC0, 0x39, 0x2B);   // deep red
-    private static readonly SKColor MarkColor         = new(0x33, 0x33, 0x33);
+    private static readonly SKColor MarkColor          = new(0x33, 0x33, 0x33);
+    private static readonly SKColor AnnotationRed      = new(0xC0, 0x39, 0x2B);
+    private static readonly SKColor BannerBackground   = new(0x1E, 0x1E, 0x2E, 0xDD);
+    private static readonly SKColor BannerText         = new(0xCD, 0xD6, 0xF4);
 
     // ── Entry point ───────────────────────────────────────────────────────────
 
@@ -49,6 +53,12 @@ public static class SceneRenderer
         // Build a fast point-lookup dictionary.
         var ptMap = spec.Points.ToDictionary(p => p.Id, p => p);
 
+        Debug.WriteLine(
+            $"[SceneRenderer] Render id='{spec.Id}' " +
+            $"pts={spec.Points.Count} segs={spec.Segments.Count} " +
+            $"meas={spec.Measurements.Count} ann={spec.Annotations.Count} " +
+            $"banner={spec.StatementBanner is not null}");
+
         // ── Background ────────────────────────────────────────────────────────
         canvas.Clear(Background);
 
@@ -76,6 +86,14 @@ public static class SceneRenderer
         // ── Labels ────────────────────────────────────────────────────────────
         foreach (var lbl in spec.Labels)
             DrawLabel(canvas, lbl, ptMap, ToScreenX, ToScreenY, scale);
+
+        // ── Annotations (concept scenes) ──────────────────────────────────────
+        foreach (var ann in spec.Annotations)
+            DrawAnnotation(canvas, ann, ToScreenX, ToScreenY, scale);
+
+        // ── Statement banner (manipulate scenes) ──────────────────────────────
+        if (spec.StatementBanner is not null)
+            DrawStatementBanner(canvas, spec.StatementBanner, widthPx);
 
         return bmp;
     }
@@ -558,7 +576,11 @@ public static class SceneRenderer
                 DrawAngleMeasurement(canvas, spec, m, ptMap, toScreen, scale);
                 break;
             case MeasurementType.Area:
-                // Area requires polygon; not rendered as a single entity here.
+                break; // requires polygon traversal; not supported as a single entity
+            case MeasurementType.DistanceToLine:
+                break; // not yet implemented; skipped rather than throwing
+            default:
+                Debug.WriteLine($"[SceneRenderer] Unhandled measurement type {m.Type} — skipped");
                 break;
         }
     }
@@ -571,14 +593,29 @@ public static class SceneRenderer
         Func<double, double, SKPoint> toScreen,
         float scale)
     {
-        if (m.Segment == null) return;
-        var seg = spec.Segments.FirstOrDefault(s => s.Id == m.Segment);
-        if (seg == null) return;
-        if (!ptMap.TryGetValue(seg.From, out var pFrom) ||
-            !ptMap.TryGetValue(seg.To,   out var pTo))   return;
+        ScenePoint? pFrom, pTo;
+
+        if (!string.IsNullOrEmpty(m.Segment))
+        {
+            var seg = spec.Segments.FirstOrDefault(s => s.Id == m.Segment);
+            if (seg == null) return;
+            if (!ptMap.TryGetValue(seg.From, out pFrom) ||
+                !ptMap.TryGetValue(seg.To,   out pTo))   return;
+        }
+        else if (!string.IsNullOrEmpty(m.From) && !string.IsNullOrEmpty(m.To))
+        {
+            if (!ptMap.TryGetValue(m.From, out pFrom) ||
+                !ptMap.TryGetValue(m.To,   out pTo))   return;
+        }
+        else
+        {
+            Debug.WriteLine($"[SceneRenderer] Length measurement '{m.Label}': no segment/from/to — skipped");
+            return;
+        }
 
         double dist = Math.Sqrt(Math.Pow(pTo.X - pFrom.X, 2) + Math.Pow(pTo.Y - pFrom.Y, 2));
-        string text = $"{dist:0.00}";
+        string prefix = string.IsNullOrEmpty(m.Label) ? "" : m.Label + ": ";
+        string text = $"{prefix}{dist:0.00}";
         if (m.TargetValue.HasValue)
             text += $" / {m.TargetValue:0.00}";
 
@@ -603,17 +640,26 @@ public static class SceneRenderer
         Func<double, double, SKPoint> toScreen,
         float scale)
     {
-        if (m.Vertex == null || m.Arm1 == null || m.Arm2 == null) return;
+        // Support both Arm1/Arm2 and content-pack sides[] forms.
+        string? arm1Id = m.Arm1 ?? m.Sides?.ElementAtOrDefault(0);
+        string? arm2Id = m.Arm2 ?? m.Sides?.ElementAtOrDefault(1);
+
+        if (m.Vertex == null || arm1Id == null || arm2Id == null)
+        {
+            Debug.WriteLine($"[SceneRenderer] Angle measurement '{m.Label}': missing vertex/arms — skipped");
+            return;
+        }
         if (!ptMap.TryGetValue(m.Vertex, out var vPt)) return;
-        if (!ptMap.TryGetValue(m.Arm1,   out var a1))  return;
-        if (!ptMap.TryGetValue(m.Arm2,   out var a2))  return;
+        if (!ptMap.TryGetValue(arm1Id,   out var a1))  return;
+        if (!ptMap.TryGetValue(arm2Id,   out var a2))  return;
 
         // Vectors from vertex to arm endpoints.
         double v1x = a1.X - vPt.X, v1y = a1.Y - vPt.Y;
         double v2x = a2.X - vPt.X, v2y = a2.Y - vPt.Y;
 
         double angleDeg = AngleBetween(v1x, v1y, v2x, v2y);
-        string text = $"{angleDeg:0.0}°";
+        string anglePrefix = string.IsNullOrEmpty(m.Label) ? "" : m.Label + ": ";
+        string text = $"{anglePrefix}{angleDeg:0.0}°";
         if (m.TargetValue.HasValue)
             text += $" / {m.TargetValue:0.0}°";
 
@@ -663,6 +709,81 @@ public static class SceneRenderer
                                   x + textWidth / 2 + pad, y + pad);
         canvas.DrawRect(bgRect, bgPaint);
         canvas.DrawText(text, x, y, paint);
+    }
+
+    // ── Annotations ───────────────────────────────────────────────────────────
+
+    private static void DrawAnnotation(
+        SKCanvas canvas,
+        SceneAnnotation ann,
+        Func<double, float> toSX,
+        Func<double, float> toSY,
+        float scale)
+    {
+        if (string.IsNullOrWhiteSpace(ann.Text)) return;
+
+        SKColor color = ann.Color?.ToLowerInvariant() switch
+        {
+            "red"   => AnnotationRed,
+            "blue"  => SegmentHighlight,
+            "green" => new SKColor(0x0D, 0x9E, 0x73),
+            _       => LabelDefault,
+        };
+
+        float size = ann.Size?.ToLowerInvariant() switch
+        {
+            "large"  => MathF.Max(16f, scale * 0.45f),
+            "small"  => MathF.Max(9f,  scale * 0.22f),
+            _        => MathF.Max(12f, scale * 0.32f),
+        };
+
+        using var paint = new SKPaint
+        {
+            IsAntialias = true,
+            Color       = color,
+            TextSize    = size,
+            Typeface    = SKTypeface.FromFamilyName("Arial", SKFontStyleWeight.Normal,
+                                                     SKFontStyleWidth.Normal, SKFontStyleSlant.Upright),
+            TextAlign   = SKTextAlign.Center,
+        };
+
+        canvas.DrawText(ann.Text, toSX(ann.X), toSY(ann.Y), paint);
+    }
+
+    // ── Statement banner ──────────────────────────────────────────────────────
+
+    private static void DrawStatementBanner(
+        SKCanvas canvas, StatementBanner banner, int widthPx)
+    {
+        if (string.IsNullOrWhiteSpace(banner.Text)) return;
+
+        const float bannerH = 36f;
+        const float fontSize = 13f;
+
+        using var bgPaint = new SKPaint
+        {
+            Style = SKPaintStyle.Fill,
+            Color = BannerBackground,
+        };
+        canvas.DrawRect(new SKRect(0, 0, widthPx, bannerH), bgPaint);
+
+        using var textPaint = new SKPaint
+        {
+            IsAntialias = true,
+            Color       = BannerText,
+            TextSize    = fontSize,
+            Typeface    = SKTypeface.FromFamilyName("Arial", SKFontStyleWeight.Normal,
+                                                     SKFontStyleWidth.Normal, SKFontStyleSlant.Italic),
+            TextAlign   = SKTextAlign.Center,
+        };
+
+        // Truncate text if it doesn't fit
+        string text = banner.Text;
+        float maxW  = widthPx - 24f;
+        while (text.Length > 10 && textPaint.MeasureText(text) > maxW)
+            text = text[..^4] + "…";
+
+        canvas.DrawText(text, widthPx / 2f, bannerH * 0.68f, textPaint);
     }
 
     // ── Geometry helpers ──────────────────────────────────────────────────────

@@ -311,6 +311,15 @@ public partial class LessonViewModel : BaseViewModel
         else
             CurrentScene = null;
 
+        Debug.WriteLine(
+            $"[LessonVM] Beat {index} type={CurrentBeat.Type} " +
+            $"inlineScene={CurrentBeat.Scene?.Id ?? "null"} " +
+            $"sceneSpecId='{CurrentBeat.SceneSpecId ?? ""}' " +
+            $"→ CurrentScene={CurrentScene?.Id ?? "NULL"} " +
+            $"(pts={CurrentScene?.Points.Count ?? 0} segs={CurrentScene?.Segments.Count ?? 0} " +
+            $"meas={CurrentScene?.Measurements.Count ?? 0})");
+
+
         // Load first item for the beat (if any).
         if (CurrentBeat.ItemIds.Count > 0)
         {

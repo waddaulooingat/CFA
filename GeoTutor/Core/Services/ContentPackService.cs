@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using GeoTutor.Core.Models;
 using GeoTutor.SceneEngine.Models;
@@ -18,7 +20,31 @@ public static class ContentPackService
     private static readonly JsonSerializerOptions CaseInsensitive = new()
     {
         PropertyNameCaseInsensitive = true,
+        Converters = { new MeasurementTypeConverter() },
     };
+
+    // Maps content-pack strings like "angleMeasure" to the MeasurementType enum.
+    private sealed class MeasurementTypeConverter : JsonConverter<MeasurementType>
+    {
+        public override MeasurementType Read(
+            ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            string? raw = reader.GetString();
+            return raw?.ToLowerInvariant() switch
+            {
+                "length"         => MeasurementType.Length,
+                "angle"          => MeasurementType.Angle,
+                "anglemeasure"   => MeasurementType.Angle,
+                "area"           => MeasurementType.Area,
+                "distancetoline" => MeasurementType.DistanceToLine,
+                _                => MeasurementType.Length,
+            };
+        }
+
+        public override void Write(Utf8JsonWriter writer, MeasurementType value,
+                                   JsonSerializerOptions options)
+            => writer.WriteStringValue(value.ToString());
+    }
 
     private static readonly Dictionary<string, (string SubDir, string BaseName)> SkillFiles = new()
     {
@@ -97,11 +123,17 @@ public static class ContentPackService
                 {
                     spec.Id = kv.Name;
                     scenes[kv.Name] = spec;
+                    Debug.WriteLine(
+                        $"[ContentPack] Parsed scene '{kv.Name}': " +
+                        $"points={spec.Points.Count}, segs={spec.Segments.Count}, " +
+                        $"measurements={spec.Measurements.Count}, " +
+                        $"annotations={spec.Annotations.Count}, " +
+                        $"banner={(spec.StatementBanner is null ? "none" : $"'{spec.StatementBanner.Text[..Math.Min(40, spec.StatementBanner.Text.Length)]}'")})");
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                // Skip malformed individual scenes — don't fail the whole lesson.
+                Debug.WriteLine($"[ContentPack] !! Failed to parse scene '{kv.Name}': {ex.Message}");
             }
         }
 
