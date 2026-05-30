@@ -8,10 +8,11 @@ using GeoTutor.Core.Models;
 /// Used by LessonEngineService.BuildFallbackBeats when the LLM is offline.
 ///
 /// Skills covered (new IDs from unit-01-skills.json):
-///   geo-u1-point-line-plane  — Points, Lines, and Planes
-///   geo-u1-angle-measure     — Angle Measure and Types
-///   geo-u1-if-then-logic     — If-Then Logic (+ converse / contrapositive items)
-///   geo-u1-counterexamples   — Counterexamples
+///   geo-u1-point-line-plane   — Points, Lines, and Planes
+///   geo-u1-segments-and-rays  — Segments, Rays, and Midpoints
+///   geo-u1-angle-measure      — Angle Measure and Types
+///   geo-u1-if-then-logic      — If-Then Logic (+ converse / contrapositive items)
+///   geo-u1-counterexamples    — Counterexamples
 /// </summary>
 public static class Unit1Items
 {
@@ -86,6 +87,78 @@ public static class Unit1Items
                 "3x + 10 = 28",
                 "3x = 18",
                 "x = 6"
+            ],
+            Difficulty = 3,
+            Source     = "library",
+            Type       = ItemType.Procedural
+        });
+
+        // ── geo-u1-segments-and-rays : Segments, rays, midpoints ─────────────
+
+        items.Add(new Item
+        {
+            Id         = "u1-seg-001",
+            SkillId    = "geo-u1-segments-and-rays",
+            Template   = "text",
+            ParamsJson = "{}",
+            Prompt     = "Which notation correctly refers to a SEGMENT with endpoints P and Q?",
+            AnswerJson = """{"choices":["PQ with a bar above","PQ with a single arrow above","PQ with a double arrow above","PQ with no symbol"],"correct":0}""",
+            Hints      = [
+                "Each symbol has a meaning: bar = segment, single arrow = ray, double arrow = line, no mark = length (a number).",
+                "A segment is finite — two endpoints, a definite length — and it uses a bar above the letters."
+            ],
+            SolutionSteps = [
+                "Bar above (P̄Q̄): the segment — finite, two endpoints.",
+                "Single arrow (→PQ): a ray — starts at P, extends forever through Q.",
+                "Double arrow (↔PQ): a line — extends forever both ways.",
+                "No symbol (PQ): the length of the segment — a number, not a shape.",
+                "Answer: PQ with a bar above."
+            ],
+            Difficulty = 1,
+            Source     = "library",
+            Type       = ItemType.Conceptual
+        });
+
+        items.Add(new Item
+        {
+            Id         = "u1-seg-002",
+            SkillId    = "geo-u1-segments-and-rays",
+            Template   = "text",
+            ParamsJson = "{}",
+            Prompt     = "M is the midpoint of segment AB and AB = 34. Find AM.",
+            AnswerJson = """{"value":17,"tolerance":0.01}""",
+            Hints      = [
+                "A midpoint divides a segment into two congruent halves.",
+                "AM = MB, so AM + MB = AB → 2·AM = AB."
+            ],
+            SolutionSteps = [
+                "Midpoint definition: AM = MB.",
+                "AM + MB = AB → 2·AM = 34.",
+                "AM = 17."
+            ],
+            Difficulty = 2,
+            Source     = "library",
+            Type       = ItemType.Procedural
+        });
+
+        items.Add(new Item
+        {
+            Id         = "u1-seg-003",
+            SkillId    = "geo-u1-segments-and-rays",
+            Template   = "text",
+            ParamsJson = "{}",
+            Prompt     = "B is between A and C. AB = 2x + 5, BC = x + 4, and AC = 30. Find x.",
+            AnswerJson = """{"value":7,"tolerance":0.01}""",
+            Hints      = [
+                "Segment Addition Postulate: AB + BC = AC.",
+                "Substitute: (2x + 5) + (x + 4) = 30, then combine like terms and solve."
+            ],
+            SolutionSteps = [
+                "Segment Addition: AB + BC = AC.",
+                "(2x + 5) + (x + 4) = 30.",
+                "3x + 9 = 30.",
+                "3x = 21.",
+                "x = 7.  Check: AB = 19, BC = 11, AC = 30 ✓"
             ],
             Difficulty = 3,
             Source     = "library",
