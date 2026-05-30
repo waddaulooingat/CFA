@@ -10,12 +10,12 @@
 using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyCompanyAttribute("GeoTutor.Tests")]
+[assembly: System.Reflection.AssemblyCompanyAttribute("GeoTutor")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+04cf581e8de0551c13961f26c670308fcffdff3a")]
-[assembly: System.Reflection.AssemblyProductAttribute("GeoTutor.Tests")]
-[assembly: System.Reflection.AssemblyTitleAttribute("GeoTutor.Tests")]
+[assembly: System.Reflection.AssemblyProductAttribute("GeoTutor")]
+[assembly: System.Reflection.AssemblyTitleAttribute("GeoTutor")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
 [assembly: System.Runtime.Versioning.TargetPlatformAttribute("Windows7.0")]
 [assembly: System.Runtime.Versioning.SupportedOSPlatformAttribute("Windows7.0")]
