@@ -179,6 +179,23 @@ public static class ContentPackService
             beat.Prose = ExtractStepsProse(stepsEl);
         }
 
+        // Success condition + message (Manipulate beats)
+        if (el.TryGetProperty("successCondition", out var scEl))
+        {
+            try
+            {
+                beat.SuccessCondition = JsonSerializer.Deserialize<BeatSuccessCondition>(
+                    scEl.GetRawText(), CaseInsensitive);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[ContentPack] Failed to parse successCondition: {ex.Message}");
+            }
+        }
+
+        if (el.TryGetProperty("successMessage", out var smEl))
+            beat.SuccessMessage = smEl.GetString() ?? "";
+
         return beat;
     }
 

@@ -22,13 +22,22 @@ public partial class LessonView : UserControl
     private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
     {
         if (_vm is not null)
+        {
             _vm.CanvasActionRequested -= OnCanvasAction;
+            Canvas.PointDragged       -= OnCanvasPointDragged;
+        }
 
         _vm = e.NewValue as LessonViewModel;
 
         if (_vm is not null)
+        {
             _vm.CanvasActionRequested += OnCanvasAction;
+            Canvas.PointDragged       += OnCanvasPointDragged;
+        }
     }
+
+    private void OnCanvasPointDragged(string pointId, double wx, double wy)
+        => _vm?.OnPointDragged(pointId, wx, wy);
 
     // -----------------------------------------------------------------------
     // Canvas action execution

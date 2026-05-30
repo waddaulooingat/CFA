@@ -81,7 +81,7 @@
                                    TextWrapping="Wrap" LineHeight="22"
                                    Margin="0,0,0,20"/>
 
-                        <!-- Item prompt -->
+                        <!-- Item prompt — only for answer beats -->
                         <TextBlock Text="{Binding CurrentItem.Prompt}"
                                    FontSize="15" FontWeight="SemiBold"
                                    Foreground="#CDD6F4"
@@ -89,54 +89,79 @@
                                    Visibility="{Binding CurrentItem, Converter={StaticResource NullToCollapsed}}"
                                    Margin="0,0,0,16"/>
 
-                        <!-- Answer area (hidden while dialogue is showing) -->
-                        <StackPanel Visibility="{Binding ShowDialogue, Converter={StaticResource BoolToCollapsedConverter}}">
+                        <!-- ══════════════════════════════════════════
+                             ANSWER AREA — Check and Practice beats only
+                        ══════════════════════════════════════════ -->
+                        <StackPanel Visibility="{Binding IsAnswerBeat, Converter={StaticResource BoolToVisibleConverter}}">
+                            <!-- Hidden while dialogue is active -->
+                            <StackPanel Visibility="{Binding ShowDialogue, Converter={StaticResource BoolToCollapsedConverter}}">
 
-                            <TextBox Text="{Binding UserAnswer, UpdateSourceTrigger=PropertyChanged}"
-                                     FontSize="15"
-                                     Margin="0,0,0,8">
-                                <TextBox.InputBindings>
-                                    <KeyBinding Key="Return" Command="{Binding SubmitAnswerCommand}"/>
-                                </TextBox.InputBindings>
-                            </TextBox>
+                                <TextBox Text="{Binding UserAnswer, UpdateSourceTrigger=PropertyChanged}"
+                                         FontSize="15"
+                                         Margin="0,0,0,8">
+                                    <TextBox.InputBindings>
+                                        <KeyBinding Key="Return" Command="{Binding SubmitAnswerCommand}"/>
+                                    </TextBox.InputBindings>
+                                </TextBox>
 
-                            <!-- Feedback -->
-                            <TextBlock Text="{Binding FeedbackMessage}"
-                                       FontSize="13" TextWrapping="Wrap"
-                                       Margin="0,4,0,8">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Foreground" Value="#A6E3A1"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsAnswerCorrect}" Value="False">
-                                                <Setter Property="Foreground" Value="#F38BA8"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
+                                <!-- Feedback -->
+                                <TextBlock Text="{Binding FeedbackMessage}"
+                                           FontSize="13" TextWrapping="Wrap"
+                                           Margin="0,4,0,8">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="#A6E3A1"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsAnswerCorrect}" Value="False">
+                                                    <Setter Property="Foreground" Value="#F38BA8"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
 
-                            <!-- Hint reveal -->
-                            <Button Content="Show hint"
-                                    Command="{Binding RevealHintCommand}"
-                                    Style="{StaticResource SecondaryButtonStyle}"
-                                    HorizontalAlignment="Left"
-                                    Visibility="{Binding CurrentItem, Converter={StaticResource NullToCollapsed}}"
-                                    Margin="0,0,0,8"/>
+                                <!-- Hint reveal -->
+                                <Button Content="Show hint"
+                                        Command="{Binding RevealHintCommand}"
+                                        Style="{StaticResource SecondaryButtonStyle}"
+                                        HorizontalAlignment="Left"
+                                        Visibility="{Binding CurrentItem, Converter={StaticResource NullToCollapsed}}"
+                                        Margin="0,0,0,8"/>
 
-                            <Border Background="#313244" CornerRadius="6" Padding="10,8"
-                                    Visibility="{Binding ShowHint, Converter={StaticResource BoolToVisibleConverter}}"
-                                    Margin="0,0,0,8">
-                                <StackPanel>
-                                    <TextBlock Text="{Binding HintsRevealedCount, StringFormat='Hint {0}'}"
-                                               FontSize="11" FontWeight="SemiBold"
-                                               Foreground="#89B4FA" Margin="0,0,0,4"/>
-                                    <TextBlock Text="{Binding CurrentHint}"
-                                               FontSize="13" Foreground="#CDD6F4"
-                                               TextWrapping="Wrap"/>
-                                </StackPanel>
-                            </Border>
+                                <Border Background="#313244" CornerRadius="6" Padding="10,8"
+                                        Visibility="{Binding ShowHint, Converter={StaticResource BoolToVisibleConverter}}"
+                                        Margin="0,0,0,8">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding HintsRevealedCount, StringFormat='Hint {0}'}"
+                                                   FontSize="11" FontWeight="SemiBold"
+                                                   Foreground="#89B4FA" Margin="0,0,0,4"/>
+                                        <TextBlock Text="{Binding CurrentHint}"
+                                                   FontSize="13" Foreground="#CDD6F4"
+                                                   TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
                         </StackPanel>
+
+                        <!-- ══════════════════════════════════════════
+                             MANIPULATE SUCCESS BANNER
+                        ══════════════════════════════════════════ -->
+                        <Border Visibility="{Binding ManipulateSucceeded, Converter={StaticResource BoolToVisibleConverter}}"
+                                Background="#1C3D2E"
+                                BorderBrush="#A6E3A1"
+                                BorderThickness="1"
+                                CornerRadius="8"
+                                Padding="14,10"
+                                Margin="0,8,0,0">
+                            <StackPanel>
+                                <TextBlock Text="✓ Success"
+                                           FontSize="12" FontWeight="SemiBold"
+                                           Foreground="#A6E3A1" Margin="0,0,0,4"/>
+                                <TextBlock Text="{Binding ManipulateSuccessMessage}"
+                                           FontSize="13" Foreground="#CDD6F4"
+                                           TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
 
                         <!-- ══════════════════════════════════════════
                              DIALOGUE PANEL
@@ -255,13 +280,15 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
+                        <!-- Submit: only for Check/Practice beats, hidden during dialogue -->
                         <Button Grid.Column="0"
                                 Content="Submit"
                                 Command="{Binding SubmitAnswerCommand}"
                                 Style="{StaticResource PrimaryButtonStyle}"
                                 Margin="0,0,8,0"
-                                Visibility="{Binding ShowDialogue, Converter={StaticResource BoolToCollapsedConverter}}"/>
+                                Visibility="{Binding ShowSubmitButton, Converter={StaticResource BoolToVisibleConverter}}"/>
 
+                        <!-- Next Beat: always available (not during dialogue) -->
                         <Button Grid.Column="1"
                                 Content="Next Beat →"
                                 Command="{Binding NextBeatCommand}"

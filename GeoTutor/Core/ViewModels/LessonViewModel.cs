@@ -84,11 +84,45 @@ public partial class LessonViewModel : BaseViewModel
     partial void OnDialogueLineIndexChanged(int value) => OnPropertyChanged(nameof(CurrentDialogueLine));
     partial void OnActiveDialogueChanged(DialogueScript? value) => OnPropertyChanged(nameof(CurrentDialogueLine));
 
+    partial void OnCurrentBeatChanged(Beat? value)
+    {
+        OnPropertyChanged(nameof(IsAnswerBeat));
+        OnPropertyChanged(nameof(IsManipulateBeat));
+        OnPropertyChanged(nameof(ShowSubmitButton));
+        ManipulateSucceeded      = false;
+        ManipulateSuccessMessage = "";
+        _reachedMilestones.Clear();
+    }
+
+    partial void OnShowDialogueChanged(bool value)
+    {
+        OnPropertyChanged(nameof(ShowSubmitButton));
+    }
+
     // -----------------------------------------------------------------------
     // Observable properties — completion
     // -----------------------------------------------------------------------
 
     [ObservableProperty] private bool _isLessonComplete;
+
+    // -----------------------------------------------------------------------
+    // Observable properties — beat-type gating
+    // -----------------------------------------------------------------------
+
+    [ObservableProperty] private bool _manipulateSucceeded;
+    [ObservableProperty] private string _manipulateSuccessMessage = "";
+
+    // Reached milestone IDs for the current explorationGoal beat.
+    private readonly HashSet<string> _reachedMilestones = new(StringComparer.Ordinal);
+
+    /// <summary>True only for Check and Practice beats (the ones with text-input answers).</summary>
+    public bool IsAnswerBeat => CurrentBeat?.Type is BeatType.Check or BeatType.Practice;
+
+    /// <summary>True only for Manipulate beats.</summary>
+    public bool IsManipulateBeat => CurrentBeat?.Type is BeatType.Manipulate;
+
+    /// <summary>Show the Submit button only for answer beats and only outside of dialogue.</summary>
+    public bool ShowSubmitButton => IsAnswerBeat && !ShowDialogue;
 
     // -----------------------------------------------------------------------
     // Constructor
@@ -262,6 +296,33 @@ public partial class LessonViewModel : BaseViewModel
         _audio.Stop();
         ShowDialogue = false;
         PresentRetryItem();
+    }
+
+    // -----------------------------------------------------------------------
+    // Manipulate drag callback
+    // -----------------------------------------------------------------------
+
+    /// <summary>
+    /// Called by the view whenever the user drags a point on the canvas.
+    /// Evaluates the current Manipulate beat's success condition in-place.
+    /// </summary>
+    public void OnPointDragged(string pointId, double wx, double wy)
+    {
+        if (CurrentBeat?.Type != BeatType.Manipulate) return;
+        if (ManipulateSucceeded)                      return;
+        if (CurrentBeat.SuccessCondition is null)      return;
+        if (CurrentScene is null)                      return;
+
+        bool hit = ManipulateEvaluator.Evaluate(
+            CurrentBeat.SuccessCondition, CurrentScene, _reachedMilestones);
+
+        if (hit)
+        {
+            ManipulateSucceeded      = true;
+            ManipulateSuccessMessage = string.IsNullOrEmpty(CurrentBeat.SuccessMessage)
+                ? "Success!"
+                : CurrentBeat.SuccessMessage;
+        }
     }
 
     private void PlayCurrentDialogueLine()
