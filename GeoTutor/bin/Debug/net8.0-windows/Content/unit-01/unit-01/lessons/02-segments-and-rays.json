@@ -1,0 +1,267 @@
+{
+  "skillId": "geo-u1-segments-and-rays",
+  "lessonVersion": 1,
+  "beats": [
+    {
+      "id": "concept",
+      "type": "Concept",
+      "title": "Segments and Rays",
+      "scene": "scene_sr_concept",
+      "proseRef": "02-segments-and-rays.md#concept"
+    },
+    {
+      "id": "manipulate",
+      "type": "Manipulate",
+      "title": "Find the midpoint",
+      "scene": "scene_sr_manipulate",
+      "instruction": "Drag point M along segment AB until M is the midpoint (AM = MB).",
+      "successCondition": {
+        "type": "equalLengths",
+        "of": "AM",
+        "and": "MB",
+        "tolerance": 0.05
+      },
+      "successMessage": "Got it — M is now the midpoint of AB.",
+      "maxAttempts": null
+    },
+    {
+      "id": "worked",
+      "type": "WorkedExample",
+      "title": "Segment Addition",
+      "scene": "scene_sr_worked",
+      "steps": [
+        {
+          "order": 1,
+          "text": "B lies between A and C, so the Segment Addition Postulate applies.",
+          "canvasAction": { "type": "highlight", "target": "B" }
+        },
+        {
+          "order": 2,
+          "text": "Write the equation: AB + BC = AC.",
+          "canvasAction": { "type": "annotate", "target": "segmentAC", "text": "AB + BC = AC" }
+        },
+        {
+          "order": 3,
+          "text": "Substitute: 7 + 12 = AC.",
+          "canvasAction": null
+        },
+        {
+          "order": 4,
+          "text": "Add: AC = 19. Sanity-check: AC must be larger than either piece, and 19 > 12 ✓",
+          "canvasAction": { "type": "annotate", "target": "segmentAC", "text": "AC = 19" }
+        }
+      ]
+    },
+    {
+      "id": "check",
+      "type": "Check",
+      "items": [
+        {
+          "id": "sr-check-1",
+          "kind": "multipleChoice",
+          "prompt": "Which notation refers to a SEGMENT with endpoints A and B?",
+          "choices": ["AB with double arrows", "AB with a single right arrow", "AB with a bar above", "AB with no marks"],
+          "answerIndex": 2,
+          "explanation": "A bar above the two letters denotes the segment. Double arrows = line, single arrow = ray, no marks = length (a number)."
+        },
+        {
+          "id": "sr-check-2",
+          "kind": "multipleChoice",
+          "prompt": "Ray AB and ray BA are…",
+          "choices": ["the same ray", "different rays, opposite directions", "the same as segment AB", "the same as line AB"],
+          "answerIndex": 1,
+          "explanation": "The endpoint comes first in the notation. Ray AB starts at A; ray BA starts at B. They head in opposite directions."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "type": "Practice",
+      "items": [
+        {
+          "id": "sr-prac-1",
+          "kind": "numeric",
+          "prompt": "B is between A and C. If AB = 5 and BC = 8, find AC.",
+          "answer": 13,
+          "tolerance": 0.01,
+          "hints": [
+            "B is between A and C — which postulate applies?",
+            "Segment Addition: AB + BC = AC.",
+            "Plug in: 5 + 8 = 13."
+          ]
+        },
+        {
+          "id": "sr-prac-2",
+          "kind": "numeric",
+          "prompt": "M is the midpoint of segment XY. If XM = 9, what is XY?",
+          "answer": 18,
+          "tolerance": 0.01,
+          "hints": [
+            "Midpoint means XM = MY.",
+            "If XM = 9 and MY = 9, what is the whole?",
+            "XY = XM + MY = 9 + 9 = 18."
+          ]
+        },
+        {
+          "id": "sr-prac-3",
+          "kind": "numeric",
+          "prompt": "B is between A and C. AC = 24 and AB = 9. Find BC.",
+          "answer": 15,
+          "tolerance": 0.01,
+          "hints": [
+            "Segment Addition: AB + BC = AC.",
+            "Solve for BC: BC = AC − AB.",
+            "BC = 24 − 9 = 15."
+          ]
+        },
+        {
+          "id": "sr-prac-4",
+          "kind": "multipleChoice",
+          "prompt": "Which statement uses the correct notation for two congruent segments?",
+          "choices": [
+            "Segment AB equals segment CD (with bars)",
+            "AB ≅ CD (no bars, just letters)",
+            "AB = CD (no bars, equals sign)",
+            "Segment AB ≅ Segment CD (with bars over both)"
+          ],
+          "answerIndex": 3,
+          "hints": [
+            "Congruence symbol (≅) is for shapes; equals (=) is for numbers.",
+            "Segments are shapes; lengths are numbers.",
+            "Bars over both letters with ≅ between them is the correct form."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reflection",
+      "type": "Reflection",
+      "proseRef": "02-segments-and-rays.md#reflection"
+    }
+  ],
+  "scenes": {
+    "scene_sr_concept": {
+      "viewport": { "xMin": -1, "xMax": 11, "yMin": -1, "yMax": 5 },
+      "points": [
+        { "id": "A", "x": 1, "y": 3, "label": "A" },
+        { "id": "B", "x": 5, "y": 3, "label": "B" },
+        { "id": "C", "x": 1, "y": 1, "label": "C" },
+        { "id": "D", "x": 5, "y": 1, "label": "D" }
+      ],
+      "segments": [
+        { "id": "segAB", "from": "A", "to": "B", "label": "segment AB" },
+        { "id": "rayCD", "from": "C", "to": "D", "extend": "endOnly", "label": "ray CD" }
+      ]
+    },
+    "scene_sr_manipulate": {
+      "viewport": { "xMin": -1, "xMax": 11, "yMin": -1, "yMax": 4 },
+      "points": [
+        { "id": "A", "x": 1, "y": 2, "label": "A", "draggable": false },
+        { "id": "B", "x": 9, "y": 2, "label": "B", "draggable": false },
+        { "id": "M", "x": 3, "y": 2, "label": "M", "draggable": true, "constrainToSegment": "segAB" }
+      ],
+      "segments": [
+        { "id": "segAB", "from": "A", "to": "B" }
+      ],
+      "measurements": [
+        { "type": "length", "from": "A", "to": "M", "show": true, "label": "AM" },
+        { "type": "length", "from": "M", "to": "B", "show": true, "label": "MB" }
+      ]
+    },
+    "scene_sr_worked": {
+      "viewport": { "xMin": -1, "xMax": 22, "yMin": -1, "yMax": 4 },
+      "points": [
+        { "id": "A", "x": 1, "y": 2, "label": "A" },
+        { "id": "B", "x": 8, "y": 2, "label": "B" },
+        { "id": "C", "x": 20, "y": 2, "label": "C" }
+      ],
+      "segments": [
+        { "id": "segAC", "from": "A", "to": "C" }
+      ],
+      "measurements": [
+        { "type": "length", "from": "A", "to": "B", "show": true, "label": "AB = 7" },
+        { "type": "length", "from": "B", "to": "C", "show": true, "label": "BC = 12" }
+      ]
+    }
+  },
+  "testItems": [
+    {
+      "id": "sr-test-1",
+      "kind": "numeric",
+      "category": "procedural",
+      "prompt": "B is between A and C. AB = 11 and BC = 6. Find AC.",
+      "answer": 17,
+      "tolerance": 0.01,
+      "difficulty": 1
+    },
+    {
+      "id": "sr-test-2",
+      "kind": "numeric",
+      "category": "procedural",
+      "prompt": "M is the midpoint of segment PQ. If PQ = 22, find PM.",
+      "answer": 11,
+      "tolerance": 0.01,
+      "difficulty": 1
+    },
+    {
+      "id": "sr-test-3",
+      "kind": "multipleChoice",
+      "category": "conceptual",
+      "prompt": "Which of the following is a NUMBER, not a geometric object?",
+      "choices": ["Segment AB (with bar)", "Ray AB (with arrow)", "Line AB (with double arrow)", "AB (with no marks)"],
+      "answerIndex": 3,
+      "explanation": "AB with no marks denotes the length of segment AB — a real number.",
+      "difficulty": 2
+    },
+    {
+      "id": "sr-test-4",
+      "kind": "multipleChoice",
+      "category": "conceptual",
+      "prompt": "Which statement is FALSE?",
+      "choices": [
+        "Ray AB and ray BA are opposite rays.",
+        "Segment AB and segment BA refer to the same segment.",
+        "Line AB and line BA refer to the same line.",
+        "Segment AB and ray AB refer to the same object."
+      ],
+      "answerIndex": 3,
+      "explanation": "A segment is bounded; a ray extends forever past one endpoint. Different objects.",
+      "difficulty": 2
+    },
+    {
+      "id": "sr-test-5",
+      "kind": "numeric",
+      "category": "transfer",
+      "prompt": "Points P, Q, R lie on a line with Q between P and R. PR = 30, PQ = 2x + 1, QR = x + 5. Find x.",
+      "answer": 8,
+      "tolerance": 0.01,
+      "explanation": "PQ + QR = PR ⇒ (2x+1) + (x+5) = 30 ⇒ 3x + 6 = 30 ⇒ x = 8.",
+      "difficulty": 3
+    },
+    {
+      "id": "sr-test-6",
+      "kind": "numeric",
+      "category": "transfer",
+      "prompt": "M is the midpoint of segment AB. AM = 3x − 2 and MB = x + 8. Find AB.",
+      "answer": 26,
+      "tolerance": 0.01,
+      "explanation": "AM = MB ⇒ 3x − 2 = x + 8 ⇒ 2x = 10 ⇒ x = 5. AM = 13, so AB = 26.",
+      "difficulty": 3
+    },
+    {
+      "id": "sr-test-7",
+      "kind": "multipleChoice",
+      "category": "conceptual",
+      "prompt": "If AB ≅ CD, which statement MUST be true?",
+      "choices": [
+        "Segment AB and segment CD are the same segment.",
+        "Segments AB and CD have the same length.",
+        "Points A, B, C, D are collinear.",
+        "Segment AB is parallel to segment CD."
+      ],
+      "answerIndex": 1,
+      "explanation": "Congruent segments are exactly those with equal length. Nothing else is implied.",
+      "difficulty": 2
+    }
+  ]
+}
