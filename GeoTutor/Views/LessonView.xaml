@@ -7,8 +7,8 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="380" MinWidth="280"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="2*" MinWidth="300"/>
+            <ColumnDefinition Width="3*" MinWidth="400"/>
         </Grid.ColumnDefinitions>
 
         <!-- ══════════════════════════════════════════════════════════
@@ -275,12 +275,12 @@
         <!-- ══════════════════════════════════════════════════════════
              RIGHT PANEL — geometry canvas
         ══════════════════════════════════════════════════════════ -->
-        <Grid Grid.Column="1">
-            <Border Margin="16"
-                    Background="#313244"
-                    BorderBrush="#45475A"
-                    BorderThickness="1"
-                    CornerRadius="8"
+        <Grid Grid.Column="1" Background="#11131F">
+            <Border Margin="14"
+                    Background="#FFFFFF"
+                    BorderBrush="#89B4FA"
+                    BorderThickness="1.5"
+                    CornerRadius="10"
                     ClipToBounds="True">
                 <scene:SceneControl x:Name="Canvas"
                                     Scene="{Binding CurrentScene}"
