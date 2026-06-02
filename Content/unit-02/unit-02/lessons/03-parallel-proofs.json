@@ -1,0 +1,299 @@
+{
+  "skillId": "geo-u2-parallel-proofs",
+  "lessonVersion": 1,
+  "beats": [
+    {
+      "id": "concept",
+      "type": "Concept",
+      "title": "Proving Lines Parallel — Converse Theorems",
+      "scene": "scene_pp_concept",
+      "proseRef": "03-parallel-proofs.md#concept"
+    },
+    {
+      "id": "manipulate",
+      "type": "Manipulate",
+      "title": "Set the alternate interior angle to prove m ∥ n",
+      "scene": "scene_pp_manipulate",
+      "instruction": "Two lines m and n are cut by transversal t. Drag point G to set the alternate interior angle ∠EFG to 90°. When ∠EFG equals the alternate interior angle at E (also 90°), the lines are parallel by the Converse of the Alternate Interior Angles Theorem.",
+      "successCondition": {
+        "type": "angleMeasure",
+        "vertex": "F",
+        "sides": ["E", "G"],
+        "targetDegrees": 90,
+        "tolerance": 2.0
+      },
+      "successMessage": "∠EFG = 90° = the alternate interior angle at E — Converse of the AIA Theorem proves m ∥ n.",
+      "maxAttempts": null
+    },
+    {
+      "id": "worked",
+      "type": "WorkedExample",
+      "title": "Two-column proof: proving m ∥ n from congruent alternate interior angles",
+      "scene": "scene_pp_worked",
+      "steps": [
+        {
+          "order": 1,
+          "text": "Given: ∠AEF ≅ ∠EFD. These two angles are alternate interior angles formed by transversal t cutting lines m and n between intersection points E (on m) and F (on n).",
+          "canvasAction": { "type": "highlight", "target": "E" }
+        },
+        {
+          "order": 2,
+          "text": "Statement: ∠AEF ≅ ∠EFD. Reason: Given. The congruence marks on the diagram confirm these angles are equal in measure.",
+          "canvasAction": { "type": "annotate", "target": "E", "text": "≅" }
+        },
+        {
+          "order": 3,
+          "text": "Statement: m ∥ n. Reason: Converse of the Alternate Interior Angles Theorem — if two lines are cut by a transversal so that alternate interior angles are congruent, then the lines are parallel.",
+          "canvasAction": { "type": "annotate", "target": "F", "text": "≅" }
+        },
+        {
+          "order": 4,
+          "text": "Verification: corresponding angles ∠AEB (upper-right at E) and ∠EFG (upper-right at F) are also congruent — a second check that m ∥ n. Co-interior angles ∠BEF and ∠EFD sum to 180°, a third confirmation.",
+          "canvasAction": null
+        }
+      ]
+    },
+    {
+      "id": "check",
+      "type": "Check",
+      "items": [
+        {
+          "id": "pp-check-1",
+          "kind": "multipleChoice",
+          "prompt": "Two lines are cut by a transversal. You measure the corresponding angles and find them equal. Which theorem proves the lines are parallel?",
+          "choices": [
+            "Corresponding Angles Theorem",
+            "Converse of the Corresponding Angles Theorem",
+            "Alternate Interior Angles Theorem",
+            "Co-interior Angles Theorem"
+          ],
+          "answerIndex": 1,
+          "explanation": "The Corresponding Angles Theorem says parallel lines produce equal corresponding angles. Its converse says equal corresponding angles prove the lines are parallel."
+        },
+        {
+          "id": "pp-check-2",
+          "kind": "multipleChoice",
+          "prompt": "To use the Converse of the Alternate Interior Angles Theorem to prove two lines parallel, you must first establish that…",
+          "choices": [
+            "the lines are in the same plane.",
+            "alternate interior angles are congruent.",
+            "co-interior angles are supplementary.",
+            "corresponding angles are supplementary."
+          ],
+          "answerIndex": 1,
+          "explanation": "The Converse of the AIA Theorem requires alternate interior angles to be congruent. Co-interior supplementary angles use the Converse of the Co-interior Angles Theorem instead."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "type": "Practice",
+      "items": [
+        {
+          "id": "pp-prac-1",
+          "kind": "multipleChoice",
+          "prompt": "Lines j and k are cut by a transversal. The alternate exterior angles are congruent. Which theorem proves j ∥ k?",
+          "choices": [
+            "Converse of the Corresponding Angles Theorem",
+            "Converse of the Alternate Interior Angles Theorem",
+            "Converse of the Alternate Exterior Angles Theorem",
+            "Converse of the Co-interior Angles Theorem"
+          ],
+          "answerIndex": 2,
+          "hints": [
+            "The given information is about alternate exterior angles — angles on opposite sides of the transversal, outside the two lines.",
+            "Each converse theorem matches its angle type: alternate exterior angles → Converse of AEA Theorem.",
+            "Converse of the Alternate Exterior Angles Theorem applies here."
+          ]
+        },
+        {
+          "id": "pp-prac-2",
+          "kind": "numeric",
+          "prompt": "Lines p and q are cut by a transversal. A pair of corresponding angles measures (4x + 10)° and (6x − 8)°. Find the value of x that makes p ∥ q.",
+          "answer": 9,
+          "tolerance": 0.01,
+          "hints": [
+            "For corresponding angles to prove lines parallel, they must be congruent — set them equal.",
+            "Set 4x + 10 = 6x − 8 and solve for x.",
+            "18 = 2x, so x = 9. Check: both angles equal 46°."
+          ]
+        },
+        {
+          "id": "pp-prac-3",
+          "kind": "numeric",
+          "prompt": "Lines r and s are cut by a transversal. A pair of co-interior (same-side interior) angles measures (3x + 15)° and (5x + 13)°. Find the value of x that makes r ∥ s.",
+          "answer": 19,
+          "tolerance": 0.01,
+          "hints": [
+            "For co-interior angles to prove lines parallel, they must be supplementary — they sum to 180°.",
+            "Set (3x + 15) + (5x + 13) = 180 and solve.",
+            "8x + 28 = 180 → 8x = 152 → x = 19. Check: 3(19)+15=72° and 5(19)+13=108°; 72+108=180° ✓."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reflection",
+      "type": "Reflection",
+      "proseRef": "03-parallel-proofs.md#reflection"
+    }
+  ],
+  "scenes": {
+    "scene_pp_concept": {
+      "viewport": { "xMin": -1, "xMax": 11, "yMin": -1, "yMax": 9 },
+      "points": [
+        { "id": "M1", "x": 0, "y": 4, "label": "" },
+        { "id": "M2", "x": 10, "y": 5, "label": "m" },
+        { "id": "N1", "x": 0, "y": 2, "label": "" },
+        { "id": "N2", "x": 10, "y": 4, "label": "n" },
+        { "id": "T1", "x": 3, "y": 0, "label": "" },
+        { "id": "T2", "x": 5, "y": 9, "label": "t" }
+      ],
+      "segments": [
+        { "id": "lineM", "from": "M1", "to": "M2", "extend": "both" },
+        { "id": "lineN", "from": "N1", "to": "N2", "extend": "both" },
+        { "id": "lineT", "from": "T1", "to": "T2", "extend": "both" }
+      ],
+      "annotations": [
+        { "type": "text", "x": 5.5, "y": 5.5, "text": "∠1", "size": "medium" },
+        { "type": "text", "x": 4.0, "y": 3.2, "text": "∠2", "size": "medium" },
+        { "type": "text", "x": 6.5, "y": 4.5, "text": "∠1 ≅ ∠2 ?", "color": "blue", "size": "medium" }
+      ]
+    },
+    "scene_pp_manipulate": {
+      "viewport": { "xMin": -1, "xMax": 11, "yMin": -1, "yMax": 9 },
+      "points": [
+        { "id": "A", "x": 0, "y": 7, "label": "" },
+        { "id": "B", "x": 10, "y": 7, "label": "m" },
+        { "id": "E", "x": 5, "y": 7, "label": "E", "draggable": false },
+        { "id": "Etop", "x": 5, "y": 9, "label": "", "draggable": false },
+        { "id": "C", "x": 0, "y": 3, "label": "" },
+        { "id": "D", "x": 10, "y": 3, "label": "n" },
+        { "id": "F", "x": 5, "y": 3, "label": "F", "draggable": false },
+        { "id": "G", "x": 9, "y": 1, "label": "G", "draggable": true }
+      ],
+      "segments": [
+        { "id": "lineM", "from": "A", "to": "B", "extend": "both" },
+        { "id": "lineN", "from": "C", "to": "D", "extend": "both" },
+        { "id": "transversal", "from": "Etop", "to": "F", "extend": "both" },
+        { "id": "lineNray", "from": "F", "to": "G", "extend": "endOnly" }
+      ],
+      "measurements": [
+        { "type": "angleMeasure", "vertex": "E", "sides": ["Etop", "A"], "show": true, "label": "∠ at E (alt. int.)" },
+        { "type": "angleMeasure", "vertex": "F", "sides": ["E", "G"], "show": true, "label": "∠EFG" }
+      ]
+    },
+    "scene_pp_worked": {
+      "viewport": { "xMin": -1, "xMax": 11, "yMin": -1, "yMax": 9 },
+      "points": [
+        { "id": "Ma", "x": 0, "y": 7, "label": "" },
+        { "id": "Mb", "x": 10, "y": 7, "label": "m" },
+        { "id": "Na", "x": 0, "y": 2, "label": "" },
+        { "id": "Nb", "x": 10, "y": 2, "label": "n" },
+        { "id": "Ta", "x": 3, "y": 0, "label": "" },
+        { "id": "Tb", "x": 8, "y": 9, "label": "t" },
+        { "id": "E", "x": 6.4, "y": 7, "label": "E" },
+        { "id": "F", "x": 4.3, "y": 2, "label": "F" },
+        { "id": "Eleft", "x": 3, "y": 7, "label": "A" },
+        { "id": "Fright", "x": 7, "y": 2, "label": "D" }
+      ],
+      "segments": [
+        { "id": "lineM", "from": "Ma", "to": "Mb", "extend": "both" },
+        { "id": "lineN", "from": "Na", "to": "Nb", "extend": "both" },
+        { "id": "lineT", "from": "Ta", "to": "Tb", "extend": "both" }
+      ],
+      "marks": [
+        { "type": "congruenceTick", "onSegment": "lineM", "groupIndex": 1 },
+        { "type": "parallelArrow", "onSegment": "lineM", "groupIndex": 1 },
+        { "type": "parallelArrow", "onSegment": "lineN", "groupIndex": 1 }
+      ],
+      "arcs": [
+        { "id": "arcAEF", "vertex": "E", "from": "Eleft", "to": "Ta", "radius": 0.8, "label": "∠AEF" },
+        { "id": "arcEFD", "vertex": "F", "from": "E", "to": "Fright", "radius": 0.8, "label": "∠EFD" }
+      ],
+      "annotations": [
+        { "type": "text", "x": 5.5, "y": 7.9, "text": "≅", "color": "green", "size": "large" },
+        { "type": "text", "x": 5.0, "y": 1.1, "text": "≅", "color": "green", "size": "large" }
+      ]
+    }
+  },
+  "testItems": [
+    {
+      "id": "pp-test-1",
+      "kind": "multipleChoice",
+      "category": "procedural",
+      "prompt": "Two lines are cut by a transversal. Alternate interior angles are congruent. Which theorem proves the lines are parallel?",
+      "choices": [
+        "Alternate Interior Angles Theorem",
+        "Converse of the Alternate Interior Angles Theorem",
+        "Corresponding Angles Theorem",
+        "Vertical Angles Theorem"
+      ],
+      "answerIndex": 1,
+      "difficulty": 1
+    },
+    {
+      "id": "pp-test-2",
+      "kind": "multipleChoice",
+      "category": "procedural",
+      "prompt": "Which converse theorem uses co-interior (same-side interior) angles to prove lines parallel?",
+      "choices": [
+        "Converse of the Corresponding Angles Theorem",
+        "Converse of the Alternate Exterior Angles Theorem",
+        "Converse of the Co-interior Angles Theorem",
+        "Converse of the Alternate Interior Angles Theorem"
+      ],
+      "answerIndex": 2,
+      "difficulty": 1
+    },
+    {
+      "id": "pp-test-3",
+      "kind": "numeric",
+      "category": "procedural",
+      "prompt": "Lines a and b are cut by a transversal. Alternate interior angles measure (5x − 3)° and (3x + 17)°. Find x so that a ∥ b.",
+      "answer": 10,
+      "tolerance": 0.01,
+      "difficulty": 2
+    },
+    {
+      "id": "pp-test-4",
+      "kind": "multipleChoice",
+      "category": "conceptual",
+      "prompt": "The Alternate Interior Angles Theorem states: if lines are parallel, then alternate interior angles are congruent. Its logically equivalent contrapositive states…",
+      "choices": [
+        "If lines are not parallel, then alternate interior angles are not congruent.",
+        "If alternate interior angles are congruent, then lines are parallel.",
+        "If alternate interior angles are not congruent, then lines are not parallel.",
+        "If lines are not parallel, then alternate interior angles are congruent."
+      ],
+      "answerIndex": 2,
+      "explanation": "The contrapositive of 'if P then Q' is 'if not Q then not P,' which is logically equivalent to the original. The converse ('if Q then P') is a separate, independent theorem.",
+      "difficulty": 2
+    },
+    {
+      "id": "pp-test-5",
+      "kind": "numeric",
+      "category": "procedural",
+      "prompt": "Lines c and d are cut by a transversal. Co-interior angles measure (7x + 4)° and (3x + 16)°. Find x so that c ∥ d.",
+      "answer": 16,
+      "tolerance": 0.01,
+      "explanation": "Co-interior angles must be supplementary: (7x+4)+(3x+16)=180 → 10x+20=180 → 10x=160 → x=16. Angles: 116° and 64°; sum = 180° ✓.",
+      "difficulty": 3
+    },
+    {
+      "id": "pp-test-6",
+      "kind": "multipleChoice",
+      "category": "transfer",
+      "prompt": "A student says: 'I know m∥n because I measured one angle at each intersection and they look about equal.' What is wrong with this reasoning?",
+      "choices": [
+        "Nothing — visual inspection is sufficient for a proof.",
+        "The student needs to identify which angle relationship (corresponding, alternate interior, etc.) and verify the exact congruence condition for that relationship.",
+        "You need to measure all eight angles, not just two.",
+        "Visual inspection is fine as long as you use a protractor."
+      ],
+      "answerIndex": 1,
+      "explanation": "Proofs require stating the specific theorem used and showing the exact condition is met — just 'looking equal' does not constitute a valid geometric proof.",
+      "difficulty": 3
+    }
+  ]
+}

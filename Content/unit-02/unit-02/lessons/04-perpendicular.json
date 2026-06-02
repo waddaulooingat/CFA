@@ -1,0 +1,284 @@
+{
+  "skillId": "geo-u2-perpendicular",
+  "lessonVersion": 1,
+  "beats": [
+    {
+      "id": "concept",
+      "type": "Concept",
+      "title": "Perpendicular Lines",
+      "scene": "scene_perp_concept",
+      "proseRef": "04-perpendicular.md#concept"
+    },
+    {
+      "id": "manipulate",
+      "type": "Manipulate",
+      "title": "Make line k perpendicular to line l",
+      "scene": "scene_perp_manipulate",
+      "instruction": "Drag point P until line k is perpendicular to line l. Watch the live angle measurement at Q. When ∠LQP = 90°, the lines meet at a right angle.",
+      "successCondition": {
+        "type": "angleMeasure",
+        "vertex": "Q",
+        "sides": ["L", "P"],
+        "targetDegrees": 90,
+        "tolerance": 2.0
+      },
+      "successMessage": "Lines k and l are perpendicular — they meet at a right angle.",
+      "maxAttempts": null
+    },
+    {
+      "id": "worked",
+      "type": "WorkedExample",
+      "title": "Distance from a point to a line",
+      "scene": "scene_perp_worked",
+      "steps": [
+        {
+          "order": 1,
+          "text": "The distance from a point to a line is defined as the length of the perpendicular segment from the point to the line. This is the shortest possible distance from the point to any point on the line.",
+          "canvasAction": { "type": "highlight", "target": "segXF" }
+        },
+        {
+          "order": 2,
+          "text": "Point X is at (2, 7) and line l has equation y = 3. To find the foot of the perpendicular from X to l, drop a vertical from X: the foot F has the same x-coordinate as X and lies on l, so F = (2, 3).",
+          "canvasAction": { "type": "annotate", "target": "X", "text": "X(2, 7)" }
+        },
+        {
+          "order": 3,
+          "text": "Distance = |XF| = |7 − 3| = 4 units. Since l is horizontal (y = 3) and XF is vertical (both at x = 2), the segment XF is perpendicular to l by definition of horizontal and vertical lines.",
+          "canvasAction": { "type": "annotate", "target": "F", "text": "F(2, 3)" }
+        },
+        {
+          "order": 4,
+          "text": "Check: the right-angle mark at F confirms XF ⊥ l. Any other path from X to a point on l would be longer — for example, the distance from X to (6, 3) is √(4² + 4²) = √32 ≈ 5.66 > 4. The perpendicular gives the minimum distance.",
+          "canvasAction": null
+        }
+      ]
+    },
+    {
+      "id": "check",
+      "type": "Check",
+      "items": [
+        {
+          "id": "perp-check-1",
+          "kind": "multipleChoice",
+          "prompt": "Which symbol is used to indicate that two lines or segments are perpendicular?",
+          "choices": ["∥", "⊥", "≅", "≈"],
+          "answerIndex": 1,
+          "explanation": "The ⊥ symbol means perpendicular (meeting at 90°). The ∥ symbol means parallel, ≅ means congruent, and ≈ means approximately equal."
+        },
+        {
+          "id": "perp-check-2",
+          "kind": "numeric",
+          "prompt": "Line a has slope 3. What is the slope of any line perpendicular to line a?",
+          "answer": -0.3333,
+          "tolerance": 0.001,
+          "explanation": "Perpendicular slopes are negative reciprocals: m₁ × m₂ = −1. So m₂ = −1/3 ≈ −0.3333."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "type": "Practice",
+      "items": [
+        {
+          "id": "perp-prac-1",
+          "kind": "multipleChoice",
+          "prompt": "Two lines are perpendicular. Which statement must be true?",
+          "choices": [
+            "They are parallel.",
+            "They intersect at a 90° angle.",
+            "They have the same slope.",
+            "They never meet."
+          ],
+          "answerIndex": 1,
+          "hints": [
+            "Recall the definition of perpendicular lines.",
+            "Perpendicular lines intersect — so they can't be parallel or non-intersecting.",
+            "By definition, perpendicular lines intersect at exactly 90°."
+          ]
+        },
+        {
+          "id": "perp-prac-2",
+          "kind": "numeric",
+          "prompt": "Line p has slope −4. What is the slope of a line perpendicular to p?",
+          "answer": 0.25,
+          "tolerance": 0.01,
+          "hints": [
+            "Perpendicular slopes satisfy m₁ × m₂ = −1.",
+            "Solve: −4 × m₂ = −1.",
+            "m₂ = −1 ÷ (−4) = 1/4 = 0.25."
+          ]
+        },
+        {
+          "id": "perp-prac-3",
+          "kind": "multipleChoice",
+          "prompt": "Line j has slope 2/3 and line k has slope −3/2. Are lines j and k perpendicular?",
+          "choices": [
+            "Yes, because their slopes are negative reciprocals.",
+            "No, because their slopes are not equal.",
+            "Yes, because their slopes sum to zero.",
+            "No, because one slope is positive and the other is negative."
+          ],
+          "answerIndex": 0,
+          "hints": [
+            "Check whether the product of the slopes equals −1.",
+            "(2/3) × (−3/2) = −6/6 = −1.",
+            "Since m₁ × m₂ = −1, the lines are perpendicular."
+          ]
+        },
+        {
+          "id": "perp-prac-4",
+          "kind": "numeric",
+          "prompt": "Segment AB has endpoints A = (1, 2) and B = (7, 2). Segment CD has endpoints C = (4, 0) and D = (4, 6). What is the slope of CD?",
+          "answer": 0,
+          "tolerance": 0.01,
+          "hints": [
+            "Wait — first find the slope of each segment. Slope of AB: (2 − 2)/(7 − 1) = 0 (horizontal). Now find slope of CD.",
+            "Slope of CD: (6 − 0)/(4 − 4) — the denominator is 0.",
+            "CD is vertical (undefined slope). A horizontal line and a vertical line are always perpendicular. The 'slope' of CD is undefined; enter 0 for the slope of AB, the horizontal line, to verify AB is horizontal."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reflection",
+      "type": "Reflection",
+      "proseRef": "04-perpendicular.md#reflection"
+    }
+  ],
+  "scenes": {
+    "scene_perp_concept": {
+      "viewport": { "xMin": -1, "xMax": 11, "yMin": -1, "yMax": 9 },
+      "points": [
+        { "id": "L1", "x": 0, "y": 4, "label": "" },
+        { "id": "L2", "x": 10, "y": 4, "label": "l" },
+        { "id": "K1", "x": 5, "y": 0, "label": "" },
+        { "id": "K2", "x": 5, "y": 8, "label": "k" },
+        { "id": "Q", "x": 5, "y": 4, "label": "Q" }
+      ],
+      "segments": [
+        { "id": "lineL", "from": "L1", "to": "L2", "extend": "both" },
+        { "id": "lineK", "from": "K1", "to": "K2", "extend": "both" }
+      ],
+      "marks": [
+        { "type": "rightAngle", "at": "Q", "onSegment": "lineL" }
+      ],
+      "annotations": [
+        { "type": "text", "x": 5.6, "y": 4.6, "text": "⊥", "color": "blue", "size": "large" }
+      ]
+    },
+    "scene_perp_manipulate": {
+      "viewport": { "xMin": -1, "xMax": 11, "yMin": -1, "yMax": 9 },
+      "points": [
+        { "id": "L1", "x": 0, "y": 5, "label": "" },
+        { "id": "L2", "x": 10, "y": 5, "label": "l" },
+        { "id": "Q", "x": 5, "y": 5, "label": "Q", "draggable": false },
+        { "id": "L", "x": 9, "y": 5, "label": "L", "draggable": false },
+        { "id": "P", "x": 7, "y": 2, "label": "P", "draggable": true }
+      ],
+      "segments": [
+        { "id": "lineL", "from": "L1", "to": "L2", "extend": "both" },
+        { "id": "lineK", "from": "Q", "to": "P", "extend": "endOnly" }
+      ],
+      "measurements": [
+        { "type": "angleMeasure", "vertex": "Q", "sides": ["L", "P"], "show": true, "label": "∠LQP" }
+      ]
+    },
+    "scene_perp_worked": {
+      "viewport": { "xMin": -1, "xMax": 11, "yMin": -1, "yMax": 9 },
+      "points": [
+        { "id": "La", "x": 0, "y": 3, "label": "" },
+        { "id": "Lb", "x": 10, "y": 3, "label": "l  (y = 3)" },
+        { "id": "X", "x": 2, "y": 7, "label": "X" },
+        { "id": "F", "x": 2, "y": 3, "label": "F" }
+      ],
+      "segments": [
+        { "id": "lineL", "from": "La", "to": "Lb", "extend": "both" },
+        { "id": "segXF", "from": "X", "to": "F" }
+      ],
+      "marks": [
+        { "type": "rightAngle", "at": "F", "onSegment": "lineL" }
+      ],
+      "measurements": [
+        { "type": "length", "from": "X", "to": "F", "show": true, "label": "XF = 4" }
+      ]
+    }
+  },
+  "testItems": [
+    {
+      "id": "perp-test-1",
+      "kind": "multipleChoice",
+      "category": "procedural",
+      "prompt": "Which describes perpendicular lines?",
+      "choices": [
+        "Lines that never intersect.",
+        "Lines that intersect at a 90° angle.",
+        "Lines that have equal slopes.",
+        "Lines that intersect at a 45° angle."
+      ],
+      "answerIndex": 1,
+      "difficulty": 1
+    },
+    {
+      "id": "perp-test-2",
+      "kind": "multipleChoice",
+      "category": "procedural",
+      "prompt": "In a diagram, which mark at an intersection indicates perpendicular lines?",
+      "choices": [
+        "A single arrow on each line.",
+        "A double tick mark on each line.",
+        "A small square at the intersection.",
+        "A curved arc at the intersection."
+      ],
+      "answerIndex": 2,
+      "difficulty": 1
+    },
+    {
+      "id": "perp-test-3",
+      "kind": "numeric",
+      "category": "procedural",
+      "prompt": "Line m has slope 5. What is the slope of a line perpendicular to m?",
+      "answer": -0.2,
+      "tolerance": 0.005,
+      "difficulty": 2
+    },
+    {
+      "id": "perp-test-4",
+      "kind": "numeric",
+      "category": "procedural",
+      "prompt": "Find the distance from point P = (3, 8) to the horizontal line y = 2.",
+      "answer": 6,
+      "tolerance": 0.01,
+      "difficulty": 2
+    },
+    {
+      "id": "perp-test-5",
+      "kind": "multipleChoice",
+      "category": "conceptual",
+      "prompt": "Line AB has slope 3/4. Which slope would make a line perpendicular to AB?",
+      "choices": ["3/4", "4/3", "−3/4", "−4/3"],
+      "answerIndex": 3,
+      "explanation": "The negative reciprocal of 3/4 is −4/3. Product check: (3/4)(−4/3) = −12/12 = −1 ✓.",
+      "difficulty": 2
+    },
+    {
+      "id": "perp-test-6",
+      "kind": "numeric",
+      "category": "transfer",
+      "prompt": "Point A = (−1, 4) lies above line l with equation y = 1. Find the length of the perpendicular segment from A to l.",
+      "answer": 3,
+      "tolerance": 0.01,
+      "explanation": "l is y = 1; A has y-coordinate 4. The perpendicular foot is (−1, 1). Distance = |4 − 1| = 3.",
+      "difficulty": 3
+    },
+    {
+      "id": "perp-test-7",
+      "kind": "numeric",
+      "category": "transfer",
+      "prompt": "Line q passes through (0, 2) with slope 2. Write the equation of the line through (4, 1) that is perpendicular to q, and find its y-intercept.",
+      "answer": 3,
+      "tolerance": 0.01,
+      "explanation": "Slope of q = 2, so perpendicular slope = −1/2. Through (4, 1): y − 1 = −1/2(x − 4) → y = −x/2 + 2 + 1 = −x/2 + 3. y-intercept = 3.",
+      "difficulty": 3
+    }
+  ]
+}

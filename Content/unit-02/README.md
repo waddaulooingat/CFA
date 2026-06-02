@@ -1,51 +1,44 @@
-# GeoTutor — Unit 2 Content Pack
+# Unit 02 — Parallel Lines & Transversals
 
-Unit 2: **Parallel Lines & Transversals**. Five skill nodes covering parallel/perpendicular vocabulary, the eight angles formed by a transversal, the parallel-line theorems, their converses (proving lines parallel), and parallel/perpendicular slope relationships in the coordinate plane.
+**Content pack version:** 1  
+**Skills:** 5 (`geo-u2-parallel-identify` → `geo-u2-angle-relationships`)  
+**Prereqs:** geo-u1-angle-measure (for the first skill)
 
-## Layout
+---
 
-```
-unit-02/
-  README.md                       ← this file
-  unit-02-skills.json             ← skill graph seed (5 nodes + prereq edges)
-  lessons/
-    01-parallel-basics.md/.json
-    02-transversal-angles.md/.json
-    03-parallel-theorems.md/.json
-    04-proving-parallel.md/.json
-    05-coordinate-parallel.md/.json
-```
+## Scene Primitives Used
 
-## Integration notes for Claude Code
+All Unit 2 scenes use only primitives already supported by `SceneRenderer`. No new renderer work is required.
 
-1. **Seed `gt_skills`** from `unit-02-skills.json`. Skill IDs use the `geo-u2-*` prefix and prereqs cross-reference Unit 1 IDs (`geo-u1-angle-measure`, `geo-u1-if-then-logic`, `geo-u1-point-line-plane`). Unit 1 must be seeded first.
+| Primitive | Used for |
+|-----------|----------|
+| Segment `extend:"both"` | Infinite lines (parallel lines, transversals) |
+| Segment `extend:"endOnly"` | Rays from intersection points |
+| Segment (no extend) | Finite reference segments |
+| Mark `type:"parallelArrow"` | Indicating parallel lines (single or double chevron) |
+| Mark `type:"rightAngle"` | Perpendicular line scenes |
+| Arc `vertex/from/to` | Angle marks at intersections |
+| Measurement `type:"angleMeasure"` | Live angle display during manipulate beats |
+| Measurement `type:"length"` | Distance display (perpendicular distance lesson) |
+| Annotation | Static labels for angle names (∠1, ∠2, …) |
 
-2. **New scene primitives Unit 2 uses.** Some go beyond what Unit 1 needed. The renderer may need to extend support:
-   - `parallelMarks` on segments — arrowheads (single, double) drawn on a segment to indicate which lines are parallel as a set
-   - `numberedAngles` — labeling the 8 angles formed by a transversal as ∠1 through ∠8
-   - `angleCongruenceMarks` — tick marks on arcs (single, double) showing which angles are congruent
-   - `slope` measurement on a segment
-   - `coordinateGrid` viewport flag with visible axes and grid lines
+---
 
-   If any of these are unsupported, the renderer should log a warning and skip the element, not bail on the whole scene (per the Unit 1 fix already discussed).
+## Skill Sequence
 
-3. **Templates pull weight here.** Several scenes can be authored as `{template: "ParallelLinesTransversal", params: {...}}` envelopes once the template is implemented. For now, every scene is a raw spec so this unit works with the same renderer code path Unit 1 uses.
+| Order | Skill ID | Name | Prereqs |
+|-------|----------|------|---------|
+| 1 | geo-u2-parallel-identify | Identifying parallel lines | geo-u1-angle-measure |
+| 2 | geo-u2-transversal-angles | Transversal angle pairs | geo-u2-parallel-identify |
+| 3 | geo-u2-parallel-proofs | Proving lines parallel | geo-u2-transversal-angles, geo-u1-if-then-logic |
+| 4 | geo-u2-perpendicular | Perpendicular lines | geo-u2-parallel-identify |
+| 5 | geo-u2-angle-relationships | Angle pair relationships | geo-u2-transversal-angles |
 
-4. **Linear pair / vertical / supplementary terminology** — the lesson assumes these terms are known. They were touched on in Unit 1 (angle types and the practice item about supplementary angles) but not formally introduced as a skill node. If Nayla wobbles, that's the gap. Consider adding a "supplementary, complementary, vertical, linear pair" remedial node between Units 1 and 2 in a later pass.
+---
 
-## Beat structure recap
+## Manipulate Beat Success Conditions
 
-| Beat | Purpose |
-|---|---|
-| Concept | Short prose + static diagram |
-| Manipulate | Drag-to-satisfy interactive task |
-| Worked Example | Step-by-step with canvas updates |
-| Check | 1–2 inline items |
-| Practice | 3–5 items with hints |
-| Reflection | Plain-language recap |
-
-Each lesson also has 6–8 `testItems` balanced ~40/30/30 procedural / conceptual / transfer.
-
-## What's next
-
-Unit 3 (Triangle Congruence) is the natural follow-on. It exercises `GenericTriangle` and `RightTriangle` templates heavily and introduces the SSS/SAS/ASA/AAS/HL postulates — the start of two-column proof territory.
+All Unit 2 manipulate beats use the `angleMeasure` success condition type (dragging a
+point to achieve a target angle). The `constrainToSegment` hint in some scenes is
+informational only — the renderer does not enforce it, but the success window is wide
+enough that free dragging still reaches it comfortably.

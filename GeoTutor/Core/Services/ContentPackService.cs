@@ -48,11 +48,19 @@ public static class ContentPackService
 
     private static readonly Dictionary<string, (string SubDir, string BaseName)> SkillFiles = new()
     {
+        // Unit 1 — Foundations & Logical Reasoning
         ["geo-u1-point-line-plane"]  = ("unit-01/unit-01/lessons", "01-point-line-plane"),
         ["geo-u1-segments-and-rays"] = ("unit-01/unit-01/lessons", "02-segments-and-rays"),
         ["geo-u1-angle-measure"]     = ("unit-01/unit-01/lessons", "03-angle-measure"),
         ["geo-u1-if-then-logic"]     = ("unit-01/unit-01/lessons", "04-if-then-logic"),
         ["geo-u1-counterexamples"]   = ("unit-01/unit-01/lessons", "05-counterexamples"),
+
+        // Unit 2 — Parallel Lines & Transversals
+        ["geo-u2-parallel-identify"]   = ("unit-02/unit-02/lessons", "01-parallel-identify"),
+        ["geo-u2-transversal-angles"]  = ("unit-02/unit-02/lessons", "02-transversal-angles"),
+        ["geo-u2-parallel-proofs"]     = ("unit-02/unit-02/lessons", "03-parallel-proofs"),
+        ["geo-u2-perpendicular"]       = ("unit-02/unit-02/lessons", "04-perpendicular"),
+        ["geo-u2-angle-relationships"] = ("unit-02/unit-02/lessons", "05-angle-relationships"),
     };
 
     /// <summary>

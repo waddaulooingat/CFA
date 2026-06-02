@@ -1,0 +1,306 @@
+{
+  "skillId": "geo-u2-transversal-angles",
+  "lessonVersion": 1,
+  "beats": [
+    {
+      "id": "concept",
+      "type": "Concept",
+      "title": "Angles Formed by a Transversal",
+      "scene": "scene_ta_concept",
+      "proseRef": "02-transversal-angles.md#concept"
+    },
+    {
+      "id": "manipulate",
+      "type": "Manipulate",
+      "title": "Rotate the transversal to 50°",
+      "scene": "scene_ta_manipulate",
+      "instruction": "Drag point D to rotate the transversal. Adjust it until ∠1 (the angle at E between line p and the transversal) measures exactly 50°.",
+      "successCondition": {
+        "type": "angleMeasure",
+        "vertex": "E",
+        "sides": ["B", "D"],
+        "targetDegrees": 50,
+        "tolerance": 2.0
+      },
+      "successMessage": "Alternate interior angles are each 50° — and the alternate interior angle at F is also 50°.",
+      "maxAttempts": null
+    },
+    {
+      "id": "worked",
+      "type": "WorkedExample",
+      "title": "Find All Eight Angles from One",
+      "scene": "scene_ta_worked",
+      "steps": [
+        {
+          "order": 1,
+          "text": "∠1 = 65° is given (upper-right at E). ∠2 (upper-left at E) forms a linear pair with ∠1, so m∠2 = 180° − 65° = 115°.",
+          "canvasAction": { "type": "annotate", "target": "E", "text": "∠1 = 65°" }
+        },
+        {
+          "order": 2,
+          "text": "∠3 (lower-left at E) is a vertical angle to ∠1, so m∠3 = 65°. ∠4 (lower-right at E) is a vertical angle to ∠2, so m∠4 = 115°.",
+          "canvasAction": { "type": "annotate", "target": "E", "text": "∠3 = 65°, ∠4 = 115°" }
+        },
+        {
+          "order": 3,
+          "text": "Since p ∥ q, the Corresponding Angles Theorem gives us all four angles at F: ∠5 = ∠1 = 65°, ∠6 = ∠2 = 115°, ∠7 = ∠3 = 65°, ∠8 = ∠4 = 115°.",
+          "canvasAction": { "type": "annotate", "target": "F", "text": "∠5 = 65°, ∠6 = 115°" }
+        },
+        {
+          "order": 4,
+          "text": "Verify with the other theorems. Alternate interior angles: ∠3 (lower-left at E) and ∠5 (upper-right at F) are on opposite sides of the transversal between the lines — both 65° ✓. Co-interior angles: ∠4 (lower-right at E) and ∠5 (upper-right at F) are on the same side — 115° + 65° = 180° ✓.",
+          "canvasAction": null
+        }
+      ]
+    },
+    {
+      "id": "check",
+      "type": "Check",
+      "items": [
+        {
+          "id": "ta-check-1",
+          "kind": "multipleChoice",
+          "prompt": "Two parallel lines are cut by a transversal. Which pair of angles are alternate interior angles?",
+          "choices": [
+            "Two angles both above the upper parallel line, on opposite sides of the transversal",
+            "Two angles between the parallel lines, on opposite sides of the transversal",
+            "Two angles between the parallel lines, on the same side of the transversal",
+            "Two angles in the same corner at both intersections"
+          ],
+          "answerIndex": 1,
+          "explanation": "Alternate interior angles lie between the parallel lines (interior) and on opposite sides of the transversal (alternate). They are always congruent when the lines are parallel."
+        },
+        {
+          "id": "ta-check-2",
+          "kind": "multipleChoice",
+          "prompt": "Two parallel lines are cut by a transversal, forming angles of 70° and 110° alternately. A student says '70° and 110° are alternate interior angles.' What is wrong?",
+          "choices": [
+            "Nothing — alternate interior angles can be supplementary.",
+            "Alternate interior angles must be equal; 70° ≠ 110°, so these are co-interior angles.",
+            "Alternate interior angles must sum to 90°.",
+            "The student confused interior and exterior."
+          ],
+          "answerIndex": 1,
+          "explanation": "When lines are parallel, alternate interior angles are always congruent (equal). A pair summing to 180° and on the same side of the transversal would be co-interior (same-side interior) angles."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "type": "Practice",
+      "items": [
+        {
+          "id": "ta-prac-1",
+          "kind": "numeric",
+          "prompt": "Parallel lines m and n are cut by a transversal. An alternate interior angle at m measures 78°. Find the measure of the alternate interior angle at n.",
+          "answer": 78,
+          "tolerance": 0.01,
+          "hints": [
+            "What is the relationship between alternate interior angles when lines are parallel?",
+            "Alternate Interior Angles Theorem: alternate interior angles are congruent.",
+            "The alternate interior angle at n is also 78°."
+          ]
+        },
+        {
+          "id": "ta-prac-2",
+          "kind": "numeric",
+          "prompt": "Parallel lines a and b are cut by a transversal. A co-interior angle at a is 3x + 12 degrees. The co-interior angle at b is 2x + 8 degrees. Find x.",
+          "answer": 32,
+          "tolerance": 0.01,
+          "hints": [
+            "Co-interior (same-side interior) angles have a special sum when lines are parallel.",
+            "Co-interior angles are supplementary: (3x + 12) + (2x + 8) = 180.",
+            "5x + 20 = 180 → 5x = 160 → x = 32."
+          ]
+        },
+        {
+          "id": "ta-prac-3",
+          "kind": "multipleChoice",
+          "prompt": "A transversal crosses two parallel lines. Angle P is above the upper line on the left side. Angle Q is above the lower line on the left side. What type of angle pair is ∠P and ∠Q?",
+          "choices": [
+            "Alternate interior angles",
+            "Co-interior angles",
+            "Corresponding angles",
+            "Alternate exterior angles"
+          ],
+          "answerIndex": 2,
+          "hints": [
+            "Think about where each angle is located relative to its parallel line and the transversal.",
+            "Both angles are on the same side (left) and in the same relative position (above) at each intersection.",
+            "Same position at each intersection means corresponding angles."
+          ]
+        },
+        {
+          "id": "ta-prac-4",
+          "kind": "numeric",
+          "prompt": "Parallel lines j and k are cut by a transversal. An alternate exterior angle at j measures 5x − 10 degrees and the alternate exterior angle at k measures 3x + 26 degrees. Find the measure of each alternate exterior angle.",
+          "answer": 80,
+          "tolerance": 0.01,
+          "hints": [
+            "Alternate exterior angles are congruent when lines are parallel.",
+            "Set expressions equal: 5x − 10 = 3x + 26. Solve for x.",
+            "2x = 36 → x = 18.",
+            "Each alternate exterior angle = 5(18) − 10 = 80°. Check: 3(18) + 26 = 80° ✓."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reflection",
+      "type": "Reflection",
+      "proseRef": "02-transversal-angles.md#reflection"
+    }
+  ],
+  "scenes": {
+    "scene_ta_concept": {
+      "viewport": { "xMin": -1, "xMax": 11, "yMin": -1, "yMax": 9 },
+      "points": [
+        { "id": "Pa", "x": 0, "y": 7, "label": "" },
+        { "id": "Pb", "x": 10, "y": 7, "label": "p" },
+        { "id": "Qa", "x": 0, "y": 2, "label": "" },
+        { "id": "Qb", "x": 10, "y": 2, "label": "q" },
+        { "id": "Ta", "x": 2, "y": 0, "label": "" },
+        { "id": "Tb", "x": 8, "y": 9, "label": "t" },
+        { "id": "E", "x": 6, "y": 7, "label": "E" },
+        { "id": "F", "x": 4, "y": 2, "label": "F" },
+        { "id": "ann1", "x": 7.2, "y": 7.8, "label": "∠1" },
+        { "id": "ann2", "x": 4.8, "y": 7.8, "label": "∠2" },
+        { "id": "ann3", "x": 4.8, "y": 6.2, "label": "∠3" },
+        { "id": "ann4", "x": 7.2, "y": 6.2, "label": "∠4" },
+        { "id": "ann5", "x": 5.2, "y": 2.8, "label": "∠5" },
+        { "id": "ann6", "x": 2.8, "y": 2.8, "label": "∠6" },
+        { "id": "ann7", "x": 2.8, "y": 1.2, "label": "∠7" },
+        { "id": "ann8", "x": 5.2, "y": 1.2, "label": "∠8" }
+      ],
+      "segments": [
+        { "id": "lineP", "from": "Pa", "to": "Pb", "extend": "both" },
+        { "id": "lineQ", "from": "Qa", "to": "Qb", "extend": "both" },
+        { "id": "lineT", "from": "Ta", "to": "Tb", "extend": "both" }
+      ],
+      "marks": [
+        { "type": "parallelArrow", "onSegment": "lineP", "groupIndex": 1 },
+        { "type": "parallelArrow", "onSegment": "lineQ", "groupIndex": 1 }
+      ]
+    },
+    "scene_ta_manipulate": {
+      "viewport": { "xMin": -1, "xMax": 11, "yMin": -1, "yMax": 9 },
+      "points": [
+        { "id": "A", "x": 0, "y": 6, "label": "" },
+        { "id": "B", "x": 10, "y": 6, "label": "" },
+        { "id": "E", "x": 5, "y": 6, "label": "E", "draggable": false },
+        { "id": "D", "x": 8, "y": 2, "label": "D", "draggable": true },
+        { "id": "Ca", "x": 0, "y": 0, "label": "" },
+        { "id": "Cb", "x": 10, "y": 0, "label": "" },
+        { "id": "labelP", "x": 9.5, "y": 6.4, "label": "p" },
+        { "id": "labelQ", "x": 9.5, "y": 0.4, "label": "q" }
+      ],
+      "segments": [
+        { "id": "lineP", "from": "A", "to": "B", "extend": "both" },
+        { "id": "lineQ", "from": "Ca", "to": "Cb", "extend": "both" },
+        { "id": "transversal", "from": "E", "to": "D", "extend": "both" }
+      ],
+      "marks": [
+        { "type": "parallelArrow", "onSegment": "lineP", "groupIndex": 1 },
+        { "type": "parallelArrow", "onSegment": "lineQ", "groupIndex": 1 }
+      ],
+      "measurements": [
+        { "type": "angleMeasure", "vertex": "E", "sides": ["B", "D"], "show": true, "label": "∠1" }
+      ]
+    },
+    "scene_ta_worked": {
+      "viewport": { "xMin": -1, "xMax": 11, "yMin": -1, "yMax": 9 },
+      "points": [
+        { "id": "Pa", "x": 0, "y": 7, "label": "" },
+        { "id": "Pb", "x": 10, "y": 7, "label": "p" },
+        { "id": "Qa", "x": 0, "y": 2, "label": "" },
+        { "id": "Qb", "x": 10, "y": 2, "label": "q" },
+        { "id": "Ta", "x": 2, "y": 0, "label": "" },
+        { "id": "Tb", "x": 8, "y": 9, "label": "t" },
+        { "id": "E", "x": 6, "y": 7, "label": "E" },
+        { "id": "F", "x": 4, "y": 2, "label": "F" }
+      ],
+      "segments": [
+        { "id": "lineP", "from": "Pa", "to": "Pb", "extend": "both" },
+        { "id": "lineQ", "from": "Qa", "to": "Qb", "extend": "both" },
+        { "id": "lineT", "from": "Ta", "to": "Tb", "extend": "both" }
+      ],
+      "marks": [
+        { "type": "parallelArrow", "onSegment": "lineP", "groupIndex": 1 },
+        { "type": "parallelArrow", "onSegment": "lineQ", "groupIndex": 1 }
+      ]
+    }
+  },
+  "testItems": [
+    {
+      "id": "ta-test-1",
+      "kind": "multipleChoice",
+      "category": "procedural",
+      "prompt": "Two parallel lines are cut by a transversal. A corresponding angle at the first line measures 48°. What is the corresponding angle at the second line?",
+      "choices": ["42°", "48°", "132°", "180°"],
+      "answerIndex": 1,
+      "difficulty": 1
+    },
+    {
+      "id": "ta-test-2",
+      "kind": "multipleChoice",
+      "category": "procedural",
+      "prompt": "Two parallel lines are cut by a transversal. An alternate interior angle at one line is 63°. What is the alternate interior angle at the other line?",
+      "choices": ["27°", "63°", "117°", "180°"],
+      "answerIndex": 1,
+      "difficulty": 1
+    },
+    {
+      "id": "ta-test-3",
+      "kind": "numeric",
+      "category": "procedural",
+      "prompt": "Parallel lines r and s are cut by a transversal. A co-interior angle at r measures 58°. Find the co-interior angle at s.",
+      "answer": 122,
+      "tolerance": 0.01,
+      "difficulty": 2
+    },
+    {
+      "id": "ta-test-4",
+      "kind": "multipleChoice",
+      "category": "conceptual",
+      "prompt": "Which theorem justifies that alternate interior angles are congruent when two parallel lines are cut by a transversal?",
+      "choices": [
+        "Segment Addition Postulate",
+        "Corresponding Angles Postulate and vertical angles",
+        "Linear Pair Postulate",
+        "Co-interior Angles Theorem"
+      ],
+      "answerIndex": 1,
+      "explanation": "Alternate interior angles can be proven congruent by noting that each equals the corresponding angle (Corresponding Angles Postulate) and corresponding angles at one intersection are vertical to the alternate interior angle. Equivalently: one alternate interior angle equals the corresponding angle, and the corresponding angle equals its vertical angle partner which is the alternate interior angle.",
+      "difficulty": 2
+    },
+    {
+      "id": "ta-test-5",
+      "kind": "numeric",
+      "category": "procedural",
+      "prompt": "Parallel lines p and q are cut by a transversal. One angle in the figure is 71°. Find the measure of a co-interior angle paired with this 71° angle.",
+      "answer": 109,
+      "tolerance": 0.01,
+      "difficulty": 2
+    },
+    {
+      "id": "ta-test-6",
+      "kind": "numeric",
+      "category": "transfer",
+      "prompt": "Parallel lines m and n are cut by a transversal. An alternate interior angle at m is expressed as 4x + 9 degrees and the alternate interior angle at n is 7x − 24 degrees. Find x.",
+      "answer": 11,
+      "tolerance": 0.01,
+      "explanation": "Alternate interior angles are equal: 4x + 9 = 7x − 24 → 33 = 3x → x = 11. Check: 4(11) + 9 = 53°; 7(11) − 24 = 53° ✓.",
+      "difficulty": 3
+    },
+    {
+      "id": "ta-test-7",
+      "kind": "numeric",
+      "category": "transfer",
+      "prompt": "Parallel lines j and k are cut by a transversal. A co-interior angle at j is 5x + 20 degrees and the co-interior angle at k is 3x + 24 degrees. Find the measure of the larger co-interior angle.",
+      "answer": 105,
+      "tolerance": 0.01,
+      "explanation": "Co-interior angles are supplementary: (5x + 20) + (3x + 24) = 180 → 8x + 44 = 180 → 8x = 136 → x = 17. Angles: 5(17) + 20 = 105°; 3(17) + 24 = 75°. 105 + 75 = 180° ✓. The larger angle is 105°.",
+      "difficulty": 3
+    }
+  ]
+}

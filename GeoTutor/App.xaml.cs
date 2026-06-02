@@ -50,6 +50,7 @@ public partial class App : Application
             var skills = new SkillGraphService(db);
             skills.SeedIfEmpty();
             skills.MigrateUnit1Skills();
+            skills.MigrateUnit2Skills();
 
             SeedAlgebraItems(db);
             SeedGeometryPrereqSkills(db);
