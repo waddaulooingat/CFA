@@ -1,0 +1,60 @@
+{
+  "unit": {
+    "id": "unit-02",
+    "number": 2,
+    "name": "Parallel Lines & Transversals",
+    "description": "Parallel and perpendicular lines, the eight angles formed when a transversal crosses two parallel lines, the theorems and their converses, and the slope relationships that hold in the coordinate plane."
+  },
+  "skills": [
+    {
+      "id": "geo-u2-parallel-basics",
+      "name": "Parallel and Perpendicular Lines",
+      "unit": "unit-02",
+      "order": 1,
+      "prereqIds": ["geo-u1-point-line-plane"],
+      "startingDifficultyBand": 1,
+      "tags": ["parallel", "perpendicular", "skew", "notation"],
+      "estimatedMinutes": 20
+    },
+    {
+      "id": "geo-u2-transversal-angles",
+      "name": "Angles Formed by a Transversal",
+      "unit": "unit-02",
+      "order": 2,
+      "prereqIds": ["geo-u2-parallel-basics", "geo-u1-angle-measure"],
+      "startingDifficultyBand": 1,
+      "tags": ["transversal", "corresponding", "alternate-interior", "alternate-exterior", "co-interior"],
+      "estimatedMinutes": 25
+    },
+    {
+      "id": "geo-u2-parallel-theorems",
+      "name": "Parallel Line Theorems",
+      "unit": "unit-02",
+      "order": 3,
+      "prereqIds": ["geo-u2-transversal-angles"],
+      "startingDifficultyBand": 1,
+      "tags": ["theorems", "corresponding-angles-postulate", "alternate-interior-angles-theorem", "co-interior-supplementary"],
+      "estimatedMinutes": 25
+    },
+    {
+      "id": "geo-u2-proving-parallel",
+      "name": "Proving Lines Parallel",
+      "unit": "unit-02",
+      "order": 4,
+      "prereqIds": ["geo-u2-parallel-theorems", "geo-u1-if-then-logic"],
+      "startingDifficultyBand": 2,
+      "tags": ["converse-theorems", "proof", "parallel-conditions"],
+      "estimatedMinutes": 25
+    },
+    {
+      "id": "geo-u2-coordinate-parallel",
+      "name": "Parallel & Perpendicular in the Coordinate Plane",
+      "unit": "unit-02",
+      "order": 5,
+      "prereqIds": ["geo-u2-parallel-basics"],
+      "startingDifficultyBand": 2,
+      "tags": ["slope", "coordinate-geometry", "parallel-slopes", "perpendicular-slopes", "negative-reciprocal"],
+      "estimatedMinutes": 25
+    }
+  ]
+}
