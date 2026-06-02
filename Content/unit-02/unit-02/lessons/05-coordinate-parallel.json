@@ -1,0 +1,265 @@
+{
+  "skillId": "geo-u2-coordinate-parallel",
+  "lessonVersion": 1,
+  "beats": [
+    {
+      "id": "concept",
+      "type": "Concept",
+      "title": "Slope tests for parallel and perpendicular",
+      "scene": "scene_cp_concept",
+      "proseRef": "05-coordinate-parallel.md#concept"
+    },
+    {
+      "id": "manipulate",
+      "type": "Manipulate",
+      "title": "Match the slope",
+      "scene": "scene_cp_manipulate",
+      "instruction": "A fixed line ℓ has a known slope. Drag the handle on the second line until its slope EQUALS the slope of ℓ (parallel). Then toggle to PERPENDICULAR mode and drag until the slopes are negative reciprocals.",
+      "successCondition": {
+        "type": "slopeMatch",
+        "modes": [
+          { "mode": "parallel", "test": "m1 == m2", "tolerance": 0.05 },
+          { "mode": "perpendicular", "test": "m1 * m2 == -1", "tolerance": 0.05 }
+        ],
+        "completeWhenAll": true
+      },
+      "successMessage": "Both relationships in hand. Slope is your new shortcut for parallel and perpendicular.",
+      "maxAttempts": null
+    },
+    {
+      "id": "worked",
+      "type": "WorkedExample",
+      "title": "Line through (3, −2) perpendicular to y = (1/2)x + 4",
+      "scene": "scene_cp_worked",
+      "steps": [
+        {
+          "order": 1,
+          "text": "Given line slope m₁ = 1/2.",
+          "canvasAction": { "type": "annotate", "target": "givenLine", "text": "m = 1/2" }
+        },
+        {
+          "order": 2,
+          "text": "Perpendicular slope is the negative reciprocal: m₂ = −2.",
+          "canvasAction": null
+        },
+        {
+          "order": 3,
+          "text": "Use point-slope form with (3, −2) and slope −2: y + 2 = −2(x − 3).",
+          "canvasAction": null
+        },
+        {
+          "order": 4,
+          "text": "Simplify: y = −2x + 4. Check: m₁ · m₂ = (1/2)(−2) = −1 ✓; (3, −2) satisfies y = −2x + 4 ✓.",
+          "canvasAction": { "type": "annotate", "target": "newLine", "text": "y = −2x + 4" }
+        }
+      ]
+    },
+    {
+      "id": "check",
+      "type": "Check",
+      "items": [
+        {
+          "id": "cp-check-1",
+          "kind": "multipleChoice",
+          "prompt": "Two lines are parallel iff their slopes are…",
+          "choices": ["equal", "opposite", "negative reciprocals", "both zero"],
+          "answerIndex": 0
+        },
+        {
+          "id": "cp-check-2",
+          "kind": "multipleChoice",
+          "prompt": "Two lines are perpendicular iff their slopes…",
+          "choices": ["are equal", "are opposites", "have product −1", "sum to 0"],
+          "answerIndex": 2
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "type": "Practice",
+      "items": [
+        {
+          "id": "cp-prac-1",
+          "kind": "multipleChoice",
+          "prompt": "Line 1 has slope 3/4. A line parallel to it has slope…",
+          "choices": ["−3/4", "3/4", "−4/3", "4/3"],
+          "answerIndex": 1,
+          "hints": [
+            "Parallel = equal slopes.",
+            "3/4."
+          ]
+        },
+        {
+          "id": "cp-prac-2",
+          "kind": "multipleChoice",
+          "prompt": "Line 1 has slope 3/4. A line perpendicular to it has slope…",
+          "choices": ["−3/4", "3/4", "−4/3", "4/3"],
+          "answerIndex": 2,
+          "hints": [
+            "Perpendicular = negative reciprocal.",
+            "Flip the fraction and change the sign.",
+            "Negative reciprocal of 3/4 is −4/3."
+          ]
+        },
+        {
+          "id": "cp-prac-3",
+          "kind": "multipleChoice",
+          "prompt": "Are y = 2x + 1 and y = 2x − 5 parallel, perpendicular, or neither?",
+          "choices": ["parallel", "perpendicular", "neither"],
+          "answerIndex": 0,
+          "hints": [
+            "Compare the slopes.",
+            "Both have slope 2.",
+            "Equal slopes → parallel."
+          ]
+        },
+        {
+          "id": "cp-prac-4",
+          "kind": "multipleChoice",
+          "prompt": "Are y = (1/3)x + 4 and y = −3x − 1 parallel, perpendicular, or neither?",
+          "choices": ["parallel", "perpendicular", "neither"],
+          "answerIndex": 1,
+          "hints": [
+            "Compare slopes 1/3 and −3.",
+            "Product: (1/3)(−3) = −1.",
+            "Product −1 → perpendicular."
+          ]
+        },
+        {
+          "id": "cp-prac-5",
+          "kind": "freeResponse",
+          "prompt": "Write the equation in slope-intercept form (y = mx + b) of the line through (0, 5) PARALLEL to y = 4x − 7.",
+          "answer": "y = 4x + 5",
+          "acceptableAnswers": ["y = 4x + 5", "y=4x+5", "y = 4x+5", "4x + 5"],
+          "hints": [
+            "Parallel → same slope.",
+            "Same slope 4. y-intercept 5 from the point (0, 5).",
+            "y = 4x + 5."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reflection",
+      "type": "Reflection",
+      "proseRef": "05-coordinate-parallel.md#reflection"
+    }
+  ],
+  "scenes": {
+    "scene_cp_concept": {
+      "viewport": { "xMin": -8, "xMax": 8, "yMin": -6, "yMax": 8, "grid": true },
+      "axes": { "show": true, "labelX": "x", "labelY": "y" },
+      "lines": [
+        { "id": "ell", "equation": "y = (2/3)x + 1", "label": "ℓ: m = 2/3" },
+        { "id": "para", "equation": "y = (2/3)x - 3", "label": "parallel (m = 2/3)" },
+        { "id": "perp", "equation": "y = -(3/2)x + 2", "label": "perpendicular (m = −3/2)" }
+      ],
+      "annotations": [
+        { "type": "text", "x": 0, "y": 7, "text": "Parallel: equal slopes. Perpendicular: negative reciprocals." }
+      ]
+    },
+    "scene_cp_manipulate": {
+      "viewport": { "xMin": -8, "xMax": 8, "yMin": -6, "yMax": 8, "grid": true },
+      "axes": { "show": true, "labelX": "x", "labelY": "y" },
+      "points": [
+        { "id": "P", "x": 2, "y": 1, "label": "P (fixed)", "draggable": false },
+        { "id": "slopeHandle", "x": 5, "y": 4, "label": "drag", "draggable": true }
+      ],
+      "lines": [
+        { "id": "ellFixed", "equation": "y = (1/2)x + 1", "label": "ℓ", "marks": ["parallelSingle"] },
+        { "id": "userLine", "throughPoint": "P", "throughPoint2": "slopeHandle", "label": "your line" }
+      ],
+      "measurements": [
+        { "type": "slope", "of": "ellFixed", "show": true, "label": "slope of ℓ" },
+        { "type": "slope", "of": "userLine", "show": true, "label": "slope of your line" }
+      ],
+      "modeToggle": { "modes": ["parallel", "perpendicular"], "initial": "parallel" }
+    },
+    "scene_cp_worked": {
+      "viewport": { "xMin": -6, "xMax": 8, "yMin": -6, "yMax": 8, "grid": true },
+      "axes": { "show": true, "labelX": "x", "labelY": "y" },
+      "points": [
+        { "id": "P", "x": 3, "y": -2, "label": "(3, −2)" }
+      ],
+      "lines": [
+        { "id": "givenLine", "equation": "y = (1/2)x + 4", "label": "given: y = (1/2)x + 4" },
+        { "id": "newLine", "equation": "y = -2x + 4", "label": "new: y = −2x + 4", "marks": ["perpendicular"] }
+      ]
+    }
+  },
+  "testItems": [
+    {
+      "id": "cp-test-1",
+      "kind": "multipleChoice",
+      "category": "procedural",
+      "prompt": "The slope of a line parallel to y = −5x + 2 is…",
+      "choices": ["5", "−5", "1/5", "−1/5"],
+      "answerIndex": 1,
+      "difficulty": 1
+    },
+    {
+      "id": "cp-test-2",
+      "kind": "multipleChoice",
+      "category": "procedural",
+      "prompt": "The slope of a line perpendicular to y = (2/5)x + 1 is…",
+      "choices": ["2/5", "−2/5", "5/2", "−5/2"],
+      "answerIndex": 3,
+      "difficulty": 1
+    },
+    {
+      "id": "cp-test-3",
+      "kind": "multipleChoice",
+      "category": "procedural",
+      "prompt": "Are y = 3x + 1 and y = −(1/3)x − 4 parallel, perpendicular, or neither?",
+      "choices": ["parallel", "perpendicular", "neither"],
+      "answerIndex": 1,
+      "explanation": "Product of slopes: 3 · (−1/3) = −1.",
+      "difficulty": 1
+    },
+    {
+      "id": "cp-test-4",
+      "kind": "multipleChoice",
+      "category": "conceptual",
+      "prompt": "A horizontal line and a vertical line are…",
+      "choices": ["parallel", "perpendicular", "neither — undefined slope blocks the test", "the same line"],
+      "answerIndex": 1,
+      "explanation": "Horizontal and vertical lines are perpendicular by inspection — the product test doesn't apply because vertical slope is undefined.",
+      "difficulty": 2
+    },
+    {
+      "id": "cp-test-5",
+      "kind": "freeResponse",
+      "category": "transfer",
+      "prompt": "Write the equation in y = mx + b form of the line through (−1, 4) parallel to y = 2x + 7.",
+      "answer": "y = 2x + 6",
+      "acceptableAnswers": ["y = 2x + 6", "y=2x+6", "y = 2x+6"],
+      "explanation": "Same slope 2. Through (−1, 4): 4 = 2(−1) + b ⇒ b = 6.",
+      "difficulty": 2
+    },
+    {
+      "id": "cp-test-6",
+      "kind": "freeResponse",
+      "category": "transfer",
+      "prompt": "Write the equation in y = mx + b form of the line through (4, 1) perpendicular to y = (1/2)x − 3.",
+      "answer": "y = -2x + 9",
+      "acceptableAnswers": ["y = -2x + 9", "y = −2x + 9", "y=-2x+9", "y=−2x+9", "y = -2x+9"],
+      "explanation": "Perpendicular slope = −2. Through (4, 1): 1 = −2(4) + b ⇒ b = 9.",
+      "difficulty": 3
+    },
+    {
+      "id": "cp-test-7",
+      "kind": "multipleChoice",
+      "category": "transfer",
+      "prompt": "Lines pass through these point pairs. Which pair gives a line PARALLEL to y = 3x − 1?",
+      "choices": [
+        "(0, 0) and (1, 1)",
+        "(2, 4) and (3, 7)",
+        "(0, 5) and (3, 4)",
+        "(1, 2) and (4, 1)"
+      ],
+      "answerIndex": 1,
+      "explanation": "Slope from (2,4) to (3,7) = (7−4)/(3−2) = 3. Matches given slope 3.",
+      "difficulty": 3
+    }
+  ]
+}

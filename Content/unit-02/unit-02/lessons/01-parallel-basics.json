@@ -1,0 +1,264 @@
+{
+  "skillId": "geo-u2-parallel-basics",
+  "lessonVersion": 1,
+  "beats": [
+    {
+      "id": "concept",
+      "type": "Concept",
+      "title": "Parallel, Perpendicular, Skew",
+      "scene": "scene_pb_concept",
+      "proseRef": "01-parallel-basics.md#concept"
+    },
+    {
+      "id": "manipulate",
+      "type": "Manipulate",
+      "title": "Make them parallel",
+      "scene": "scene_pb_manipulate",
+      "instruction": "Rotate line m around point P until m is parallel to line ℓ.",
+      "successCondition": {
+        "type": "linesParallel",
+        "line1": "ell",
+        "line2": "m",
+        "tolerance": 1.0
+      },
+      "successMessage": "Parallel! Notice the matching arrows that appear on both lines.",
+      "maxAttempts": null
+    },
+    {
+      "id": "worked",
+      "type": "WorkedExample",
+      "title": "Two perpendiculars to the same line",
+      "scene": "scene_pb_worked",
+      "steps": [
+        {
+          "order": 1,
+          "text": "Line a meets line b at 90°. Mark the right angle.",
+          "canvasAction": { "type": "highlight", "target": "ab_intersection" }
+        },
+        {
+          "order": 2,
+          "text": "Line c also meets line b at 90°. Mark that right angle too.",
+          "canvasAction": { "type": "highlight", "target": "cb_intersection" }
+        },
+        {
+          "order": 3,
+          "text": "In a plane, only one direction is perpendicular to b. Both a and c go in that direction, so they point the same way — they are parallel.",
+          "canvasAction": { "type": "annotate", "target": "a_and_c", "text": "a ∥ c" }
+        }
+      ]
+    },
+    {
+      "id": "check",
+      "type": "Check",
+      "items": [
+        {
+          "id": "pb-check-1",
+          "kind": "multipleChoice",
+          "prompt": "Two lines that lie in the same plane and never intersect are…",
+          "choices": ["perpendicular", "parallel", "skew", "concurrent"],
+          "answerIndex": 1,
+          "explanation": "Same plane + never intersect = parallel."
+        },
+        {
+          "id": "pb-check-2",
+          "kind": "multipleChoice",
+          "prompt": "Which symbol means 'is perpendicular to'?",
+          "choices": ["∥", "⊥", "≅", "≠"],
+          "answerIndex": 1
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "type": "Practice",
+      "items": [
+        {
+          "id": "pb-prac-1",
+          "kind": "multipleChoice",
+          "prompt": "Two lines that do NOT lie in the same plane and never intersect are…",
+          "choices": ["parallel", "perpendicular", "skew", "intersecting"],
+          "answerIndex": 2,
+          "hints": [
+            "Parallel requires the same plane. What if the lines aren't coplanar?",
+            "Skew lines are non-coplanar and non-intersecting.",
+            "Skew."
+          ]
+        },
+        {
+          "id": "pb-prac-2",
+          "kind": "multipleChoice",
+          "prompt": "Through a point not on a given line, how many lines parallel to the given line exist?",
+          "choices": ["0", "exactly 1", "exactly 2", "infinitely many"],
+          "answerIndex": 1,
+          "hints": [
+            "This is the Parallel Postulate.",
+            "Exactly one.",
+            "Through a point not on a line, exactly one line is parallel to it."
+          ]
+        },
+        {
+          "id": "pb-prac-3",
+          "kind": "multipleChoice",
+          "prompt": "Lines a and b are perpendicular. Lines a and c are also perpendicular. What is the relationship between b and c (in the same plane)?",
+          "choices": ["parallel", "perpendicular", "skew", "cannot be determined"],
+          "answerIndex": 0,
+          "hints": [
+            "Both b and c are perpendicular to the same line.",
+            "Two lines perpendicular to the same line in a plane must be parallel.",
+            "b ∥ c."
+          ]
+        },
+        {
+          "id": "pb-prac-4",
+          "kind": "multipleChoice",
+          "prompt": "Which is a real-world example of skew lines?",
+          "choices": [
+            "Railroad tracks",
+            "The cross at the top of a flagpole",
+            "An edge of the ceiling and an edge of the floor at different walls",
+            "Two pages of an open book"
+          ],
+          "answerIndex": 2,
+          "hints": [
+            "Skew = not coplanar, not intersecting.",
+            "Look for two lines that exist in 3D space but never share a plane.",
+            "Different-wall edges of ceiling and floor are skew."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reflection",
+      "type": "Reflection",
+      "proseRef": "01-parallel-basics.md#reflection"
+    }
+  ],
+  "scenes": {
+    "scene_pb_concept": {
+      "viewport": { "xMin": -1, "xMax": 13, "yMin": -1, "yMax": 9 },
+      "points": [
+        { "id": "L1", "x": 1, "y": 7 },
+        { "id": "L2", "x": 6, "y": 7 },
+        { "id": "M1", "x": 1, "y": 5 },
+        { "id": "M2", "x": 6, "y": 5 },
+        { "id": "N1", "x": 8, "y": 7 },
+        { "id": "N2", "x": 12, "y": 3 },
+        { "id": "O1", "x": 8, "y": 3 },
+        { "id": "O2", "x": 12, "y": 7 }
+      ],
+      "segments": [
+        { "id": "lineL", "from": "L1", "to": "L2", "extend": "both", "label": "ℓ", "marks": ["parallelSingle"] },
+        { "id": "lineM", "from": "M1", "to": "M2", "extend": "both", "label": "m", "marks": ["parallelSingle"] },
+        { "id": "lineN", "from": "N1", "to": "N2", "extend": "both", "label": "n" },
+        { "id": "lineO", "from": "O1", "to": "O2", "extend": "both", "label": "p" }
+      ],
+      "marks": [
+        { "type": "rightAngle", "at": { "x": 10, "y": 5 }, "between": ["lineN", "lineO"] }
+      ],
+      "annotations": [
+        { "type": "text", "x": 3.5, "y": 8, "text": "ℓ ∥ m (parallel)" },
+        { "type": "text", "x": 10, "y": 8, "text": "n ⊥ p (perpendicular)" }
+      ]
+    },
+    "scene_pb_manipulate": {
+      "viewport": { "xMin": -1, "xMax": 11, "yMin": -1, "yMax": 8 },
+      "points": [
+        { "id": "L1", "x": 0, "y": 5, "draggable": false },
+        { "id": "L2", "x": 10, "y": 5, "draggable": false },
+        { "id": "P", "x": 5, "y": 2, "label": "P", "draggable": false },
+        { "id": "Mhandle", "x": 9, "y": 4, "label": "drag", "draggable": true, "constrainToCircle": { "center": "P", "radius": 4 } }
+      ],
+      "segments": [
+        { "id": "ell", "from": "L1", "to": "L2", "extend": "both", "label": "ℓ" },
+        { "id": "m", "from": "P", "to": "Mhandle", "extend": "both", "label": "m" }
+      ],
+      "measurements": [
+        { "type": "angleBetweenLines", "line1": "ell", "line2": "m", "show": true, "label": "angle between ℓ and m" }
+      ]
+    },
+    "scene_pb_worked": {
+      "viewport": { "xMin": -1, "xMax": 11, "yMin": -1, "yMax": 9 },
+      "points": [
+        { "id": "A1", "x": 1, "y": 7 },
+        { "id": "A2", "x": 9, "y": 7 },
+        { "id": "B1", "x": 4, "y": 1 },
+        { "id": "B2", "x": 4, "y": 8 },
+        { "id": "C1", "x": 1, "y": 3 },
+        { "id": "C2", "x": 9, "y": 3 }
+      ],
+      "segments": [
+        { "id": "lineA", "from": "A1", "to": "A2", "extend": "both", "label": "a" },
+        { "id": "lineB", "from": "B1", "to": "B2", "extend": "both", "label": "b" },
+        { "id": "lineC", "from": "C1", "to": "C2", "extend": "both", "label": "c" }
+      ],
+      "marks": [
+        { "type": "rightAngle", "at": { "x": 4, "y": 7 }, "between": ["lineA", "lineB"] },
+        { "type": "rightAngle", "at": { "x": 4, "y": 3 }, "between": ["lineC", "lineB"] }
+      ]
+    }
+  },
+  "testItems": [
+    {
+      "id": "pb-test-1",
+      "kind": "multipleChoice",
+      "category": "procedural",
+      "prompt": "What does the symbol ∥ mean?",
+      "choices": ["is congruent to", "is perpendicular to", "is parallel to", "is equal to"],
+      "answerIndex": 2,
+      "difficulty": 1
+    },
+    {
+      "id": "pb-test-2",
+      "kind": "multipleChoice",
+      "category": "procedural",
+      "prompt": "Two perpendicular lines meet at what angle?",
+      "choices": ["45°", "60°", "90°", "180°"],
+      "answerIndex": 2,
+      "difficulty": 1
+    },
+    {
+      "id": "pb-test-3",
+      "kind": "multipleChoice",
+      "category": "conceptual",
+      "prompt": "Which statement about parallel lines is FALSE?",
+      "choices": [
+        "They lie in the same plane.",
+        "They never intersect.",
+        "They have exactly one point in common.",
+        "Through an outside point, exactly one line is parallel to them."
+      ],
+      "answerIndex": 2,
+      "difficulty": 2
+    },
+    {
+      "id": "pb-test-4",
+      "kind": "multipleChoice",
+      "category": "conceptual",
+      "prompt": "Two lines that never intersect must be parallel. TRUE or FALSE?",
+      "choices": ["True", "False"],
+      "answerIndex": 1,
+      "explanation": "Skew lines never intersect either — but they aren't coplanar so they aren't parallel.",
+      "difficulty": 2
+    },
+    {
+      "id": "pb-test-5",
+      "kind": "multipleChoice",
+      "category": "transfer",
+      "prompt": "Lines p and q are both perpendicular to line r in the same plane. Lines q and s are perpendicular. What is the relationship between p and s?",
+      "choices": ["parallel", "perpendicular", "skew", "cannot be determined"],
+      "answerIndex": 1,
+      "explanation": "p ∥ q (both perpendicular to r). q ⊥ s. So p ⊥ s.",
+      "difficulty": 3
+    },
+    {
+      "id": "pb-test-6",
+      "kind": "multipleChoice",
+      "category": "transfer",
+      "prompt": "In a rectangular room, an edge of the ceiling and an edge of the floor that are NOT directly above each other are…",
+      "choices": ["parallel", "perpendicular", "skew", "intersecting"],
+      "answerIndex": 2,
+      "explanation": "Different elevations + different walls = different planes. Non-coplanar, non-intersecting = skew.",
+      "difficulty": 3
+    }
+  ]
+}

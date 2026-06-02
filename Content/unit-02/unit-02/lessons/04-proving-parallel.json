@@ -1,0 +1,264 @@
+{
+  "skillId": "geo-u2-proving-parallel",
+  "lessonVersion": 1,
+  "beats": [
+    {
+      "id": "concept",
+      "type": "Concept",
+      "title": "Proving Lines Parallel (the converses)",
+      "scene": "scene_pp_concept",
+      "proseRef": "04-proving-parallel.md#concept"
+    },
+    {
+      "id": "manipulate",
+      "type": "Manipulate",
+      "title": "Make them parallel",
+      "scene": "scene_pp_manipulate",
+      "instruction": "Two lines are cut by a transversal. Drag the bottom line until the corresponding angle pair is congruent — at that moment, the lines become parallel.",
+      "successCondition": {
+        "type": "anglePairCongruent",
+        "pair": "corresponding",
+        "tolerance": 1.0
+      },
+      "successMessage": "Corresponding angles equal → lines parallel. (Converse of the Corresponding Angles Postulate.)",
+      "maxAttempts": null
+    },
+    {
+      "id": "worked",
+      "type": "WorkedExample",
+      "title": "Use the converse to conclude parallel",
+      "scene": "scene_pp_worked",
+      "steps": [
+        {
+          "order": 1,
+          "text": "Given: ∠3 = 72° and ∠5 = 72°. ∠3 and ∠5 are alternate interior angles.",
+          "canvasAction": { "type": "highlight", "target": ["angle3", "angle5"] }
+        },
+        {
+          "order": 2,
+          "text": "Recall the Converse of the Alternate Interior Angles Theorem: if alternate interior angles are congruent, then the lines are parallel.",
+          "canvasAction": null
+        },
+        {
+          "order": 3,
+          "text": "∠3 ≅ ∠5 (given), so a ∥ b. Mark them parallel.",
+          "canvasAction": { "type": "annotate", "target": "lines", "text": "a ∥ b" }
+        }
+      ]
+    },
+    {
+      "id": "check",
+      "type": "Check",
+      "items": [
+        {
+          "id": "pp-check-1",
+          "kind": "multipleChoice",
+          "prompt": "Two lines cut by a transversal have congruent corresponding angles. What can you conclude?",
+          "choices": [
+            "Nothing — congruence is a coincidence.",
+            "The lines are perpendicular.",
+            "The lines are parallel.",
+            "The lines are skew."
+          ],
+          "answerIndex": 2
+        },
+        {
+          "id": "pp-check-2",
+          "kind": "multipleChoice",
+          "prompt": "Two lines cut by a transversal have supplementary co-interior angles. The lines are…",
+          "choices": ["parallel", "perpendicular", "skew", "definitely not parallel"],
+          "answerIndex": 0
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "type": "Practice",
+      "items": [
+        {
+          "id": "pp-prac-1",
+          "kind": "multipleChoice",
+          "prompt": "∠1 and ∠5 are corresponding. ∠1 = 80°, ∠5 = 80°. Are the lines parallel?",
+          "choices": ["Yes", "No", "Cannot tell"],
+          "answerIndex": 0,
+          "hints": [
+            "Corresponding angles congruent → lines parallel.",
+            "Converse of the Corresponding Angles Postulate."
+          ]
+        },
+        {
+          "id": "pp-prac-2",
+          "kind": "multipleChoice",
+          "prompt": "∠3 and ∠6 are co-interior. ∠3 = 100°, ∠6 = 75°. Are the lines parallel?",
+          "choices": ["Yes", "No", "Cannot tell"],
+          "answerIndex": 1,
+          "hints": [
+            "For parallel via co-interior, the pair must be SUPPLEMENTARY (sum to 180°).",
+            "100 + 75 = 175 ≠ 180.",
+            "Not parallel."
+          ]
+        },
+        {
+          "id": "pp-prac-3",
+          "kind": "multipleChoice",
+          "prompt": "∠2 and ∠8 are alternate exterior. ∠2 = 65°, ∠8 = 65°. Are the lines parallel?",
+          "choices": ["Yes", "No", "Cannot tell"],
+          "answerIndex": 0,
+          "hints": [
+            "Alternate exterior congruent → lines parallel.",
+            "Converse of the Alternate Exterior Angles Theorem."
+          ]
+        },
+        {
+          "id": "pp-prac-4",
+          "kind": "numeric",
+          "prompt": "Lines a and b are cut by transversal t. ∠1 and ∠5 are corresponding. ∠1 = (4x + 10)°, ∠5 = (2x + 50)°. For what value of x are a and b parallel?",
+          "answer": 20,
+          "tolerance": 0.01,
+          "hints": [
+            "Set the corresponding angles equal.",
+            "4x + 10 = 2x + 50.",
+            "2x = 40 ⇒ x = 20."
+          ]
+        },
+        {
+          "id": "pp-prac-5",
+          "kind": "multipleChoice",
+          "prompt": "Two distinct lines are both parallel to a third line. The two lines are…",
+          "choices": ["parallel to each other", "perpendicular to each other", "skew", "the same line"],
+          "answerIndex": 0,
+          "hints": [
+            "Transitivity of parallel.",
+            "If a ∥ c and b ∥ c, then a ∥ b."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reflection",
+      "type": "Reflection",
+      "proseRef": "04-proving-parallel.md#reflection"
+    }
+  ],
+  "scenes": {
+    "scene_pp_concept": {
+      "viewport": { "xMin": -1, "xMax": 13, "yMin": -1, "yMax": 9 },
+      "annotations": [
+        { "type": "text", "x": 6, "y": 8, "text": "Forward (Lesson 3): parallel → angle relationship.", "size": "medium" },
+        { "type": "text", "x": 6, "y": 6.5, "text": "Converse (this lesson): angle relationship → parallel.", "size": "medium" },
+        { "type": "text", "x": 6, "y": 4.5, "text": "Both directions hold for:", "size": "medium" },
+        { "type": "text", "x": 6, "y": 3.5, "text": "Corresponding congruent, alt-interior congruent," },
+        { "type": "text", "x": 6, "y": 2.5, "text": "alt-exterior congruent, co-interior supplementary." }
+      ]
+    },
+    "scene_pp_manipulate": {
+      "viewport": { "xMin": -1, "xMax": 13, "yMin": -1, "yMax": 9 },
+      "points": [
+        { "id": "L1A", "x": 0, "y": 6, "draggable": false },
+        { "id": "L1B", "x": 12, "y": 6, "draggable": false },
+        { "id": "Pivot", "x": 5, "y": 2, "draggable": false, "label": "pivot" },
+        { "id": "BhandleEnd", "x": 11, "y": 1, "label": "drag", "draggable": true, "constrainToCircle": { "center": "Pivot", "radius": 6 } },
+        { "id": "TA", "x": 3, "y": 0 },
+        { "id": "TB", "x": 11, "y": 8 }
+      ],
+      "segments": [
+        { "id": "lineA", "from": "L1A", "to": "L1B", "extend": "both", "label": "a" },
+        { "id": "lineB", "from": "Pivot", "to": "BhandleEnd", "extend": "both", "label": "b" },
+        { "id": "transv", "from": "TA", "to": "TB", "extend": "both", "label": "t" }
+      ],
+      "measurements": [
+        { "type": "correspondingAnglePair", "lineTop": "lineA", "lineBottom": "lineB", "transversal": "transv", "show": true, "label": "corresponding pair" }
+      ]
+    },
+    "scene_pp_worked": {
+      "viewport": { "xMin": -1, "xMax": 13, "yMin": -1, "yMax": 9 },
+      "points": [
+        { "id": "L1A", "x": 0, "y": 6 },
+        { "id": "L1B", "x": 12, "y": 6 },
+        { "id": "L2A", "x": 0, "y": 2 },
+        { "id": "L2B", "x": 12, "y": 2 },
+        { "id": "TA", "x": 3, "y": 0 },
+        { "id": "TB", "x": 11, "y": 8 }
+      ],
+      "segments": [
+        { "id": "lineA", "from": "L1A", "to": "L1B", "extend": "both", "label": "a" },
+        { "id": "lineB", "from": "L2A", "to": "L2B", "extend": "both", "label": "b" },
+        { "id": "transv", "from": "TA", "to": "TB", "extend": "both", "label": "t" }
+      ],
+      "annotations": [
+        { "type": "angleLabel", "at": { "x": 7.7, "y": 5.3 }, "text": "3 = 72°" },
+        { "type": "angleLabel", "at": { "x": 4.0, "y": 2.7 }, "text": "5 = 72°" }
+      ]
+    }
+  },
+  "testItems": [
+    {
+      "id": "pp-test-1",
+      "kind": "multipleChoice",
+      "category": "procedural",
+      "prompt": "Two lines cut by a transversal have alternate interior angles measuring 55° and 55°. The lines are…",
+      "choices": ["parallel", "perpendicular", "not parallel", "cannot be determined"],
+      "answerIndex": 0,
+      "difficulty": 1
+    },
+    {
+      "id": "pp-test-2",
+      "kind": "multipleChoice",
+      "category": "procedural",
+      "prompt": "Two lines cut by a transversal have co-interior angles measuring 95° and 85°. The lines are…",
+      "choices": ["parallel", "perpendicular", "not parallel", "cannot be determined"],
+      "answerIndex": 0,
+      "explanation": "Co-interior sum to 180° (95 + 85 = 180), so by the converse theorem the lines are parallel.",
+      "difficulty": 2
+    },
+    {
+      "id": "pp-test-3",
+      "kind": "multipleChoice",
+      "category": "conceptual",
+      "prompt": "Which statement is the CONVERSE of 'If two lines are parallel, then corresponding angles are congruent'?",
+      "choices": [
+        "If two lines are not parallel, then corresponding angles are not congruent.",
+        "If corresponding angles are not congruent, then the lines are not parallel.",
+        "If corresponding angles are congruent, then the lines are parallel.",
+        "Two lines are parallel iff corresponding angles are congruent."
+      ],
+      "answerIndex": 2,
+      "difficulty": 2
+    },
+    {
+      "id": "pp-test-4",
+      "kind": "multipleChoice",
+      "category": "conceptual",
+      "prompt": "Two lines that are both perpendicular to a third line are…",
+      "choices": ["intersecting", "skew", "parallel", "cannot be determined"],
+      "answerIndex": 2,
+      "explanation": "The two right angles at each intersection are corresponding (or alt interior), and they're congruent. By the converse theorem, the lines are parallel.",
+      "difficulty": 2
+    },
+    {
+      "id": "pp-test-5",
+      "kind": "numeric",
+      "category": "transfer",
+      "prompt": "Lines p and q cut by transversal t. ∠3 and ∠6 are co-interior. ∠3 = (3x + 20)°, ∠6 = (5x − 4)°. Find the value of x that makes p ∥ q.",
+      "answer": 20.5,
+      "tolerance": 0.05,
+      "explanation": "Set co-interior sum to 180°: (3x + 20) + (5x − 4) = 180 ⇒ 8x + 16 = 180 ⇒ x = 20.5.",
+      "difficulty": 3
+    },
+    {
+      "id": "pp-test-6",
+      "kind": "multipleChoice",
+      "category": "transfer",
+      "prompt": "Statement: 'If two lines have a 90° angle with a third line, they are parallel.' This is true. Why?",
+      "choices": [
+        "Alternate exterior angles are 90° each.",
+        "Corresponding angles are both 90° and therefore congruent — converse of Corresponding Angles Postulate.",
+        "Co-interior angles are both 90° and supplementary.",
+        "All of the above are valid justifications."
+      ],
+      "answerIndex": 3,
+      "explanation": "All three justifications are valid — any of the converse theorems works.",
+      "difficulty": 3
+    }
+  ]
+}

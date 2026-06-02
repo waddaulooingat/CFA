@@ -8,11 +8,11 @@ using GeoTutor.Core.Models;
 /// Used by LessonEngineService.BuildFallbackBeats when the LLM is offline.
 ///
 /// Skills covered:
-///   geo-u2-parallel-identify   — Identifying parallel lines
-///   geo-u2-transversal-angles  — Corresponding, alternate interior/exterior, co-interior
-///   geo-u2-parallel-proofs     — Proving lines parallel
-///   geo-u2-perpendicular       — Perpendicular lines and distance
-///   geo-u2-angle-relationships — Angle pair relationships in parallel line setups
+///   geo-u2-parallel-basics     — Parallel and Perpendicular Lines
+///   geo-u2-transversal-angles  — Angles Formed by a Transversal
+///   geo-u2-proving-parallel    — Proving Lines Parallel
+///   geo-u2-coordinate-parallel — Parallel & Perpendicular in the Coordinate Plane
+///   geo-u2-parallel-theorems   — Parallel Line Theorems
 /// </summary>
 public static class Unit2Items
 {
@@ -22,12 +22,12 @@ public static class Unit2Items
     {
         var items = new List<Item>();
 
-        // ── geo-u2-parallel-identify : Identifying parallel lines ──────────
+        // ── geo-u2-parallel-basics : Parallel and Perpendicular Lines ─────
 
         items.Add(new Item
         {
             Id         = "u2-pid-001",
-            SkillId    = "geo-u2-parallel-identify",
+            SkillId    = "geo-u2-parallel-basics",
             Template   = "text",
             ParamsJson = "{}",
             Prompt     = "Two lines in the same plane that never intersect are called ___ lines.",
@@ -50,7 +50,7 @@ public static class Unit2Items
         items.Add(new Item
         {
             Id         = "u2-pid-002",
-            SkillId    = "geo-u2-parallel-identify",
+            SkillId    = "geo-u2-parallel-basics",
             Template   = "text",
             ParamsJson = "{}",
             Prompt     = "Lines m and n are cut by a transversal. Two co-interior (same-side interior) angles measure 65° and 115°. Are lines m and n parallel?",
@@ -72,7 +72,7 @@ public static class Unit2Items
         items.Add(new Item
         {
             Id         = "u2-pid-003",
-            SkillId    = "geo-u2-parallel-identify",
+            SkillId    = "geo-u2-parallel-basics",
             Template   = "text",
             ParamsJson = "{}",
             Prompt     = "Line AB passes through A(1, 2) and B(3, 4). Line CD passes through C(0, 1) and D(4, 5). Are lines AB and CD parallel?",
@@ -162,12 +162,12 @@ public static class Unit2Items
             Type       = ItemType.Procedural
         });
 
-        // ── geo-u2-parallel-proofs : Proving lines parallel ────────────────
+        // ── geo-u2-proving-parallel : Proving Lines Parallel ──────────────
 
         items.Add(new Item
         {
             Id         = "u2-pp-001",
-            SkillId    = "geo-u2-parallel-proofs",
+            SkillId    = "geo-u2-proving-parallel",
             Template   = "text",
             ParamsJson = "{}",
             Prompt     = "To prove two lines are parallel, you could show that alternate interior angles formed by a transversal are ___.",
@@ -189,7 +189,7 @@ public static class Unit2Items
         items.Add(new Item
         {
             Id         = "u2-pp-002",
-            SkillId    = "geo-u2-parallel-proofs",
+            SkillId    = "geo-u2-proving-parallel",
             Template   = "text",
             ParamsJson = "{}",
             Prompt     = "∠3 and ∠6 are alternate interior angles formed by lines m and n cut by transversal t. If m∠3 = m∠6 = 72°, which theorem PROVES m ∥ n?",
@@ -211,7 +211,7 @@ public static class Unit2Items
         items.Add(new Item
         {
             Id         = "u2-pp-003",
-            SkillId    = "geo-u2-parallel-proofs",
+            SkillId    = "geo-u2-proving-parallel",
             Template   = "text",
             ParamsJson = "{}",
             Prompt     = "Two lines are cut by a transversal. Corresponding angles measure (5x − 20)° and (3x + 40)°. For what value of x are the lines parallel?",
@@ -232,12 +232,12 @@ public static class Unit2Items
             Type       = ItemType.Procedural
         });
 
-        // ── geo-u2-perpendicular : Perpendicular lines and distance ────────
+        // ── geo-u2-parallel-basics / geo-u2-coordinate-parallel : Perpendicular items ──
 
         items.Add(new Item
         {
             Id         = "u2-perp-001",
-            SkillId    = "geo-u2-perpendicular",
+            SkillId    = "geo-u2-parallel-basics",
             Template   = "text",
             ParamsJson = "{}",
             Prompt     = "Two lines that intersect to form a right angle are called ___ lines.",
@@ -259,7 +259,7 @@ public static class Unit2Items
         items.Add(new Item
         {
             Id         = "u2-perp-002",
-            SkillId    = "geo-u2-perpendicular",
+            SkillId    = "geo-u2-coordinate-parallel",
             Template   = "text",
             ParamsJson = "{}",
             Prompt     = "Line k has slope 4. What is the slope of a line perpendicular to line k? Enter your answer as a decimal.",
@@ -281,7 +281,7 @@ public static class Unit2Items
         items.Add(new Item
         {
             Id         = "u2-perp-003",
-            SkillId    = "geo-u2-perpendicular",
+            SkillId    = "geo-u2-coordinate-parallel",
             Template   = "text",
             ParamsJson = "{}",
             Prompt     = "Segment AB has endpoints A(1, 1) and B(7, 9). What is the slope of the perpendicular bisector of AB? Enter as a decimal.",
@@ -300,12 +300,12 @@ public static class Unit2Items
             Type       = ItemType.Transfer
         });
 
-        // ── geo-u2-angle-relationships : Angle pairs in parallel setups ─────
+        // ── geo-u2-parallel-theorems : Parallel Line Theorems ─────────────
 
         items.Add(new Item
         {
             Id         = "u2-ar-001",
-            SkillId    = "geo-u2-angle-relationships",
+            SkillId    = "geo-u2-parallel-theorems",
             Template   = "text",
             ParamsJson = "{}",
             Prompt     = "When two parallel lines are cut by a transversal, co-interior (same-side interior) angles are ___.",
@@ -327,7 +327,7 @@ public static class Unit2Items
         items.Add(new Item
         {
             Id         = "u2-ar-002",
-            SkillId    = "geo-u2-angle-relationships",
+            SkillId    = "geo-u2-parallel-theorems",
             Template   = "text",
             ParamsJson = "{}",
             Prompt     = "Two parallel lines are cut by a transversal. A pair of corresponding angles measure (4x + 15)° and 75°. Find the value of x.",
@@ -350,7 +350,7 @@ public static class Unit2Items
         items.Add(new Item
         {
             Id         = "u2-ar-003",
-            SkillId    = "geo-u2-angle-relationships",
+            SkillId    = "geo-u2-parallel-theorems",
             Template   = "text",
             ParamsJson = "{}",
             Prompt     = "Two parallel lines p and q are cut by transversal t. Alternate exterior angles are labeled (6x − 12)° and (4x + 28)°. What is the value of x?",

@@ -56,11 +56,11 @@ public static class ContentPackService
         ["geo-u1-counterexamples"]   = ("unit-01/unit-01/lessons", "05-counterexamples"),
 
         // Unit 2 — Parallel Lines & Transversals
-        ["geo-u2-parallel-identify"]   = ("unit-02/unit-02/lessons", "01-parallel-identify"),
+        ["geo-u2-parallel-basics"]     = ("unit-02/unit-02/lessons", "01-parallel-basics"),
         ["geo-u2-transversal-angles"]  = ("unit-02/unit-02/lessons", "02-transversal-angles"),
-        ["geo-u2-parallel-proofs"]     = ("unit-02/unit-02/lessons", "03-parallel-proofs"),
-        ["geo-u2-perpendicular"]       = ("unit-02/unit-02/lessons", "04-perpendicular"),
-        ["geo-u2-angle-relationships"] = ("unit-02/unit-02/lessons", "05-angle-relationships"),
+        ["geo-u2-parallel-theorems"]   = ("unit-02/unit-02/lessons", "03-parallel-theorems"),
+        ["geo-u2-proving-parallel"]    = ("unit-02/unit-02/lessons", "04-proving-parallel"),
+        ["geo-u2-coordinate-parallel"] = ("unit-02/unit-02/lessons", "05-coordinate-parallel"),
     };
 
     /// <summary>

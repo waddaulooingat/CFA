@@ -55,9 +55,9 @@ public class BaselineAssessmentService
         "geo-u1-angle-measure",
         "geo-u1-if-then-logic",
         "geo-u1-counterexamples",
-        "geo-u2-parallel-identify",
+        "geo-u2-parallel-basics",
         "geo-u2-transversal-angles",
-        "geo-u2-perpendicular",
+        "geo-u2-parallel-theorems",
     ];
 
     private const int  MaxItemsPerCluster = 4;

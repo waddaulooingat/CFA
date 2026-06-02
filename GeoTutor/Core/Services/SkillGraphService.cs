@@ -432,9 +432,25 @@ public class SkillGraphService
             .Where(s => s.Id.StartsWith("geo-u2-", StringComparison.Ordinal))
             .ToList();
 
+        // Skill IDs that were seeded by an earlier version and must be removed.
+        string[] obsoleteUnit2Ids =
+        [
+            "geo-u2-parallel-identify", "geo-u2-parallel-proofs",
+            "geo-u2-perpendicular",     "geo-u2-angle-relationships",
+        ];
+
         using var tx = conn.BeginTransaction();
         try
         {
+            foreach (var obsoleteId in obsoleteUnit2Ids)
+            {
+                using var del = conn.CreateCommand();
+                del.Transaction = tx;
+                del.CommandText = "DELETE FROM gt_skills WHERE id = @id;";
+                del.Parameters.AddWithValue("@id", obsoleteId);
+                del.ExecuteNonQuery();
+            }
+
             foreach (var s in unit2Skills)
             {
                 using var ins = conn.CreateCommand();
@@ -507,22 +523,22 @@ public class SkillGraphService
             // ----------------------------------------------------------------
             // Unit 2 — Parallel Lines & Transversals (5 nodes)
             // ----------------------------------------------------------------
-            S("geo-u2-parallel-identify",   "Identifying parallel lines",                      2, 1,
-                "geo-u1-angle-measure"),
-            S("geo-u2-transversal-angles",  "Corresponding, alternate interior/exterior, co-interior", 2, 1,
-                "geo-u2-parallel-identify"),
-            S("geo-u2-parallel-proofs",     "Proving lines parallel",                          2, 2,
-                "geo-u2-transversal-angles", "geo-u1-if-then-logic"),
-            S("geo-u2-perpendicular",       "Perpendicular lines and distance",                2, 1,
-                "geo-u2-parallel-identify"),
-            S("geo-u2-angle-relationships", "Angle pair relationships in parallel line setups", 2, 2,
+            S("geo-u2-parallel-basics",     "Parallel and Perpendicular Lines",                2, 1,
+                "geo-u1-point-line-plane"),
+            S("geo-u2-transversal-angles",  "Angles Formed by a Transversal",                  2, 1,
+                "geo-u2-parallel-basics", "geo-u1-angle-measure"),
+            S("geo-u2-parallel-theorems",   "Parallel Line Theorems",                          2, 1,
                 "geo-u2-transversal-angles"),
+            S("geo-u2-proving-parallel",    "Proving Lines Parallel",                          2, 2,
+                "geo-u2-parallel-theorems", "geo-u1-if-then-logic"),
+            S("geo-u2-coordinate-parallel", "Parallel & Perpendicular in the Coordinate Plane", 2, 2,
+                "geo-u2-parallel-basics"),
 
             // ----------------------------------------------------------------
             // Unit 3 — Triangle Congruence (7 nodes)
             // ----------------------------------------------------------------
             S("geo-u3-sss",               "SSS congruence postulate",          3, 1,
-                "geo-u1-angle-measure", "geo-u2-angle-relationships"),
+                "geo-u1-angle-measure", "geo-u2-transversal-angles"),
             S("geo-u3-sas",               "SAS congruence postulate",          3, 1,
                 "geo-u3-sss"),
             S("geo-u3-asa",               "ASA congruence postulate",          3, 1,
@@ -530,7 +546,7 @@ public class SkillGraphService
             S("geo-u3-aas",               "AAS congruence theorem",            3, 2,
                 "geo-u3-asa"),
             S("geo-u3-hl",                "HL theorem for right triangles",    3, 2,
-                "geo-u3-sas", "geo-u2-perpendicular"),
+                "geo-u3-sas", "geo-u2-parallel-basics"),
             S("geo-u3-cpctc",             "CPCTC",                             3, 2,
                 "geo-u3-sss", "geo-u3-sas", "geo-u3-asa"),
             S("geo-u3-congruence-proofs", "Triangle congruence proofs",        3, 3,
@@ -542,7 +558,7 @@ public class SkillGraphService
             S("geo-u4-midsegment",          "Triangle midsegment theorem",         4, 2,
                 "geo-u3-sss"),
             S("geo-u4-perpbisector",        "Perpendicular bisector and circumcenter", 4, 2,
-                "geo-u3-congruence-proofs", "geo-u2-perpendicular"),
+                "geo-u3-congruence-proofs", "geo-u2-parallel-basics"),
             S("geo-u4-angbisector",         "Angle bisector and incenter",         4, 2,
                 "geo-u3-congruence-proofs"),
             S("geo-u4-median-centroid",     "Medians and centroid",                4, 2,
@@ -590,13 +606,13 @@ public class SkillGraphService
             // Unit 7 — Quadrilaterals & Polygons (7 nodes)
             // ----------------------------------------------------------------
             S("geo-u7-parallelogram",          "Properties of parallelograms",           7, 2,
-                "geo-u3-congruence-proofs", "geo-u2-parallel-proofs"),
+                "geo-u3-congruence-proofs", "geo-u2-proving-parallel"),
             S("geo-u7-rectangle-rhombus-square","Special parallelograms",               7, 2,
                 "geo-u7-parallelogram"),
             S("geo-u7-trapezoid",               "Trapezoids and kites",                  7, 2,
                 "geo-u7-parallelogram"),
             S("geo-u7-polygon-angles",          "Interior and exterior angle sums",      7, 2,
-                "geo-u2-angle-relationships"),
+                "geo-u2-transversal-angles"),
             S("geo-u7-regular-polygons",        "Regular polygons and their properties", 7, 2,
                 "geo-u7-polygon-angles"),
             S("geo-u7-quad-proofs",             "Proving quadrilateral types",           7, 3,
@@ -664,7 +680,7 @@ public class SkillGraphService
             S("geo-u11-midpoint-distance",  "Midpoint and distance formulas",               11, 1,
                 "alg-distance-midpoint"),
             S("geo-u11-slope-parallel-perp","Slope for parallel and perpendicular lines",   11, 2,
-                "alg-slope-lines", "geo-u2-parallel-identify"),
+                "alg-slope-lines", "geo-u2-parallel-basics"),
             S("geo-u11-classify-triangles", "Classifying triangles using coordinates",      11, 2,
                 "geo-u11-midpoint-distance", "geo-u11-slope-parallel-perp"),
             S("geo-u11-classify-quads",     "Classifying quadrilaterals using coordinates", 11, 2,
@@ -680,7 +696,7 @@ public class SkillGraphService
             S("geo-u12-bisect-angle",       "Angle bisector construction",            12, 1,
                 "geo-u4-angbisector"),
             S("geo-u12-parallel-line",      "Constructing parallel lines",            12, 2,
-                "geo-u12-bisect-segment", "geo-u2-parallel-identify"),
+                "geo-u12-bisect-segment", "geo-u2-parallel-basics"),
             S("geo-u12-equilateral-triangle","Constructing equilateral triangles",    12, 2,
                 "geo-u12-bisect-segment", "geo-u3-sss"),
             S("geo-u12-inscribed-circle",   "Inscribed and circumscribed circles",    12, 3,
