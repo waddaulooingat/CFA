@@ -30,6 +30,7 @@ public static class ManipulateEvaluator
             "collinear"       => EvalCollinear      (cond, ptMap),
             "equallengths"    => EvalEqualLengths    (cond, ptMap, segMap),
             "anglemeasure"    => EvalAngleMeasure    (cond, ptMap),
+            "linesparallel"   => EvalLinesParallel   (cond, ptMap, segMap),
             "counterexample"  => EvalCounterexample  (cond, ptMap, scene),
             "explorationgoal" => EvalExplorationGoal (cond, ptMap, scene, reachedMilestones),
             _                 => false,
@@ -105,6 +106,32 @@ public static class ManipulateEvaluator
 
         double angle = AngleBetween(a1.X - v.X, a1.Y - v.Y, a2.X - v.X, a2.Y - v.Y);
         return Math.Abs(angle - cond.TargetDegrees.Value) <= cond.Tolerance;
+    }
+
+    // ── linesParallel ─────────────────────────────────────────────────────────
+
+    private static bool EvalLinesParallel(
+        BeatSuccessCondition cond,
+        Dictionary<string, ScenePoint>   ptMap,
+        Dictionary<string, SceneSegment> segMap)
+    {
+        if (cond.Line1 is null || cond.Line2 is null) return false;
+        if (!segMap.TryGetValue(cond.Line1, out var s1)) return false;
+        if (!segMap.TryGetValue(cond.Line2, out var s2)) return false;
+        if (!ptMap.TryGetValue(s1.From, out var p1a) ||
+            !ptMap.TryGetValue(s1.To,   out var p1b)) return false;
+        if (!ptMap.TryGetValue(s2.From, out var p2a) ||
+            !ptMap.TryGetValue(s2.To,   out var p2b)) return false;
+
+        double d1x = p1b.X - p1a.X, d1y = p1b.Y - p1a.Y;
+        double d2x = p2b.X - p2a.X, d2y = p2b.Y - p2a.Y;
+
+        // Acute angle between the two direction vectors (0 = parallel, 90 = perpendicular).
+        double cross = Math.Abs(d1x * d2y - d1y * d2x);
+        double dot   = Math.Abs(d1x * d2x + d1y * d2y);
+        double angleDeg = Math.Atan2(cross, dot) * 180.0 / Math.PI;
+
+        return angleDeg <= cond.Tolerance;
     }
 
     // ── counterexample ────────────────────────────────────────────────────────

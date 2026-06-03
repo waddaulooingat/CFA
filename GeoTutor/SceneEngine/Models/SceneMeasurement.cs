@@ -1,6 +1,6 @@
 namespace GeoTutor.SceneEngine.Models;
 
-public enum MeasurementType { Length, Angle, Area, DistanceToLine }
+public enum MeasurementType { Length, Angle, Area, DistanceToLine, AngleBetweenLines }
 
 public class SceneMeasurement
 {
@@ -25,6 +25,10 @@ public class SceneMeasurement
     // DistanceToLine
     public string? Point { get; set; }
     public string? Line { get; set; }
+
+    // AngleBetweenLines — two segment IDs
+    public string? Line1 { get; set; }
+    public string? Line2 { get; set; }
 
     public string? Label { get; set; }
     public bool Show { get; set; } = true;

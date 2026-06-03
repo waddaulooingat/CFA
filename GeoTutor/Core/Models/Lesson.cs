@@ -43,6 +43,10 @@ public class BeatSuccessCondition
     public List<string>? Sides { get; set; }
     public double? TargetDegrees { get; set; }
 
+    // linesParallel — two segment IDs
+    public string? Line1 { get; set; }
+    public string? Line2 { get; set; }
+
     // counterexample
     public string? SatisfiesHypothesis { get; set; }
     public string? ViolatesConclusion { get; set; }

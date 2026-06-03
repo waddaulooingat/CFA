@@ -36,8 +36,9 @@ public static class ContentPackService
                 "angle"          => MeasurementType.Angle,
                 "anglemeasure"   => MeasurementType.Angle,
                 "area"           => MeasurementType.Area,
-                "distancetoline" => MeasurementType.DistanceToLine,
-                _                => MeasurementType.Length,
+                "distancetoline"     => MeasurementType.DistanceToLine,
+                "anglebetweenlines"  => MeasurementType.AngleBetweenLines,
+                _                    => MeasurementType.Length,
             };
         }
 

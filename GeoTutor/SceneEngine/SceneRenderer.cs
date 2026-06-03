@@ -184,6 +184,19 @@ public static class SceneRenderer
             };
             canvas.DrawText(seg.Label, lx, ly, lblPaint);
         }
+
+        // Draw segment-level parallel marks ("marks": ["parallelSingle"/"parallelDouble"]).
+        if (seg.Marks is { Count: > 0 })
+        {
+            int groupIndex = seg.Marks.Contains("parallelDouble") ? 2 : 1;
+            var synMark = new SceneMark
+            {
+                Type      = MarkType.ParallelArrow,
+                OnSegment = seg.Id,
+                GroupIndex = groupIndex,
+            };
+            DrawParallelArrow(canvas, spec, synMark, ptMap, toScreen, scale);
+        }
     }
 
     // ── Arcs / Circles ────────────────────────────────────────────────────────
@@ -437,40 +450,63 @@ public static class SceneRenderer
         Func<double, double, SKPoint> toScreen,
         float scale)
     {
-        if (!ptMap.TryGetValue(mark.At, out var vertex)) return;
+        ScenePoint vertex;
+        SKPoint d1w, d2w;
 
-        // Collect the two segments that share this vertex.
-        var touching = spec.Segments
-            .Where(s => s.From == mark.At || s.To == mark.At)
-            .Take(2)
-            .ToList();
-
-        if (touching.Count < 2) return;
-
-        // Direction vectors away from vertex for each segment.
-        SKPoint Dir(SceneSegment seg)
+        if (!string.IsNullOrEmpty(mark.At) && ptMap.TryGetValue(mark.At, out var ptVertex))
         {
-            bool isFrom = seg.From == mark.At;
-            var other   = ptMap[isFrom ? seg.To : seg.From];
-            float dx    = (float)(other.X - vertex.X);
-            float dy    = (float)(other.Y - vertex.Y);   // world
-            float len   = MathF.Sqrt(dx * dx + dy * dy);
-            return len < 1e-6f ? new SKPoint(1, 0) : new SKPoint(dx / len, dy / len);
+            // Point-ID form: vertex is a known scene point; find touching segments.
+            vertex = ptVertex;
+            var touching = spec.Segments
+                .Where(s => s.From == mark.At || s.To == mark.At)
+                .Take(2)
+                .ToList();
+            if (touching.Count < 2) return;
+
+            SKPoint Dir(SceneSegment seg)
+            {
+                bool isFrom = seg.From == mark.At;
+                var other   = ptMap[isFrom ? seg.To : seg.From];
+                float dx    = (float)(other.X - vertex.X);
+                float dy    = (float)(other.Y - vertex.Y);
+                float len   = MathF.Sqrt(dx * dx + dy * dy);
+                return len < 1e-6f ? new SKPoint(1, 0) : new SKPoint(dx / len, dy / len);
+            }
+
+            d1w = Dir(touching[0]);
+            d2w = Dir(touching[1]);
         }
+        else if (mark.AtInlineX.HasValue && mark.AtInlineY.HasValue &&
+                 mark.Between is { Count: >= 2 })
+        {
+            // Inline-coordinate form: "at": {"x":…,"y":…}, "between": ["seg1","seg2"].
+            vertex = new ScenePoint { X = mark.AtInlineX.Value, Y = mark.AtInlineY.Value };
+            var seg1 = spec.Segments.FirstOrDefault(s => s.Id == mark.Between[0]);
+            var seg2 = spec.Segments.FirstOrDefault(s => s.Id == mark.Between[1]);
+            if (seg1 == null || seg2 == null) return;
+            if (!ptMap.TryGetValue(seg1.From, out var s1a) || !ptMap.TryGetValue(seg1.To, out var s1b)) return;
+            if (!ptMap.TryGetValue(seg2.From, out var s2a) || !ptMap.TryGetValue(seg2.To, out var s2b)) return;
 
-        var d1w = Dir(touching[0]);
-        var d2w = Dir(touching[1]);
+            static SKPoint RawDir(ScenePoint a, ScenePoint b)
+            {
+                float dx  = (float)(b.X - a.X);
+                float dy  = (float)(b.Y - a.Y);
+                float len = MathF.Sqrt(dx * dx + dy * dy);
+                return len < 1e-6f ? new SKPoint(1, 0) : new SKPoint(dx / len, dy / len);
+            }
 
-        // Convert world direction to screen direction (Y is flipped).
-        SKPoint WorldDirToScreen(SKPoint wd) => new(wd.X, -wd.Y);
+            d1w = RawDir(s1a, s1b);
+            d2w = RawDir(s2a, s2b);
+        }
+        else return;
 
-        var d1s = WorldDirToScreen(d1w);
-        var d2s = WorldDirToScreen(d2w);
+        // Convert world directions to screen (Y-flip).
+        var d1s = new SKPoint(d1w.X, -d1w.Y);
+        var d2s = new SKPoint(d2w.X, -d2w.Y);
 
         var vScreen = toScreen(vertex.X, vertex.Y);
-        float sz    = MathF.Max(8f, scale * 0.18f);   // size of the square in screen px
+        float sz    = MathF.Max(8f, scale * 0.18f);
 
-        // Square corner points: vertex + offset along each arm + corner.
         var p1 = new SKPoint(vScreen.X + d1s.X * sz, vScreen.Y + d1s.Y * sz);
         var p2 = new SKPoint(vScreen.X + d2s.X * sz, vScreen.Y + d2s.Y * sz);
         var pc = new SKPoint(p1.X + d2s.X * sz, p1.Y + d2s.Y * sz);
@@ -654,6 +690,9 @@ public static class SceneRenderer
                 break; // requires polygon traversal; not supported as a single entity
             case MeasurementType.DistanceToLine:
                 break; // not yet implemented; skipped rather than throwing
+            case MeasurementType.AngleBetweenLines:
+                DrawAngleBetweenLinesMeasurement(canvas, spec, m, ptMap, toScreen, scale);
+                break;
             default:
                 Debug.WriteLine($"[SceneRenderer] Unhandled measurement type {m.Type} — skipped");
                 break;
@@ -756,6 +795,31 @@ public static class SceneRenderer
         float labelY = vSc.Y - (float)bisY * nudge;   // Y flip
 
         DrawMeasurementText(canvas, text, labelX, labelY, scale);
+    }
+
+    private static void DrawAngleBetweenLinesMeasurement(
+        SKCanvas canvas,
+        SceneSpec spec,
+        SceneMeasurement m,
+        Dictionary<string, ScenePoint> ptMap,
+        Func<double, double, SKPoint> toScreen,
+        float scale)
+    {
+        if (string.IsNullOrEmpty(m.Line1) || string.IsNullOrEmpty(m.Line2)) return;
+        var seg1 = spec.Segments.FirstOrDefault(s => s.Id == m.Line1);
+        var seg2 = spec.Segments.FirstOrDefault(s => s.Id == m.Line2);
+        if (seg1 == null || seg2 == null) return;
+        if (!ptMap.TryGetValue(seg1.From, out var s1a) || !ptMap.TryGetValue(seg1.To, out var s1b)) return;
+        if (!ptMap.TryGetValue(seg2.From, out var s2a) || !ptMap.TryGetValue(seg2.To, out var s2b)) return;
+
+        double angleDeg = AngleBetween(s1b.X - s1a.X, s1b.Y - s1a.Y,
+                                       s2b.X - s2a.X, s2b.Y - s2a.Y);
+        string prefix = string.IsNullOrEmpty(m.Label) ? "" : m.Label + ": ";
+        string text   = $"{prefix}{angleDeg:0.0}°";
+
+        // Place the label near the midpoint of seg1, nudged upward in screen space.
+        var mid = toScreen((s1a.X + s1b.X) / 2.0, (s1a.Y + s1b.Y) / 2.0);
+        DrawMeasurementText(canvas, text, mid.X, mid.Y - MathF.Max(20f, scale * 0.35f), scale);
     }
 
     private static void DrawMeasurementText(
