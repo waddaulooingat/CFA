@@ -1,0 +1,320 @@
+{
+  "skillId": "geo-u3-asa",
+  "lessonVersion": 1,
+  "beats": [
+    {
+      "id": "concept",
+      "type": "Concept",
+      "title": "ASA Congruence Postulate",
+      "scene": "scene_asa_concept",
+      "proseRef": "03-asa.md#concept"
+    },
+    {
+      "id": "manipulate",
+      "type": "Manipulate",
+      "title": "Match the second angle",
+      "scene": "scene_asa_manipulate",
+      "instruction": "Drag point F to adjust angle ∠F in △DEF. Make ∠F equal to 37° to match ∠C in △ABC. With ∠D ≅ ∠A already established and DE ≅ AB (the included side), matching the second angle proves ASA congruence.",
+      "successCondition": {
+        "type": "angleMeasure",
+        "vertex": "F",
+        "sides": ["E", "D"],
+        "targetDegrees": 37,
+        "tolerance": 2.0
+      },
+      "successMessage": "∠F ≅ ∠C and the included side DE ≅ AB — ASA confirms △ABC ≅ △DEF!",
+      "maxAttempts": null
+    },
+    {
+      "id": "worked",
+      "type": "WorkedExample",
+      "title": "Proving △ABC ≅ △DEF by ASA",
+      "scene": "scene_asa_worked",
+      "steps": [
+        {
+          "order": 1,
+          "text": "Identify two pairs of congruent angles and the included side. ∠A = ∠D = 53°, so ∠A ≅ ∠D (first angle).",
+          "canvasAction": { "type": "highlight", "target": "arcA" }
+        },
+        {
+          "order": 2,
+          "text": "The included side between ∠A and ∠C is AC; between ∠D and ∠F is DF. AC = DF = 5, so AC ≅ DF.",
+          "canvasAction": { "type": "highlight", "target": "CA" }
+        },
+        {
+          "order": 3,
+          "text": "∠C = ∠F = 37°, so ∠C ≅ ∠F (second angle). Two angles on either side of the included side match — by ASA, △ABC ≅ △DEF.",
+          "canvasAction": { "type": "annotate", "target": "both_triangles", "text": "△ABC ≅ △DEF (ASA)" }
+        }
+      ]
+    },
+    {
+      "id": "check",
+      "type": "Check",
+      "items": [
+        {
+          "id": "asa-check-1",
+          "kind": "multipleChoice",
+          "prompt": "In ASA, the side must be the side _______ the two angles.",
+          "choices": ["opposite to", "longer than", "included between", "perpendicular to"],
+          "answerIndex": 2,
+          "explanation": "ASA: Angle-Side-Angle. The side is the one between the two angles — at the shared endpoint of both angle rays."
+        },
+        {
+          "id": "asa-check-2",
+          "kind": "multipleChoice",
+          "prompt": "△MNP has ∠M = 60°, MN = 7, ∠N = 80°. △XYZ has ∠X = 60°, XY = 7, ∠Y = 80°. Which postulate applies?",
+          "choices": ["ASA", "SAS", "SSS", "AAS"],
+          "answerIndex": 0,
+          "explanation": "∠M and ∠N sit on either side of side MN; ∠X and ∠Y sit on either side of XY. Same two angles + included side = ASA."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "type": "Practice",
+      "items": [
+        {
+          "id": "asa-prac-1",
+          "kind": "multipleChoice",
+          "prompt": "In △PQR, the included side between ∠P and ∠R is which segment?",
+          "choices": ["PQ", "QR", "PR", "Cannot be determined"],
+          "answerIndex": 2,
+          "hints": [
+            "The included side connects the two vertices where the angles are.",
+            "∠P is at vertex P, ∠R is at vertex R — the side between them connects P to R.",
+            "PR — it directly connects vertices P and R."
+          ]
+        },
+        {
+          "id": "asa-prac-2",
+          "kind": "multipleChoice",
+          "prompt": "Two triangles share a common side. Each triangle has one angle at each end of the shared side given as congruent. Which postulate applies?",
+          "choices": ["ASA", "SAS", "SSS", "HL"],
+          "answerIndex": 0,
+          "hints": [
+            "What's known? A shared side and one angle at each of its endpoints.",
+            "The two angles are at the endpoints of the shared side — which means the side is included between them.",
+            "Two angles, one on each side of the included segment → ASA."
+          ]
+        },
+        {
+          "id": "asa-prac-3",
+          "kind": "multipleChoice",
+          "prompt": "△ABC: ∠A = 45°, AB = 10, ∠B = 90°. △DEF: ∠D = 45°, DE = 10, ∠E = 90°. The angle sum gives ∠C = ∠F = 45°. Which postulate is most direct here?",
+          "choices": ["ASA", "AAS", "SAS", "HL"],
+          "answerIndex": 0,
+          "hints": [
+            "We have ∠A ≅ ∠D, AB ≅ DE (included side between A and B), ∠B ≅ ∠E.",
+            "AB is included between ∠A and ∠B; DE is included between ∠D and ∠E.",
+            "ASA: the side AB/DE is directly between the two given angles."
+          ]
+        },
+        {
+          "id": "asa-prac-4",
+          "kind": "multipleChoice",
+          "prompt": "A student labels two triangles with ∠A ≅ ∠D, AC ≅ DF, but notes that ∠B ≅ ∠E (not ∠C ≅ ∠F). Can ASA still be applied?",
+          "choices": [
+            "Yes — any two angles and any side work for ASA",
+            "No — ∠B and ∠E are not at the endpoints of AC and DF",
+            "Yes — ASA just needs two angles and a side in either triangle",
+            "No — you must use the largest angle"
+          ],
+          "answerIndex": 1,
+          "hints": [
+            "For ASA, the side must be between the two angles — check whether AC is between ∠A and ∠B.",
+            "AC connects vertices A and C; so the angles at its endpoints are ∠A and ∠C.",
+            "If ∠B is given instead of ∠C, the side AC is not between the two given angles. ASA doesn't apply — but AAS might."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reflection",
+      "type": "Reflection",
+      "proseRef": "03-asa.md#reflection"
+    }
+  ],
+  "scenes": {
+    "scene_asa_concept": {
+      "viewport": { "xMin": -1, "xMax": 13, "yMin": -1, "yMax": 9 },
+      "points": [
+        { "id": "A", "x": 2, "y": 7, "label": "A", "draggable": false },
+        { "id": "B", "x": 0, "y": 2, "label": "B", "draggable": false },
+        { "id": "C", "x": 6, "y": 2, "label": "C", "draggable": false },
+        { "id": "D", "x": 8, "y": 7, "label": "D", "draggable": false },
+        { "id": "E", "x": 6, "y": 2, "label": "E", "draggable": false },
+        { "id": "F", "x": 12, "y": 2, "label": "F", "draggable": false }
+      ],
+      "segments": [
+        { "id": "AB", "from": "A", "to": "B" },
+        { "id": "BC", "from": "B", "to": "C" },
+        { "id": "CA", "from": "C", "to": "A" },
+        { "id": "DE", "from": "D", "to": "E" },
+        { "id": "EF", "from": "E", "to": "F" },
+        { "id": "FD", "from": "F", "to": "D" }
+      ],
+      "marks": [
+        { "type": "congruenceTick", "onSegment": "CA", "groupIndex": 1 },
+        { "type": "congruenceTick", "onSegment": "FD", "groupIndex": 1 }
+      ],
+      "arcs": [
+        { "id": "arcA", "vertex": "A", "from": "B", "to": "C", "radius": 0.6 },
+        { "id": "arcD", "vertex": "D", "from": "E", "to": "F", "radius": 0.6 },
+        { "id": "arcC", "vertex": "C", "from": "A", "to": "B", "radius": 0.6 },
+        { "id": "arcF", "vertex": "F", "from": "D", "to": "E", "radius": 0.6 }
+      ],
+      "annotations": [
+        { "type": "text", "x": 4.5, "y": 8.3, "text": "ASA: ∠A≅∠D, AC≅DF (included), ∠C≅∠F → △ABC≅△DEF" }
+      ]
+    },
+    "scene_asa_manipulate": {
+      "viewport": { "xMin": -1, "xMax": 13, "yMin": -1, "yMax": 9 },
+      "points": [
+        { "id": "A", "x": 2, "y": 7, "label": "A", "draggable": false },
+        { "id": "B", "x": 0, "y": 2, "label": "B", "draggable": false },
+        { "id": "C", "x": 6, "y": 2, "label": "C", "draggable": false },
+        { "id": "D", "x": 8, "y": 7, "label": "D", "draggable": false },
+        { "id": "E", "x": 6, "y": 2, "label": "E", "draggable": false },
+        { "id": "F", "x": 12, "y": 4, "label": "F (drag me)", "draggable": true }
+      ],
+      "segments": [
+        { "id": "AB", "from": "A", "to": "B" },
+        { "id": "BC", "from": "B", "to": "C" },
+        { "id": "CA", "from": "C", "to": "A" },
+        { "id": "DE", "from": "D", "to": "E" },
+        { "id": "EF", "from": "E", "to": "F" },
+        { "id": "FD", "from": "F", "to": "D" }
+      ],
+      "marks": [
+        { "type": "congruenceTick", "onSegment": "CA", "groupIndex": 1 },
+        { "type": "congruenceTick", "onSegment": "FD", "groupIndex": 1 }
+      ],
+      "arcs": [
+        { "id": "arcA", "vertex": "A", "from": "B", "to": "C", "radius": 0.6 },
+        { "id": "arcD", "vertex": "D", "from": "E", "to": "F", "radius": 0.6 }
+      ],
+      "measurements": [
+        { "type": "angleMeasure", "vertex": "C", "sides": ["A", "B"], "show": true },
+        { "type": "angleMeasure", "vertex": "F", "sides": ["E", "D"], "show": true }
+      ]
+    },
+    "scene_asa_worked": {
+      "viewport": { "xMin": -1, "xMax": 13, "yMin": -1, "yMax": 9 },
+      "points": [
+        { "id": "A", "x": 2, "y": 7, "label": "A", "draggable": false },
+        { "id": "B", "x": 0, "y": 2, "label": "B", "draggable": false },
+        { "id": "C", "x": 6, "y": 2, "label": "C", "draggable": false },
+        { "id": "D", "x": 8, "y": 7, "label": "D", "draggable": false },
+        { "id": "E", "x": 6, "y": 2, "label": "E", "draggable": false },
+        { "id": "F", "x": 12, "y": 2, "label": "F", "draggable": false }
+      ],
+      "segments": [
+        { "id": "AB", "from": "A", "to": "B" },
+        { "id": "BC", "from": "B", "to": "C" },
+        { "id": "CA", "from": "C", "to": "A", "label": "5" },
+        { "id": "DE", "from": "D", "to": "E" },
+        { "id": "EF", "from": "E", "to": "F" },
+        { "id": "FD", "from": "F", "to": "D", "label": "5" }
+      ],
+      "marks": [
+        { "type": "congruenceTick", "onSegment": "CA", "groupIndex": 1 },
+        { "type": "congruenceTick", "onSegment": "FD", "groupIndex": 1 }
+      ],
+      "arcs": [
+        { "id": "arcA", "vertex": "A", "from": "B", "to": "C", "label": "53°", "radius": 0.7 },
+        { "id": "arcD", "vertex": "D", "from": "E", "to": "F", "label": "53°", "radius": 0.7 },
+        { "id": "arcC", "vertex": "C", "from": "A", "to": "B", "label": "37°", "radius": 0.7 },
+        { "id": "arcF", "vertex": "F", "from": "D", "to": "E", "label": "37°", "radius": 0.7 }
+      ],
+      "annotations": [
+        { "type": "text", "x": 4.5, "y": 8.3, "text": "△ABC ≅ △DEF by ASA" }
+      ]
+    }
+  },
+  "testItems": [
+    {
+      "id": "asa-test-1",
+      "kind": "multipleChoice",
+      "category": "procedural",
+      "prompt": "ASA requires two pairs of congruent angles and one pair of congruent sides. Where must that side be located?",
+      "choices": [
+        "Opposite the larger angle",
+        "Between the two angles",
+        "Opposite the smaller angle",
+        "Adjacent to only one angle"
+      ],
+      "answerIndex": 1,
+      "difficulty": 1
+    },
+    {
+      "id": "asa-test-2",
+      "kind": "multipleChoice",
+      "category": "procedural",
+      "prompt": "△ABC: ∠A = 50°, AB = 9, ∠B = 60°. △DEF: ∠D = 50°, DE = 9, ∠E = 60°. Which postulate proves △ABC ≅ △DEF?",
+      "choices": ["ASA", "AAS", "SAS", "SSS"],
+      "answerIndex": 0,
+      "difficulty": 1
+    },
+    {
+      "id": "asa-test-3",
+      "kind": "multipleChoice",
+      "category": "conceptual",
+      "prompt": "In △PQR and △STU, ∠P ≅ ∠S, PR ≅ SU, and ∠Q ≅ ∠T. Is ASA applicable with the correspondence P↔S, Q↔T, R↔U?",
+      "choices": [
+        "Yes — two angles and a side match",
+        "No — PR is between ∠P and ∠R, but the second given angle is ∠Q, not ∠R",
+        "Yes — angle order doesn't matter for ASA",
+        "No — we need the third angle"
+      ],
+      "answerIndex": 1,
+      "difficulty": 2
+    },
+    {
+      "id": "asa-test-4",
+      "kind": "multipleChoice",
+      "category": "conceptual",
+      "prompt": "Two triangles have two pairs of congruent angles. What can be concluded about the third pair of angles?",
+      "choices": [
+        "They may or may not be congruent",
+        "They are also congruent — angle sum forces it",
+        "They are supplementary",
+        "Nothing — we need side information"
+      ],
+      "answerIndex": 1,
+      "difficulty": 2
+    },
+    {
+      "id": "asa-test-5",
+      "kind": "multipleChoice",
+      "category": "transfer",
+      "prompt": "A diagonal divides a parallelogram into two triangles. Which postulate best proves the two triangles congruent using the diagonal as a shared side and alternate interior angles?",
+      "choices": ["ASA", "SSS", "SAS", "HL"],
+      "answerIndex": 0,
+      "difficulty": 2
+    },
+    {
+      "id": "asa-test-6",
+      "kind": "multipleChoice",
+      "category": "transfer",
+      "prompt": "An architect draws two triangular roof trusses, each with the same base length and the same angles at each end of the base. Which postulate guarantees the trusses are congruent?",
+      "choices": ["ASA", "SSS", "AAS", "SAS"],
+      "answerIndex": 0,
+      "difficulty": 3
+    },
+    {
+      "id": "asa-test-7",
+      "kind": "multipleChoice",
+      "category": "transfer",
+      "prompt": "In △ABC and △DBC (sharing base BC), ∠ABC ≅ ∠DBC and ∠ACB ≅ ∠DCB. Applying ASA gives △ABC ≅ △DBC. What can you then conclude about AB and DB?",
+      "choices": [
+        "AB ≅ DB — corresponding parts of congruent triangles",
+        "AB + DB = BC",
+        "AB is a median of △ABC",
+        "Nothing — we need more information"
+      ],
+      "answerIndex": 0,
+      "difficulty": 3
+    }
+  ]
+}

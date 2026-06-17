@@ -1,0 +1,345 @@
+{
+  "skillId": "geo-u3-congruence-proofs",
+  "lessonVersion": 1,
+  "beats": [
+    {
+      "id": "concept",
+      "type": "Concept",
+      "title": "Triangle Congruence Proofs",
+      "scene": "scene_proofs_concept",
+      "proseRef": "07-congruence-proofs.md#concept"
+    },
+    {
+      "id": "manipulate",
+      "type": "Manipulate",
+      "title": "Identify the right postulate",
+      "scene": "scene_proofs_manipulate",
+      "instruction": "Study the figure. Segment BD is shared by △ABD and △CBD. AB ≅ CB (given tick marks) and AD ≅ CD (given tick marks). Drag the label to the correct postulate box to identify which postulate proves △ABD ≅ △CBD.",
+      "successCondition": {
+        "type": "equalLengths",
+        "of": "BD",
+        "and": "BD",
+        "tolerance": 0.15
+      },
+      "successMessage": "Correct! AB ≅ CB, BD ≅ BD (Reflexive), AD ≅ CD — that is SSS. △ABD ≅ △CBD by SSS.",
+      "maxAttempts": null
+    },
+    {
+      "id": "worked",
+      "type": "WorkedExample",
+      "title": "Two-column proof: △ABD ≅ △CBD",
+      "scene": "scene_proofs_worked",
+      "steps": [
+        {
+          "order": 1,
+          "text": "Statement: AB ≅ CB. Reason: Given. (The tick marks in the figure show this is provided as given information.)",
+          "canvasAction": { "type": "highlight", "target": "AB" }
+        },
+        {
+          "order": 2,
+          "text": "Statement: AD ≅ CD. Reason: Given. (Second pair of given congruent sides.)",
+          "canvasAction": { "type": "highlight", "target": "AD" }
+        },
+        {
+          "order": 3,
+          "text": "Statement: BD ≅ BD. Reason: Reflexive Property of Congruence. (Any segment is congruent to itself.)",
+          "canvasAction": { "type": "highlight", "target": "BD" }
+        },
+        {
+          "order": 4,
+          "text": "Statement: △ABD ≅ △CBD. Reason: SSS Congruence Postulate. (All three pairs of sides are congruent.)",
+          "canvasAction": { "type": "annotate", "target": "both_triangles", "text": "△ABD ≅ △CBD (SSS)" }
+        },
+        {
+          "order": 5,
+          "text": "Statement: ∠ABD ≅ ∠CBD. Reason: CPCTC. (Corresponding angles of congruent triangles are congruent — BD bisects ∠ABC.)",
+          "canvasAction": { "type": "annotate", "target": "arcB", "text": "∠ABD ≅ ∠CBD" }
+        }
+      ]
+    },
+    {
+      "id": "check",
+      "type": "Check",
+      "items": [
+        {
+          "id": "proofs-check-1",
+          "kind": "multipleChoice",
+          "prompt": "In a two-column proof, the left column contains _______ and the right column contains _______.",
+          "choices": [
+            "Statements; Reasons",
+            "Reasons; Statements",
+            "Diagrams; Equations",
+            "Postulates; Theorems"
+          ],
+          "answerIndex": 0,
+          "explanation": "Two-column proofs: left = Statements (what is true), right = Reasons (why it is true — given info, definitions, postulates, theorems)."
+        },
+        {
+          "id": "proofs-check-2",
+          "kind": "multipleChoice",
+          "prompt": "In a triangle congruence proof, which reason allows you to say a segment is congruent to itself?",
+          "choices": [
+            "Transitive Property",
+            "Symmetric Property",
+            "Reflexive Property of Congruence",
+            "Definition of Congruence"
+          ],
+          "answerIndex": 2,
+          "explanation": "The Reflexive Property states that any figure is congruent to itself: AB ≅ AB. This is used when two triangles share a common side."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "type": "Practice",
+      "items": [
+        {
+          "id": "proofs-prac-1",
+          "kind": "multipleChoice",
+          "prompt": "Given: AB ∥ CD, BC ∥ AD (parallelogram ABCD). Diagonal AC is drawn. The plan is to prove △ABC ≅ △CDA. What is the most efficient postulate, using the alternate interior angles created by the parallel lines?",
+          "choices": ["ASA", "SSS", "HL", "SAS"],
+          "answerIndex": 0,
+          "hints": [
+            "AB ∥ CD means alternate interior angles ∠BAC and ∠DCA are congruent (cut by transversal AC).",
+            "BC ∥ AD means ∠BCA and ∠DAC are congruent (cut by transversal AC). AC is shared.",
+            "Two angle pairs (∠BAC ≅ ∠DCA, ∠BCA ≅ ∠DAC) and included side AC → ASA."
+          ]
+        },
+        {
+          "id": "proofs-prac-2",
+          "kind": "multipleChoice",
+          "prompt": "In a proof, after △PQR ≅ △STU is established by SAS, a student needs to show QR ≅ TU. The correct reason is…",
+          "choices": ["SAS", "CPCTC", "Given", "Reflexive Property"],
+          "answerIndex": 1,
+          "hints": [
+            "QR and TU were not part of the given information or the SAS setup.",
+            "They are corresponding sides in the proven-congruent triangles.",
+            "After proving triangle congruence, use CPCTC to claim corresponding parts are congruent."
+          ]
+        },
+        {
+          "id": "proofs-prac-3",
+          "kind": "multipleChoice",
+          "prompt": "A proof has these statements and reasons so far: (1) ∠A ≅ ∠D — Given; (2) ∠B ≅ ∠E — Given; (3) AB ≅ DE — Given. The next statement should be…",
+          "choices": [
+            "△ABC ≅ △DEF by ASA",
+            "△ABC ≅ △DEF by AAS",
+            "△ABC ≅ △DEF by SAS",
+            "∠C ≅ ∠F by CPCTC"
+          ],
+          "answerIndex": 0,
+          "hints": [
+            "Three pieces of given info: two angles and a side. Where is the side?",
+            "AB is between ∠A and ∠B — it is the included side.",
+            "Two angles (∠A, ∠B) and included side AB → ASA. So △ABC ≅ △DEF by ASA."
+          ]
+        },
+        {
+          "id": "proofs-prac-4",
+          "kind": "multipleChoice",
+          "prompt": "Which property justifies the step 'since M is the midpoint of XZ, XM ≅ MZ'?",
+          "choices": [
+            "Definition of midpoint",
+            "Segment Addition Postulate",
+            "Reflexive Property",
+            "CPCTC"
+          ],
+          "answerIndex": 0,
+          "hints": [
+            "What does 'midpoint' mean by definition?",
+            "A midpoint divides a segment into two congruent halves.",
+            "By definition, a midpoint creates two equal segments: XM ≅ MZ."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reflection",
+      "type": "Reflection",
+      "proseRef": "07-congruence-proofs.md#reflection"
+    }
+  ],
+  "scenes": {
+    "scene_proofs_concept": {
+      "viewport": { "xMin": -1, "xMax": 13, "yMin": -1, "yMax": 9 },
+      "points": [
+        { "id": "A", "x": 3, "y": 7, "label": "A", "draggable": false },
+        { "id": "B", "x": 6, "y": 4, "label": "B", "draggable": false },
+        { "id": "C", "x": 3, "y": 1, "label": "C", "draggable": false },
+        { "id": "D", "x": 9, "y": 4, "label": "D", "draggable": false }
+      ],
+      "segments": [
+        { "id": "AB", "from": "A", "to": "B" },
+        { "id": "BC", "from": "B", "to": "C" },
+        { "id": "CA", "from": "C", "to": "A" },
+        { "id": "BD", "from": "B", "to": "D" },
+        { "id": "AD", "from": "A", "to": "D" },
+        { "id": "CD", "from": "C", "to": "D" }
+      ],
+      "marks": [
+        { "type": "congruenceTick", "onSegment": "AB", "groupIndex": 1 },
+        { "type": "congruenceTick", "onSegment": "BC", "groupIndex": 1 },
+        { "type": "congruenceTick", "onSegment": "AD", "groupIndex": 2 },
+        { "type": "congruenceTick", "onSegment": "CD", "groupIndex": 2 }
+      ],
+      "annotations": [
+        { "type": "text", "x": 5, "y": 8.3, "text": "Given: AB ≅ CB, AD ≅ CD" },
+        { "type": "text", "x": 5, "y": 7.6, "text": "BD ≅ BD (Reflexive) → △ABD ≅ △CBD (SSS)" },
+        { "type": "text", "x": 5, "y": 6.9, "text": "→ ∠ABD ≅ ∠CBD (CPCTC)" }
+      ]
+    },
+    "scene_proofs_manipulate": {
+      "viewport": { "xMin": -1, "xMax": 13, "yMin": -1, "yMax": 9 },
+      "points": [
+        { "id": "A", "x": 3, "y": 7, "label": "A", "draggable": false },
+        { "id": "B", "x": 6, "y": 4, "label": "B", "draggable": false },
+        { "id": "C", "x": 3, "y": 1, "label": "C", "draggable": false },
+        { "id": "D", "x": 9, "y": 4, "label": "D", "draggable": false }
+      ],
+      "segments": [
+        { "id": "AB", "from": "A", "to": "B" },
+        { "id": "BC", "from": "B", "to": "C" },
+        { "id": "CA", "from": "C", "to": "A" },
+        { "id": "BD", "from": "B", "to": "D" },
+        { "id": "AD", "from": "A", "to": "D" },
+        { "id": "CD", "from": "C", "to": "D" }
+      ],
+      "marks": [
+        { "type": "congruenceTick", "onSegment": "AB", "groupIndex": 1 },
+        { "type": "congruenceTick", "onSegment": "BC", "groupIndex": 1 },
+        { "type": "congruenceTick", "onSegment": "AD", "groupIndex": 2 },
+        { "type": "congruenceTick", "onSegment": "CD", "groupIndex": 2 }
+      ],
+      "annotations": [
+        { "type": "text", "x": 5, "y": 8.5, "text": "AB ≅ CB (given), AD ≅ CD (given), BD ≅ BD (Reflexive)" },
+        { "type": "text", "x": 5, "y": 7.8, "text": "Which postulate proves △ABD ≅ △CBD?" }
+      ]
+    },
+    "scene_proofs_worked": {
+      "viewport": { "xMin": -1, "xMax": 13, "yMin": -1, "yMax": 9 },
+      "points": [
+        { "id": "A", "x": 3, "y": 7, "label": "A", "draggable": false },
+        { "id": "B", "x": 6, "y": 4, "label": "B", "draggable": false },
+        { "id": "C", "x": 3, "y": 1, "label": "C", "draggable": false },
+        { "id": "D", "x": 9, "y": 4, "label": "D", "draggable": false }
+      ],
+      "segments": [
+        { "id": "AB", "from": "A", "to": "B" },
+        { "id": "BC", "from": "B", "to": "C" },
+        { "id": "CA", "from": "C", "to": "A" },
+        { "id": "BD", "from": "B", "to": "D" },
+        { "id": "AD", "from": "A", "to": "D" },
+        { "id": "CD", "from": "C", "to": "D" }
+      ],
+      "marks": [
+        { "type": "congruenceTick", "onSegment": "AB", "groupIndex": 1 },
+        { "type": "congruenceTick", "onSegment": "BC", "groupIndex": 1 },
+        { "type": "congruenceTick", "onSegment": "AD", "groupIndex": 2 },
+        { "type": "congruenceTick", "onSegment": "CD", "groupIndex": 2 }
+      ],
+      "arcs": [
+        { "id": "arcB1", "vertex": "B", "from": "A", "to": "D", "radius": 0.5 },
+        { "id": "arcB2", "vertex": "B", "from": "D", "to": "C", "radius": 0.5 }
+      ],
+      "annotations": [
+        { "type": "text", "x": 5, "y": 8.5, "text": "Two-Column Proof: △ABD ≅ △CBD by SSS → ∠ABD ≅ ∠CBD by CPCTC" }
+      ]
+    }
+  },
+  "testItems": [
+    {
+      "id": "proofs-test-1",
+      "kind": "multipleChoice",
+      "category": "procedural",
+      "prompt": "In a two-column proof, what appears in the 'Reasons' column?",
+      "choices": [
+        "Mathematical statements about the figure",
+        "Definitions, postulates, theorems, and given information that justify each statement",
+        "Diagrams and labels",
+        "The final conclusion only"
+      ],
+      "answerIndex": 1,
+      "difficulty": 1
+    },
+    {
+      "id": "proofs-test-2",
+      "kind": "multipleChoice",
+      "category": "procedural",
+      "prompt": "A proof gives: (1) PQ ≅ RS — Given; (2) QR ≅ QR — Reflexive Property; (3) PR ≅ SQ — Given. The next step proves △PQR ≅ △SRQ. What is the reason?",
+      "choices": ["SAS", "ASA", "SSS", "AAS"],
+      "answerIndex": 2,
+      "difficulty": 1
+    },
+    {
+      "id": "proofs-test-3",
+      "kind": "multipleChoice",
+      "category": "conceptual",
+      "prompt": "To prove that the diagonals of a rhombus bisect each other, you use the triangles formed by the diagonals. What is the role of CPCTC in this proof?",
+      "choices": [
+        "To prove the triangles congruent",
+        "To conclude the half-diagonal segments are congruent, after the triangles are proven congruent",
+        "To establish the right angles at the intersection",
+        "To justify the Reflexive Property"
+      ],
+      "answerIndex": 1,
+      "difficulty": 2
+    },
+    {
+      "id": "proofs-test-4",
+      "kind": "multipleChoice",
+      "category": "conceptual",
+      "prompt": "Which sequence of reasons is in the correct logical order for a triangle congruence proof that ends with a CPCTC conclusion?",
+      "choices": [
+        "CPCTC → Congruence Postulate → Given",
+        "Given → Congruence Postulate → CPCTC",
+        "Congruence Postulate → Given → CPCTC",
+        "Given → CPCTC → Congruence Postulate"
+      ],
+      "answerIndex": 1,
+      "difficulty": 2
+    },
+    {
+      "id": "proofs-test-5",
+      "kind": "multipleChoice",
+      "category": "transfer",
+      "prompt": "Given isosceles △ABC with AB ≅ AC, and M the midpoint of BC. A proof draws AM. What is the most efficient path to prove ∠ABM ≅ ∠ACM?",
+      "choices": [
+        "Prove △ABM ≅ △ACM by SSS, then use CPCTC",
+        "Use the Isosceles Triangle Theorem directly without triangles",
+        "Prove △ABM ≅ △ACM by AAS, then use CPCTC",
+        "Apply SAS directly to the angles"
+      ],
+      "answerIndex": 0,
+      "difficulty": 2
+    },
+    {
+      "id": "proofs-test-6",
+      "kind": "multipleChoice",
+      "category": "transfer",
+      "prompt": "In a proof, a student has: AB ≅ CD (given), ∠ABE ≅ ∠CDE (given), ∠AEB ≅ ∠CED (vertical angles). The student writes '△ABE ≅ △CDE by ASA.' Is this correct?",
+      "choices": [
+        "Yes — ∠ABE, AB, and ∠AEB with correspondence A↔C, B↔D, E↔E",
+        "No — the two angles ∠ABE and ∠AEB are at the endpoints of AB, making AB the included side. This is ASA. But ∠CDE and ∠CED are at the endpoints of CD. The correspondence holds.",
+        "No — vertical angles cannot be used in proofs",
+        "Yes — and the reason is AAS, not ASA"
+      ],
+      "answerIndex": 1,
+      "difficulty": 3
+    },
+    {
+      "id": "proofs-test-7",
+      "kind": "multipleChoice",
+      "category": "transfer",
+      "prompt": "Proof goal: 'In △ABC, if BD is the angle bisector of ∠ABC and is also the perpendicular bisector of AC, prove that △ABC is isosceles.' Which congruence tools are needed?",
+      "choices": [
+        "SAS to prove △ABD ≅ △CBD, then CPCTC to conclude AB ≅ CB",
+        "HL to prove △ABD ≅ △CBD, then CPCTC to conclude AB ≅ CB",
+        "SSS to prove △ABD ≅ △CBD, then CPCTC to conclude AB ≅ CB",
+        "AAS to prove △ABD ≅ △CBD, then CPCTC to conclude AB ≅ CB"
+      ],
+      "answerIndex": 1,
+      "explanation": "BD ⊥ AC (perpendicular bisector) gives right angles at D; AD ≅ DC (midpoint); BD ≅ BD (Reflexive). But right triangles + hypotenuse AB=CB (goal) + leg AD=CD → HL proves them congruent; then AB ≅ CB by CPCTC.",
+      "difficulty": 3
+    }
+  ]
+}

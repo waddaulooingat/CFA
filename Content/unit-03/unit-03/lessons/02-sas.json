@@ -1,0 +1,337 @@
+{
+  "skillId": "geo-u3-sas",
+  "lessonVersion": 1,
+  "beats": [
+    {
+      "id": "concept",
+      "type": "Concept",
+      "title": "SAS Congruence Postulate",
+      "scene": "scene_sas_concept",
+      "proseRef": "02-sas.md#concept"
+    },
+    {
+      "id": "manipulate",
+      "type": "Manipulate",
+      "title": "Match the included angle",
+      "scene": "scene_sas_manipulate",
+      "instruction": "Drag point F to adjust the angle at vertex E. Make ∠DEF equal to 53° to match ∠ABC. With DE ≅ AB and EF ≅ BC already established, matching the included angle proves SAS congruence.",
+      "successCondition": {
+        "type": "angleMeasure",
+        "vertex": "E",
+        "sides": ["D", "F"],
+        "targetDegrees": 53,
+        "tolerance": 2.0
+      },
+      "successMessage": "∠DEF ≅ ∠ABC and the two included sides match — SAS confirms △ABC ≅ △DEF!",
+      "maxAttempts": null
+    },
+    {
+      "id": "worked",
+      "type": "WorkedExample",
+      "title": "Proving △ABC ≅ △DEF by SAS",
+      "scene": "scene_sas_worked",
+      "steps": [
+        {
+          "order": 1,
+          "text": "Identify two pairs of congruent sides: AB = DE = 5, so AB ≅ DE.",
+          "canvasAction": { "type": "highlight", "target": "AB" }
+        },
+        {
+          "order": 2,
+          "text": "BC = EF = 4, so BC ≅ EF. The angle between AB and BC is ∠B; the angle between DE and EF is ∠E — these are the included angles.",
+          "canvasAction": { "type": "highlight", "target": "BC" }
+        },
+        {
+          "order": 3,
+          "text": "∠B ≅ ∠E (both 53°). Two sides and the included angle match — by SAS, △ABC ≅ △DEF.",
+          "canvasAction": { "type": "annotate", "target": "both_triangles", "text": "△ABC ≅ △DEF (SAS)" }
+        }
+      ]
+    },
+    {
+      "id": "check",
+      "type": "Check",
+      "items": [
+        {
+          "id": "sas-check-1",
+          "kind": "multipleChoice",
+          "prompt": "In SAS, the angle must be the angle _______ the two sides.",
+          "choices": ["opposite to", "included between", "largest among", "supplementary to"],
+          "answerIndex": 1,
+          "explanation": "The 'I' in 'included' is the key: the angle must be formed BY the two sides — it sits between them."
+        },
+        {
+          "id": "sas-check-2",
+          "kind": "multipleChoice",
+          "prompt": "△PQR: PQ = 8, QR = 6, ∠Q = 40°. △XYZ: XY = 8, YZ = 6, ∠Y = 40°. Are these congruent?",
+          "choices": [
+            "Yes, by SAS (∠Q and ∠Y are included between the given sides)",
+            "No, we need a third side",
+            "Yes, by SSS",
+            "No, we need another angle"
+          ],
+          "answerIndex": 0,
+          "explanation": "PQ & QR meet at Q, so ∠Q is included. XY & YZ meet at Y, so ∠Y is included. SAS applies."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "type": "Practice",
+      "items": [
+        {
+          "id": "sas-prac-1",
+          "kind": "multipleChoice",
+          "prompt": "△ABC has AB = 10, ∠A = 35°, AC = 7. △DEF has DE = 10, ∠D = 35°, DF = 7. Which postulate proves congruence?",
+          "choices": ["SAS", "SSS", "ASA", "Cannot be determined"],
+          "answerIndex": 0,
+          "hints": [
+            "Identify which angle is given and which sides it is between.",
+            "∠A is between AB and AC; ∠D is between DE and DF.",
+            "Two sides and their included angle match — SAS."
+          ]
+        },
+        {
+          "id": "sas-prac-2",
+          "kind": "multipleChoice",
+          "prompt": "Which combination does NOT guarantee congruence (the 'Donkey Theorem' or SSA)?",
+          "choices": [
+            "Two sides and the included angle",
+            "Two sides and a non-included angle",
+            "Three sides",
+            "Two angles and the included side"
+          ],
+          "answerIndex": 1,
+          "hints": [
+            "Think about which combination is NOT a valid postulate.",
+            "SSA — two sides and a non-included angle — can produce two different triangles.",
+            "Two sides and a non-included angle (SSA) is not a valid congruence postulate."
+          ]
+        },
+        {
+          "id": "sas-prac-3",
+          "kind": "multipleChoice",
+          "prompt": "M is the midpoint of QS in △PQS and △RQS (same base QS). PQ = RQ and ∠PQM = ∠RQM. Which postulate proves △PQM ≅ △RQM?",
+          "choices": ["SAS", "SSS", "AAS", "HL"],
+          "answerIndex": 0,
+          "hints": [
+            "List what you know: PQ = RQ, one shared side, one pair of equal angles.",
+            "QM is a shared side (QM ≅ QM). The angle ∠PQM = ∠RQM is between QP/QR and QM.",
+            "PQ ≅ RQ, ∠PQM ≅ ∠RQM, QM ≅ QM — that's SAS."
+          ]
+        },
+        {
+          "id": "sas-prac-4",
+          "kind": "multipleChoice",
+          "prompt": "△JKL: JK = 9, KL = 12, ∠L = 45°. △MNP: MN = 9, NP = 12, ∠N = 45°. Can SAS be used?",
+          "choices": [
+            "Yes — the two sides and the 45° angle match",
+            "No — ∠L is not included between JK and KL",
+            "Yes — any angle works for SAS",
+            "No — we need ∠K and ∠N to match"
+          ],
+          "answerIndex": 1,
+          "hints": [
+            "For SAS, the angle must be included between the two given sides.",
+            "JK and KL share vertex K, so the included angle would be ∠K.",
+            "∠L is NOT between JK and KL — it is opposite JK. SAS does not apply as stated."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reflection",
+      "type": "Reflection",
+      "proseRef": "02-sas.md#reflection"
+    }
+  ],
+  "scenes": {
+    "scene_sas_concept": {
+      "viewport": { "xMin": -1, "xMax": 13, "yMin": -1, "yMax": 9 },
+      "points": [
+        { "id": "A", "x": 1, "y": 7, "label": "A", "draggable": false },
+        { "id": "B", "x": 1, "y": 2, "label": "B", "draggable": false },
+        { "id": "C", "x": 5, "y": 2, "label": "C", "draggable": false },
+        { "id": "D", "x": 7, "y": 7, "label": "D", "draggable": false },
+        { "id": "E", "x": 7, "y": 2, "label": "E", "draggable": false },
+        { "id": "F", "x": 11, "y": 2, "label": "F", "draggable": false }
+      ],
+      "segments": [
+        { "id": "AB", "from": "A", "to": "B" },
+        { "id": "BC", "from": "B", "to": "C" },
+        { "id": "CA", "from": "C", "to": "A" },
+        { "id": "DE", "from": "D", "to": "E" },
+        { "id": "EF", "from": "E", "to": "F" },
+        { "id": "FD", "from": "F", "to": "D" }
+      ],
+      "marks": [
+        { "type": "congruenceTick", "onSegment": "AB", "groupIndex": 1 },
+        { "type": "congruenceTick", "onSegment": "DE", "groupIndex": 1 },
+        { "type": "congruenceTick", "onSegment": "BC", "groupIndex": 2 },
+        { "type": "congruenceTick", "onSegment": "EF", "groupIndex": 2 }
+      ],
+      "arcs": [
+        { "id": "arcB", "vertex": "B", "from": "A", "to": "C", "radius": 0.6 },
+        { "id": "arcE", "vertex": "E", "from": "D", "to": "F", "radius": 0.6 }
+      ],
+      "annotations": [
+        { "type": "text", "x": 0.0, "y": 4.5, "text": "∠B (included)" },
+        { "type": "text", "x": 5.8, "y": 4.5, "text": "∠E (included)" },
+        { "type": "text", "x": 4.5, "y": 8.3, "text": "SAS: AB≅DE, ∠B≅∠E, BC≅EF → △ABC≅△DEF" }
+      ]
+    },
+    "scene_sas_manipulate": {
+      "viewport": { "xMin": -1, "xMax": 13, "yMin": -1, "yMax": 9 },
+      "points": [
+        { "id": "A", "x": 1, "y": 7, "label": "A", "draggable": false },
+        { "id": "B", "x": 1, "y": 2, "label": "B", "draggable": false },
+        { "id": "C", "x": 4.01, "y": 2, "label": "C", "draggable": false },
+        { "id": "D", "x": 7, "y": 7, "label": "D", "draggable": false },
+        { "id": "E", "x": 7, "y": 2, "label": "E", "draggable": false },
+        { "id": "F", "x": 11, "y": 4, "label": "F (drag me)", "draggable": true }
+      ],
+      "segments": [
+        { "id": "AB", "from": "A", "to": "B" },
+        { "id": "BC", "from": "B", "to": "C" },
+        { "id": "CA", "from": "C", "to": "A" },
+        { "id": "DE", "from": "D", "to": "E" },
+        { "id": "EF", "from": "E", "to": "F" },
+        { "id": "FD", "from": "F", "to": "D" }
+      ],
+      "marks": [
+        { "type": "congruenceTick", "onSegment": "AB", "groupIndex": 1 },
+        { "type": "congruenceTick", "onSegment": "DE", "groupIndex": 1 },
+        { "type": "congruenceTick", "onSegment": "BC", "groupIndex": 2 },
+        { "type": "congruenceTick", "onSegment": "EF", "groupIndex": 2 }
+      ],
+      "measurements": [
+        { "type": "angleMeasure", "vertex": "B", "sides": ["A", "C"], "show": true },
+        { "type": "angleMeasure", "vertex": "E", "sides": ["D", "F"], "show": true }
+      ]
+    },
+    "scene_sas_worked": {
+      "viewport": { "xMin": -1, "xMax": 13, "yMin": -1, "yMax": 9 },
+      "points": [
+        { "id": "A", "x": 1, "y": 7, "label": "A", "draggable": false },
+        { "id": "B", "x": 1, "y": 2, "label": "B", "draggable": false },
+        { "id": "C", "x": 4.01, "y": 2, "label": "C", "draggable": false },
+        { "id": "D", "x": 7, "y": 7, "label": "D", "draggable": false },
+        { "id": "E", "x": 7, "y": 2, "label": "E", "draggable": false },
+        { "id": "F", "x": 10.01, "y": 2, "label": "F", "draggable": false }
+      ],
+      "segments": [
+        { "id": "AB", "from": "A", "to": "B", "label": "5" },
+        { "id": "BC", "from": "B", "to": "C", "label": "4" },
+        { "id": "CA", "from": "C", "to": "A" },
+        { "id": "DE", "from": "D", "to": "E", "label": "5" },
+        { "id": "EF", "from": "E", "to": "F", "label": "4" },
+        { "id": "FD", "from": "F", "to": "D" }
+      ],
+      "marks": [
+        { "type": "congruenceTick", "onSegment": "AB", "groupIndex": 1 },
+        { "type": "congruenceTick", "onSegment": "DE", "groupIndex": 1 },
+        { "type": "congruenceTick", "onSegment": "BC", "groupIndex": 2 },
+        { "type": "congruenceTick", "onSegment": "EF", "groupIndex": 2 }
+      ],
+      "arcs": [
+        { "id": "arcB", "vertex": "B", "from": "A", "to": "C", "label": "53°", "radius": 0.7 },
+        { "id": "arcE", "vertex": "E", "from": "D", "to": "F", "label": "53°", "radius": 0.7 }
+      ],
+      "annotations": [
+        { "type": "text", "x": 4.5, "y": 8.3, "text": "△ABC ≅ △DEF by SAS" }
+      ]
+    }
+  },
+  "testItems": [
+    {
+      "id": "sas-test-1",
+      "kind": "multipleChoice",
+      "category": "procedural",
+      "prompt": "SAS requires two pairs of congruent sides and one pair of congruent angles. Where must that angle be?",
+      "choices": [
+        "Opposite the longer side",
+        "Included between the two sides",
+        "Adjacent to one side only",
+        "Largest angle in the triangle"
+      ],
+      "answerIndex": 1,
+      "difficulty": 1
+    },
+    {
+      "id": "sas-test-2",
+      "kind": "multipleChoice",
+      "category": "procedural",
+      "prompt": "△ABC: AB = 6, ∠B = 70°, BC = 8. △XYZ: XY = 6, ∠Y = 70°, YZ = 8. Are these congruent by SAS?",
+      "choices": [
+        "Yes — AB≅XY, ∠B≅∠Y (included), BC≅YZ",
+        "No — we need the third side",
+        "No — the angle is not included",
+        "Yes — by SSS"
+      ],
+      "answerIndex": 0,
+      "difficulty": 1
+    },
+    {
+      "id": "sas-test-3",
+      "kind": "multipleChoice",
+      "category": "conceptual",
+      "prompt": "△DEF: DE = 5, ∠F = 60°, EF = 5. △PQR: PQ = 5, ∠R = 60°, QR = 5. Can SAS be applied with D↔P, E↔Q, F↔R?",
+      "choices": [
+        "Yes — two sides and an angle match",
+        "No — ∠F is opposite DE, not included between DE and EF",
+        "Yes — equilateral triangles are always congruent",
+        "No — we need more angle information"
+      ],
+      "answerIndex": 1,
+      "difficulty": 2
+    },
+    {
+      "id": "sas-test-4",
+      "kind": "multipleChoice",
+      "category": "conceptual",
+      "prompt": "Why is SSA (two sides and a non-included angle) NOT a valid congruence postulate?",
+      "choices": [
+        "Because it gives too much information",
+        "Because two different triangles can satisfy the same SSA conditions",
+        "Because angles must always be included",
+        "Because it is equivalent to SSS"
+      ],
+      "answerIndex": 1,
+      "difficulty": 2
+    },
+    {
+      "id": "sas-test-5",
+      "kind": "multipleChoice",
+      "category": "transfer",
+      "prompt": "In quadrilateral ABCD, diagonal AC bisects ∠DAB and ∠DCB. Which postulate proves △ABC ≅ △ADC?",
+      "choices": ["SAS", "SSS", "ASA", "AAS"],
+      "answerIndex": 2,
+      "explanation": "AC is shared. ∠BAC ≅ ∠DAC and ∠BCA ≅ ∠DCA (bisected angles). Two angles and included side AC → ASA.",
+      "difficulty": 2
+    },
+    {
+      "id": "sas-test-6",
+      "kind": "multipleChoice",
+      "category": "transfer",
+      "prompt": "A carpenter cuts two triangular braces: each has sides of 12 in and 9 in meeting at a 45° angle. Are the braces congruent, and why?",
+      "choices": [
+        "Yes, by SAS — same two sides and same included angle",
+        "Yes, by SSS — same area means same sides",
+        "No — we need to measure the third side",
+        "No — congruence theorems don't apply to physical objects"
+      ],
+      "answerIndex": 0,
+      "difficulty": 3
+    },
+    {
+      "id": "sas-test-7",
+      "kind": "multipleChoice",
+      "category": "transfer",
+      "prompt": "Points A, B, C are on circle O. OA, OB, and OC are radii. ∠AOB ≅ ∠COB. Which postulate proves △AOB ≅ △COB?",
+      "choices": ["SAS", "SSS", "ASA", "AAS"],
+      "answerIndex": 0,
+      "explanation": "OA = OC = OB = radius (two pairs of equal sides). ∠AOB ≅ ∠COB is the included angle between those radius pairs. SAS applies.",
+      "difficulty": 3
+    }
+  ]
+}

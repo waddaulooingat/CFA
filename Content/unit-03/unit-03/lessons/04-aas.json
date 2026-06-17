@@ -1,0 +1,336 @@
+{
+  "skillId": "geo-u3-aas",
+  "lessonVersion": 1,
+  "beats": [
+    {
+      "id": "concept",
+      "type": "Concept",
+      "title": "AAS Congruence Theorem",
+      "scene": "scene_aas_concept",
+      "proseRef": "04-aas.md#concept"
+    },
+    {
+      "id": "manipulate",
+      "type": "Manipulate",
+      "title": "Match the non-included angle",
+      "scene": "scene_aas_manipulate",
+      "instruction": "Drag point F to adjust angle ∠D in △DEF. Make ∠D equal to 53° to match ∠A in △ABC. With ∠B ≅ ∠E and BC ≅ EF (non-included side) already established, matching the second angle completes AAS.",
+      "successCondition": {
+        "type": "angleMeasure",
+        "vertex": "D",
+        "sides": ["E", "F"],
+        "targetDegrees": 53,
+        "tolerance": 2.0
+      },
+      "successMessage": "Both angle pairs match and BC ≅ EF — AAS confirms △ABC ≅ △DEF!",
+      "maxAttempts": null
+    },
+    {
+      "id": "worked",
+      "type": "WorkedExample",
+      "title": "Proving △ABC ≅ △DEF by AAS",
+      "scene": "scene_aas_worked",
+      "steps": [
+        {
+          "order": 1,
+          "text": "Identify two angle pairs. ∠A = ∠D = 53° and ∠B = ∠E = 90°. Both angle pairs are congruent.",
+          "canvasAction": { "type": "highlight", "target": "arcA" }
+        },
+        {
+          "order": 2,
+          "text": "The side BC = EF = 4. Crucially, BC is opposite ∠A and EF is opposite ∠D — this side is NOT between the two known angles (making it AAS, not ASA).",
+          "canvasAction": { "type": "highlight", "target": "BC" }
+        },
+        {
+          "order": 3,
+          "text": "Since ∠A + ∠B + ∠C = 180° forces ∠C = 37° = ∠F, all three angles match. The third angle theorem converts AAS into ASA — so △ABC ≅ △DEF by AAS.",
+          "canvasAction": { "type": "annotate", "target": "both_triangles", "text": "△ABC ≅ △DEF (AAS)" }
+        }
+      ]
+    },
+    {
+      "id": "check",
+      "type": "Check",
+      "items": [
+        {
+          "id": "aas-check-1",
+          "kind": "multipleChoice",
+          "prompt": "AAS differs from ASA in which way?",
+          "choices": [
+            "AAS uses three angles; ASA uses two",
+            "In AAS the known side is NOT between the two known angles",
+            "AAS requires a right angle; ASA does not",
+            "AAS is a postulate; ASA is a theorem"
+          ],
+          "answerIndex": 1,
+          "explanation": "AAS = Angle-Angle-Side, where the side is non-included (not between the two angles). ASA has the side between the angles."
+        },
+        {
+          "id": "aas-check-2",
+          "kind": "multipleChoice",
+          "prompt": "△PQR: ∠P = 45°, ∠Q = 90°, QR = 6. △STU: ∠S = 45°, ∠T = 90°, TU = 6. Side QR is opposite ∠P; TU is opposite ∠S. Which theorem applies?",
+          "choices": ["AAS", "ASA", "SAS", "HL"],
+          "answerIndex": 0,
+          "explanation": "Two angles (∠P≅∠S, ∠Q≅∠T) and a non-included side (QR = TU, opposite the first angle) → AAS."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "type": "Practice",
+      "items": [
+        {
+          "id": "aas-prac-1",
+          "kind": "multipleChoice",
+          "prompt": "Why is AAS a theorem rather than a postulate?",
+          "choices": [
+            "Because it only works for right triangles",
+            "Because it can be proved using the Triangle Angle Sum Theorem and ASA",
+            "Because it was discovered after the postulates",
+            "Because it requires more given information than ASA"
+          ],
+          "answerIndex": 1,
+          "hints": [
+            "A theorem can be proved from other axioms and postulates.",
+            "If two angles of a triangle are known, the third is forced by the 180° sum.",
+            "Using the third-angle theorem converts AAS into ASA, which is already a postulate."
+          ]
+        },
+        {
+          "id": "aas-prac-2",
+          "kind": "multipleChoice",
+          "prompt": "△ABC: ∠A = 70°, ∠C = 50°, BC = 8. △DEF: ∠D = 70°, ∠F = 50°, EF = 8. The side BC is opposite ∠A; EF is opposite ∠D. Which theorem proves congruence?",
+          "choices": ["AAS", "ASA", "SSS", "SAS"],
+          "answerIndex": 0,
+          "hints": [
+            "Identify the two angles: ∠A ≅ ∠D and ∠C ≅ ∠F.",
+            "Is BC between ∠A and ∠C? No — BC connects B and C, with ∠A at the opposite vertex.",
+            "Two angles and a non-included side → AAS."
+          ]
+        },
+        {
+          "id": "aas-prac-3",
+          "kind": "multipleChoice",
+          "prompt": "△JKL: ∠J = 40°, JK = 9, ∠K = 60°. △MNP: ∠M = 40°, MN = 9, ∠N = 60°. Is this ASA or AAS?",
+          "choices": [
+            "ASA — JK is between ∠J and ∠K",
+            "AAS — JK is not the included side",
+            "SAS — two angles and a side",
+            "Cannot determine — more information needed"
+          ],
+          "answerIndex": 0,
+          "hints": [
+            "JK connects vertices J and K — which angles are at those vertices?",
+            "∠J is at vertex J and ∠K is at vertex K — both are endpoints of side JK.",
+            "JK is directly between ∠J and ∠K — this is ASA."
+          ]
+        },
+        {
+          "id": "aas-prac-4",
+          "kind": "multipleChoice",
+          "prompt": "If ∠A ≅ ∠D, ∠B ≅ ∠E, and AB ≅ DE in △ABC and △DEF respectively, which postulate/theorem applies?",
+          "choices": ["ASA", "AAS", "SSS", "SAS"],
+          "answerIndex": 0,
+          "hints": [
+            "Is AB between ∠A and ∠B?",
+            "AB connects A and B — the two vertices where the given angles are.",
+            "AB is between ∠A and ∠B → the included side → ASA."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reflection",
+      "type": "Reflection",
+      "proseRef": "04-aas.md#reflection"
+    }
+  ],
+  "scenes": {
+    "scene_aas_concept": {
+      "viewport": { "xMin": -1, "xMax": 13, "yMin": -1, "yMax": 9 },
+      "points": [
+        { "id": "A", "x": 1, "y": 7, "label": "A", "draggable": false },
+        { "id": "B", "x": 1, "y": 2, "label": "B", "draggable": false },
+        { "id": "C", "x": 5, "y": 2, "label": "C", "draggable": false },
+        { "id": "D", "x": 7, "y": 7, "label": "D", "draggable": false },
+        { "id": "E", "x": 7, "y": 2, "label": "E", "draggable": false },
+        { "id": "F", "x": 11, "y": 2, "label": "F", "draggable": false }
+      ],
+      "segments": [
+        { "id": "AB", "from": "A", "to": "B" },
+        { "id": "BC", "from": "B", "to": "C" },
+        { "id": "CA", "from": "C", "to": "A" },
+        { "id": "DE", "from": "D", "to": "E" },
+        { "id": "EF", "from": "E", "to": "F" },
+        { "id": "FD", "from": "F", "to": "D" }
+      ],
+      "marks": [
+        { "type": "congruenceTick", "onSegment": "BC", "groupIndex": 1 },
+        { "type": "congruenceTick", "onSegment": "EF", "groupIndex": 1 },
+        { "type": "rightAngle", "at": "B" },
+        { "type": "rightAngle", "at": "E" }
+      ],
+      "arcs": [
+        { "id": "arcA", "vertex": "A", "from": "B", "to": "C", "radius": 0.6 },
+        { "id": "arcD", "vertex": "D", "from": "E", "to": "F", "radius": 0.6 }
+      ],
+      "annotations": [
+        { "type": "text", "x": 4.5, "y": 8.3, "text": "AAS: ∠A≅∠D, ∠B≅∠E (right angles), BC≅EF (non-included)" },
+        { "type": "text", "x": 4.5, "y": 7.5, "text": "BC is opposite ∠A; it is NOT between the two marked angles" }
+      ]
+    },
+    "scene_aas_manipulate": {
+      "viewport": { "xMin": -1, "xMax": 13, "yMin": -1, "yMax": 9 },
+      "points": [
+        { "id": "A", "x": 1, "y": 7, "label": "A", "draggable": false },
+        { "id": "B", "x": 1, "y": 2, "label": "B", "draggable": false },
+        { "id": "C", "x": 5, "y": 2, "label": "C", "draggable": false },
+        { "id": "D", "x": 11, "y": 7, "label": "D (drag via F)", "draggable": false },
+        { "id": "E", "x": 7, "y": 2, "label": "E", "draggable": false },
+        { "id": "F", "x": 11, "y": 2, "label": "F (drag me)", "draggable": true }
+      ],
+      "segments": [
+        { "id": "AB", "from": "A", "to": "B" },
+        { "id": "BC", "from": "B", "to": "C" },
+        { "id": "CA", "from": "C", "to": "A" },
+        { "id": "DE", "from": "D", "to": "E" },
+        { "id": "EF", "from": "E", "to": "F" },
+        { "id": "FD", "from": "F", "to": "D" }
+      ],
+      "marks": [
+        { "type": "congruenceTick", "onSegment": "BC", "groupIndex": 1 },
+        { "type": "congruenceTick", "onSegment": "EF", "groupIndex": 1 },
+        { "type": "rightAngle", "at": "B" },
+        { "type": "rightAngle", "at": "E" }
+      ],
+      "measurements": [
+        { "type": "angleMeasure", "vertex": "A", "sides": ["B", "C"], "show": true },
+        { "type": "angleMeasure", "vertex": "D", "sides": ["E", "F"], "show": true }
+      ]
+    },
+    "scene_aas_worked": {
+      "viewport": { "xMin": -1, "xMax": 13, "yMin": -1, "yMax": 9 },
+      "points": [
+        { "id": "A", "x": 1, "y": 7, "label": "A", "draggable": false },
+        { "id": "B", "x": 1, "y": 2, "label": "B", "draggable": false },
+        { "id": "C", "x": 5, "y": 2, "label": "C", "draggable": false },
+        { "id": "D", "x": 7, "y": 7, "label": "D", "draggable": false },
+        { "id": "E", "x": 7, "y": 2, "label": "E", "draggable": false },
+        { "id": "F", "x": 11, "y": 2, "label": "F", "draggable": false }
+      ],
+      "segments": [
+        { "id": "AB", "from": "A", "to": "B" },
+        { "id": "BC", "from": "B", "to": "C", "label": "4" },
+        { "id": "CA", "from": "C", "to": "A" },
+        { "id": "DE", "from": "D", "to": "E" },
+        { "id": "EF", "from": "E", "to": "F", "label": "4" },
+        { "id": "FD", "from": "F", "to": "D" }
+      ],
+      "marks": [
+        { "type": "congruenceTick", "onSegment": "BC", "groupIndex": 1 },
+        { "type": "congruenceTick", "onSegment": "EF", "groupIndex": 1 },
+        { "type": "rightAngle", "at": "B" },
+        { "type": "rightAngle", "at": "E" }
+      ],
+      "arcs": [
+        { "id": "arcA", "vertex": "A", "from": "B", "to": "C", "label": "53°", "radius": 0.7 },
+        { "id": "arcD", "vertex": "D", "from": "E", "to": "F", "label": "53°", "radius": 0.7 }
+      ],
+      "annotations": [
+        { "type": "text", "x": 4.5, "y": 8.3, "text": "△ABC ≅ △DEF by AAS" }
+      ]
+    }
+  },
+  "testItems": [
+    {
+      "id": "aas-test-1",
+      "kind": "multipleChoice",
+      "category": "procedural",
+      "prompt": "AAS stands for…",
+      "choices": [
+        "Angle-Angle-Side (non-included side)",
+        "Angle-Angle-Side (included side)",
+        "Adjacent-Angle-Side",
+        "Alternate-Angle-Side"
+      ],
+      "answerIndex": 0,
+      "difficulty": 1
+    },
+    {
+      "id": "aas-test-2",
+      "kind": "multipleChoice",
+      "category": "procedural",
+      "prompt": "△ABC: ∠A = 30°, ∠B = 110°, BC = 7. △DEF: ∠D = 30°, ∠E = 110°, EF = 7. BC is opposite ∠A; EF is opposite ∠D. Which theorem proves △ABC ≅ △DEF?",
+      "choices": ["AAS", "ASA", "SAS", "SSS"],
+      "answerIndex": 0,
+      "difficulty": 1
+    },
+    {
+      "id": "aas-test-3",
+      "kind": "multipleChoice",
+      "category": "conceptual",
+      "prompt": "AAS is a theorem (proved), while ASA is a postulate (assumed). Why can AAS be proved?",
+      "choices": [
+        "Because AAS uses larger angles",
+        "Because the third angle is forced by the 180° angle sum, converting AAS to ASA",
+        "Because AAS only applies to right triangles",
+        "Because AAS uses a shorter side"
+      ],
+      "answerIndex": 1,
+      "difficulty": 2
+    },
+    {
+      "id": "aas-test-4",
+      "kind": "multipleChoice",
+      "category": "conceptual",
+      "prompt": "△PQR and △STU: ∠P ≅ ∠S, ∠Q ≅ ∠T, and QR ≅ TU. Is this ASA or AAS?",
+      "choices": [
+        "ASA — QR is between ∠Q and ∠R",
+        "AAS — QR is between ∠P and ∠Q, so it is included",
+        "AAS — QR connects Q and R; but the given angles are ∠P and ∠Q, and QR is not between both",
+        "ASA — because ∠Q is at one endpoint of QR"
+      ],
+      "answerIndex": 2,
+      "explanation": "QR is between ∠Q and ∠R. Only ∠Q is given, not ∠R — so QR is non-included relative to the pair (∠P, ∠Q). This is AAS.",
+      "difficulty": 2
+    },
+    {
+      "id": "aas-test-5",
+      "kind": "multipleChoice",
+      "category": "transfer",
+      "prompt": "In the figure, AB ∥ CD and BC bisects ∠ABD and ∠ACD. Which postulate/theorem proves △ABC ≅ △DCB?",
+      "choices": ["AAS", "ASA", "SAS", "SSS"],
+      "answerIndex": 0,
+      "explanation": "BC is shared (non-included side). ∠ABC ≅ ∠DCB (alternate interior angles, AB∥CD). The bisected angles give a second pair. AAS.",
+      "difficulty": 2
+    },
+    {
+      "id": "aas-test-6",
+      "kind": "multipleChoice",
+      "category": "transfer",
+      "prompt": "Two right triangles each have a 40° acute angle. One has a leg of 8 opposite the 40° angle; the other has a leg of 8 opposite its 40° angle. Are they congruent?",
+      "choices": [
+        "Yes, by AAS — 90°, 40°, and the opposite leg match",
+        "No — we need the hypotenuse",
+        "Yes, by HL — they share a right angle",
+        "No — congruence requires all sides"
+      ],
+      "answerIndex": 0,
+      "difficulty": 3
+    },
+    {
+      "id": "aas-test-7",
+      "kind": "multipleChoice",
+      "category": "transfer",
+      "prompt": "After proving △ABD ≅ △CBD by AAS, a student wants to conclude BD bisects ∠ABC. What justifies that final conclusion?",
+      "choices": [
+        "The definition of an angle bisector and CPCTC",
+        "AAS directly implies angle bisection",
+        "SSS applied to the original triangles",
+        "The Angle Addition Postulate alone"
+      ],
+      "answerIndex": 0,
+      "difficulty": 3
+    }
+  ]
+}

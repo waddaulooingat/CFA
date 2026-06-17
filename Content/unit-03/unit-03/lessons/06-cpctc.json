@@ -1,0 +1,359 @@
+{
+  "skillId": "geo-u3-cpctc",
+  "lessonVersion": 1,
+  "beats": [
+    {
+      "id": "concept",
+      "type": "Concept",
+      "title": "CPCTC",
+      "scene": "scene_cpctc_concept",
+      "proseRef": "06-cpctc.md#concept"
+    },
+    {
+      "id": "manipulate",
+      "type": "Manipulate",
+      "title": "Confirm SSS then read off a pair of angles",
+      "scene": "scene_cpctc_manipulate",
+      "instruction": "Drag point F until EF ≅ BC (the third pair of sides). Once all three side pairs match, the triangles are congruent by SSS. Then observe that ∠A and ∠D are corresponding angles — by CPCTC they must be congruent.",
+      "successCondition": {
+        "type": "equalLengths",
+        "of": "EF",
+        "and": "BC",
+        "tolerance": 0.15
+      },
+      "successMessage": "SSS established! By CPCTC, every pair of corresponding parts is now congruent — including ∠A ≅ ∠D.",
+      "maxAttempts": null
+    },
+    {
+      "id": "worked",
+      "type": "WorkedExample",
+      "title": "Using CPCTC after SSS",
+      "scene": "scene_cpctc_worked",
+      "steps": [
+        {
+          "order": 1,
+          "text": "Establish SSS: AB ≅ DE, BC ≅ EF, CA ≅ FD (all three pairs of sides congruent). This proves △ABC ≅ △DEF.",
+          "canvasAction": { "type": "highlight", "target": "AB" }
+        },
+        {
+          "order": 2,
+          "text": "By CPCTC, every pair of corresponding parts is congruent. In particular, ∠A and ∠D are corresponding angles (A↔D in the congruence statement).",
+          "canvasAction": { "type": "highlight", "target": "arcA" }
+        },
+        {
+          "order": 3,
+          "text": "Conclusion: ∠A ≅ ∠D by CPCTC. We could not state this directly from SSS alone — CPCTC is the bridge that lets us extract information about individual parts after proving congruence.",
+          "canvasAction": { "type": "annotate", "target": "both_triangles", "text": "∠A ≅ ∠D (CPCTC)" }
+        }
+      ]
+    },
+    {
+      "id": "check",
+      "type": "Check",
+      "items": [
+        {
+          "id": "cpctc-check-1",
+          "kind": "multipleChoice",
+          "prompt": "What does CPCTC stand for?",
+          "choices": [
+            "Corresponding Parts of Congruent Triangles are Congruent",
+            "Congruent Parts Create Triangle Congruence",
+            "Corresponding Points Create Triangle Congruence",
+            "Congruent Parts of Congruent Triangles are Corresponding"
+          ],
+          "answerIndex": 0,
+          "explanation": "CPCTC = Corresponding Parts of Congruent Triangles are Congruent. It is used AFTER triangles have been proven congruent."
+        },
+        {
+          "id": "cpctc-check-2",
+          "kind": "multipleChoice",
+          "prompt": "In a proof, when can you invoke CPCTC?",
+          "choices": [
+            "At the very first step",
+            "Only after you have proven the two triangles are congruent",
+            "Whenever two sides look equal in a diagram",
+            "Before stating the congruence postulate"
+          ],
+          "answerIndex": 1,
+          "explanation": "CPCTC is a consequence of triangle congruence — it cannot be used until the triangles have been proven congruent by SSS, SAS, ASA, AAS, or HL."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "type": "Practice",
+      "items": [
+        {
+          "id": "cpctc-prac-1",
+          "kind": "multipleChoice",
+          "prompt": "△ABC ≅ △DEF by SAS (with the correspondence A↔D, B↔E, C↔F). Which pair of parts is congruent by CPCTC?",
+          "choices": [
+            "∠A ≅ ∠D",
+            "AB ≅ EF",
+            "∠B ≅ ∠F",
+            "CA ≅ DE"
+          ],
+          "answerIndex": 0,
+          "hints": [
+            "CPCTC says corresponding parts are congruent. Corresponding means matching under the given vertex pairing.",
+            "A corresponds to D — so ∠A corresponds to ∠D.",
+            "∠A ≅ ∠D by CPCTC (since A↔D in the congruence statement)."
+          ]
+        },
+        {
+          "id": "cpctc-prac-2",
+          "kind": "multipleChoice",
+          "prompt": "A student writes in a proof: 'BC ≅ EF by CPCTC.' What must appear earlier in the proof?",
+          "choices": [
+            "That BC and EF look equal in the figure",
+            "That the two triangles containing BC and EF are congruent",
+            "That ∠B ≅ ∠E",
+            "That all six parts of both triangles are equal"
+          ],
+          "answerIndex": 1,
+          "hints": [
+            "CPCTC is a reason that follows from triangle congruence.",
+            "You cannot use CPCTC unless the triangles have been proven congruent first.",
+            "The proof must first establish △___ ≅ △___ by a congruence postulate/theorem."
+          ]
+        },
+        {
+          "id": "cpctc-prac-3",
+          "kind": "multipleChoice",
+          "prompt": "△ABD ≅ △CBD by HL. By CPCTC, which of the following is true?",
+          "choices": [
+            "∠ABD ≅ ∠CBD",
+            "AD ≅ CD",
+            "Both A and B",
+            "Neither — HL does not allow CPCTC"
+          ],
+          "answerIndex": 2,
+          "hints": [
+            "CPCTC applies after ANY valid congruence proof, including HL.",
+            "A↔C and B↔B. So ∠ABD ↔ ∠CBD and AD ↔ CD.",
+            "Both ∠ABD ≅ ∠CBD and AD ≅ CD follow from CPCTC."
+          ]
+        },
+        {
+          "id": "cpctc-prac-4",
+          "kind": "multipleChoice",
+          "prompt": "A proof concludes: △PQR ≅ △STU by ASA. The goal is to show QR ≅ TU. Is CPCTC valid here?",
+          "choices": [
+            "Yes — QR and TU are corresponding sides (Q↔T, R↔U)",
+            "No — ASA only proves angle congruence",
+            "No — CPCTC only works after SSS",
+            "Yes — but only if QR and TU were part of the ASA setup"
+          ],
+          "answerIndex": 0,
+          "hints": [
+            "CPCTC works after ANY valid congruence proof.",
+            "Under the correspondence P↔S, Q↔T, R↔U, the side QR corresponds to TU.",
+            "Yes — △PQR ≅ △STU by ASA means all six pairs of parts are congruent, including QR ≅ TU."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reflection",
+      "type": "Reflection",
+      "proseRef": "06-cpctc.md#reflection"
+    }
+  ],
+  "scenes": {
+    "scene_cpctc_concept": {
+      "viewport": { "xMin": -1, "xMax": 13, "yMin": -1, "yMax": 9 },
+      "points": [
+        { "id": "A", "x": 1, "y": 7, "label": "A", "draggable": false },
+        { "id": "B", "x": 1, "y": 2, "label": "B", "draggable": false },
+        { "id": "C", "x": 5, "y": 2, "label": "C", "draggable": false },
+        { "id": "D", "x": 7, "y": 7, "label": "D", "draggable": false },
+        { "id": "E", "x": 7, "y": 2, "label": "E", "draggable": false },
+        { "id": "F", "x": 11, "y": 2, "label": "F", "draggable": false }
+      ],
+      "segments": [
+        { "id": "AB", "from": "A", "to": "B" },
+        { "id": "BC", "from": "B", "to": "C" },
+        { "id": "CA", "from": "C", "to": "A" },
+        { "id": "DE", "from": "D", "to": "E" },
+        { "id": "EF", "from": "E", "to": "F" },
+        { "id": "FD", "from": "F", "to": "D" }
+      ],
+      "marks": [
+        { "type": "congruenceTick", "onSegment": "AB", "groupIndex": 1 },
+        { "type": "congruenceTick", "onSegment": "DE", "groupIndex": 1 },
+        { "type": "congruenceTick", "onSegment": "BC", "groupIndex": 2 },
+        { "type": "congruenceTick", "onSegment": "EF", "groupIndex": 2 },
+        { "type": "congruenceTick", "onSegment": "CA", "groupIndex": 3 },
+        { "type": "congruenceTick", "onSegment": "FD", "groupIndex": 3 }
+      ],
+      "arcs": [
+        { "id": "arcA", "vertex": "A", "from": "B", "to": "C", "radius": 0.6 },
+        { "id": "arcD", "vertex": "D", "from": "E", "to": "F", "radius": 0.6 }
+      ],
+      "annotations": [
+        { "type": "text", "x": 4.5, "y": 8.5, "text": "△ABC ≅ △DEF (SSS)" },
+        { "type": "text", "x": 4.5, "y": 7.8, "text": "→ ∠A ≅ ∠D, ∠B ≅ ∠E, ∠C ≅ ∠F (CPCTC)" }
+      ]
+    },
+    "scene_cpctc_manipulate": {
+      "viewport": { "xMin": -1, "xMax": 13, "yMin": -1, "yMax": 9 },
+      "points": [
+        { "id": "A", "x": 1, "y": 7, "label": "A", "draggable": false },
+        { "id": "B", "x": 1, "y": 2, "label": "B", "draggable": false },
+        { "id": "C", "x": 5, "y": 2, "label": "C", "draggable": false },
+        { "id": "D", "x": 7, "y": 7, "label": "D", "draggable": false },
+        { "id": "E", "x": 7, "y": 2, "label": "E", "draggable": false },
+        { "id": "F", "x": 11, "y": 5, "label": "F (drag me)", "draggable": true }
+      ],
+      "segments": [
+        { "id": "AB", "from": "A", "to": "B" },
+        { "id": "BC", "from": "B", "to": "C" },
+        { "id": "CA", "from": "C", "to": "A" },
+        { "id": "DE", "from": "D", "to": "E" },
+        { "id": "EF", "from": "E", "to": "F" },
+        { "id": "FD", "from": "F", "to": "D" }
+      ],
+      "marks": [
+        { "type": "congruenceTick", "onSegment": "AB", "groupIndex": 1 },
+        { "type": "congruenceTick", "onSegment": "DE", "groupIndex": 1 },
+        { "type": "congruenceTick", "onSegment": "CA", "groupIndex": 3 },
+        { "type": "congruenceTick", "onSegment": "FD", "groupIndex": 3 }
+      ],
+      "arcs": [
+        { "id": "arcA", "vertex": "A", "from": "B", "to": "C", "label": "∠A", "radius": 0.6 },
+        { "id": "arcD", "vertex": "D", "from": "E", "to": "F", "label": "∠D", "radius": 0.6 }
+      ],
+      "measurements": [
+        { "type": "length", "from": "B", "to": "C", "show": true, "label": "BC" },
+        { "type": "length", "from": "E", "to": "F", "show": true, "label": "EF" },
+        { "type": "angleMeasure", "vertex": "A", "sides": ["B", "C"], "show": true },
+        { "type": "angleMeasure", "vertex": "D", "sides": ["E", "F"], "show": true }
+      ]
+    },
+    "scene_cpctc_worked": {
+      "viewport": { "xMin": -1, "xMax": 13, "yMin": -1, "yMax": 9 },
+      "points": [
+        { "id": "A", "x": 1, "y": 7, "label": "A", "draggable": false },
+        { "id": "B", "x": 1, "y": 2, "label": "B", "draggable": false },
+        { "id": "C", "x": 5, "y": 2, "label": "C", "draggable": false },
+        { "id": "D", "x": 7, "y": 7, "label": "D", "draggable": false },
+        { "id": "E", "x": 7, "y": 2, "label": "E", "draggable": false },
+        { "id": "F", "x": 11, "y": 2, "label": "F", "draggable": false }
+      ],
+      "segments": [
+        { "id": "AB", "from": "A", "to": "B" },
+        { "id": "BC", "from": "B", "to": "C" },
+        { "id": "CA", "from": "C", "to": "A" },
+        { "id": "DE", "from": "D", "to": "E" },
+        { "id": "EF", "from": "E", "to": "F" },
+        { "id": "FD", "from": "F", "to": "D" }
+      ],
+      "marks": [
+        { "type": "congruenceTick", "onSegment": "AB", "groupIndex": 1 },
+        { "type": "congruenceTick", "onSegment": "DE", "groupIndex": 1 },
+        { "type": "congruenceTick", "onSegment": "BC", "groupIndex": 2 },
+        { "type": "congruenceTick", "onSegment": "EF", "groupIndex": 2 },
+        { "type": "congruenceTick", "onSegment": "CA", "groupIndex": 3 },
+        { "type": "congruenceTick", "onSegment": "FD", "groupIndex": 3 }
+      ],
+      "arcs": [
+        { "id": "arcA", "vertex": "A", "from": "B", "to": "C", "label": "≅∠D", "radius": 0.8 },
+        { "id": "arcD", "vertex": "D", "from": "E", "to": "F", "label": "≅∠A", "radius": 0.8 }
+      ],
+      "annotations": [
+        { "type": "text", "x": 4.5, "y": 8.5, "text": "Step 1: △ABC ≅ △DEF by SSS" },
+        { "type": "text", "x": 4.5, "y": 7.8, "text": "Step 2: ∠A ≅ ∠D by CPCTC" }
+      ]
+    }
+  },
+  "testItems": [
+    {
+      "id": "cpctc-test-1",
+      "kind": "multipleChoice",
+      "category": "procedural",
+      "prompt": "CPCTC is used in a proof to justify that…",
+      "choices": [
+        "Two triangles are congruent",
+        "A specific pair of corresponding parts is congruent, after triangles are proven congruent",
+        "Three sides are equal",
+        "Two angles sum to 180°"
+      ],
+      "answerIndex": 1,
+      "difficulty": 1
+    },
+    {
+      "id": "cpctc-test-2",
+      "kind": "multipleChoice",
+      "category": "procedural",
+      "prompt": "In a proof, △MNP ≅ △XYZ (with M↔X, N↔Y, P↔Z) is established by SAS. Which reason justifies 'NP ≅ YZ'?",
+      "choices": ["SAS", "CPCTC", "Reflexive Property", "Given"],
+      "answerIndex": 1,
+      "difficulty": 1
+    },
+    {
+      "id": "cpctc-test-3",
+      "kind": "multipleChoice",
+      "category": "conceptual",
+      "prompt": "A student writes 'AB ≅ DE by CPCTC' as the first line of a proof. What error did the student make?",
+      "choices": [
+        "CPCTC can only apply to angles, not sides",
+        "CPCTC requires the triangles to be congruent first — it cannot appear before that step",
+        "AB and DE are not corresponding parts",
+        "The student wrote the sides in the wrong order"
+      ],
+      "answerIndex": 1,
+      "difficulty": 2
+    },
+    {
+      "id": "cpctc-test-4",
+      "kind": "multipleChoice",
+      "category": "conceptual",
+      "prompt": "△ABC ≅ △CDA (proved by SSS, with A↔C, B↔D, C↔A). Which conclusion follows by CPCTC?",
+      "choices": [
+        "∠ABC ≅ ∠CDA",
+        "AB ≅ CA",
+        "Both A and B",
+        "Neither — CPCTC only applies when triangles are labeled differently"
+      ],
+      "answerIndex": 2,
+      "difficulty": 2
+    },
+    {
+      "id": "cpctc-test-5",
+      "kind": "multipleChoice",
+      "category": "transfer",
+      "prompt": "To prove that the base angles of an isosceles triangle are congruent, a student draws the altitude from the apex. She proves the two right triangles congruent by HL. What is her final reason?",
+      "choices": ["HL", "CPCTC", "Isosceles Triangle Theorem", "SAS"],
+      "answerIndex": 1,
+      "difficulty": 2
+    },
+    {
+      "id": "cpctc-test-6",
+      "kind": "multipleChoice",
+      "category": "transfer",
+      "prompt": "In rhombus ABCD, diagonal AC is drawn. △ABC ≅ △CDA by SSS. By CPCTC, ∠BAC ≅ ∠DCA. What geometric conclusion can be drawn from this?",
+      "choices": [
+        "AC is a perpendicular bisector of BD",
+        "AC bisects angles ∠BAD and ∠BCD",
+        "AB is parallel to CD",
+        "The rhombus is a square"
+      ],
+      "answerIndex": 1,
+      "difficulty": 3
+    },
+    {
+      "id": "cpctc-test-7",
+      "kind": "multipleChoice",
+      "category": "transfer",
+      "prompt": "A proof needs to show that segment PQ bisects segment RS (i.e., that the intersection point M is the midpoint of RS). The proof establishes △PRM ≅ △PSM by AAS. Which CPCTC conclusion achieves the goal?",
+      "choices": [
+        "∠RPM ≅ ∠SPM",
+        "RM ≅ SM",
+        "PM ≅ PM",
+        "∠PRM ≅ ∠PSM"
+      ],
+      "answerIndex": 1,
+      "difficulty": 3
+    }
+  ]
+}

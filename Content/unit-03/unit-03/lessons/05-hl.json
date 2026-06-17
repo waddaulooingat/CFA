@@ -1,0 +1,344 @@
+{
+  "skillId": "geo-u3-hl",
+  "lessonVersion": 1,
+  "beats": [
+    {
+      "id": "concept",
+      "type": "Concept",
+      "title": "HL Theorem (Right Triangles)",
+      "scene": "scene_hl_concept",
+      "proseRef": "05-hl.md#concept"
+    },
+    {
+      "id": "manipulate",
+      "type": "Manipulate",
+      "title": "Match the hypotenuse",
+      "scene": "scene_hl_manipulate",
+      "instruction": "Drag point F to adjust the length of hypotenuse DF in △DEF. Make DF equal in length to hypotenuse AC in △ABC. Both triangles have a right angle; once the hypotenuses match and leg DE ≅ AB, HL confirms congruence.",
+      "successCondition": {
+        "type": "equalLengths",
+        "of": "DF",
+        "and": "AC",
+        "tolerance": 0.15
+      },
+      "successMessage": "Hypotenuse DF ≅ AC and leg DE ≅ AB — both right triangles — HL confirms △ABC ≅ △DEF!",
+      "maxAttempts": null
+    },
+    {
+      "id": "worked",
+      "type": "WorkedExample",
+      "title": "Proving △ABC ≅ △DEF by HL",
+      "scene": "scene_hl_worked",
+      "steps": [
+        {
+          "order": 1,
+          "text": "Confirm both triangles are right triangles: ∠B = 90° in △ABC and ∠E = 90° in △DEF. HL only applies to right triangles — check this first.",
+          "canvasAction": { "type": "highlight", "target": "rightB" }
+        },
+        {
+          "order": 2,
+          "text": "Identify the hypotenuses: AC (opposite ∠B) and DF (opposite ∠E). AC = DF = √41 ≈ 6.4, so the hypotenuses are congruent.",
+          "canvasAction": { "type": "highlight", "target": "CA" }
+        },
+        {
+          "order": 3,
+          "text": "Identify one pair of congruent legs: AB = DE = 5. With right angles established, hypotenuses congruent, and one leg congruent — by HL, △ABC ≅ △DEF.",
+          "canvasAction": { "type": "annotate", "target": "both_triangles", "text": "△ABC ≅ △DEF (HL)" }
+        }
+      ]
+    },
+    {
+      "id": "check",
+      "type": "Check",
+      "items": [
+        {
+          "id": "hl-check-1",
+          "kind": "multipleChoice",
+          "prompt": "HL stands for…",
+          "choices": [
+            "Hypotenuse-Leg",
+            "Height-Length",
+            "Horizontal-Leg",
+            "Hypotenuse-Length"
+          ],
+          "answerIndex": 0,
+          "explanation": "HL = Hypotenuse-Leg. It requires the hypotenuse and one leg of a right triangle."
+        },
+        {
+          "id": "hl-check-2",
+          "kind": "multipleChoice",
+          "prompt": "HL can only be used when…",
+          "choices": [
+            "Both triangles are equilateral",
+            "Both triangles are right triangles",
+            "Both triangles have a 45° angle",
+            "Both triangles share a common side"
+          ],
+          "answerIndex": 1,
+          "explanation": "HL is exclusively for right triangles. You must first confirm that both triangles have a 90° angle."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "type": "Practice",
+      "items": [
+        {
+          "id": "hl-prac-1",
+          "kind": "multipleChoice",
+          "prompt": "In a right triangle, the hypotenuse is always…",
+          "choices": [
+            "The shortest side",
+            "The side opposite the right angle",
+            "One of the legs",
+            "The side adjacent to the right angle"
+          ],
+          "answerIndex": 1,
+          "hints": [
+            "The hypotenuse is in a specific position relative to the right angle.",
+            "The right angle is 90°, the largest angle — the side opposite it is the longest.",
+            "The hypotenuse is the side opposite the right angle."
+          ]
+        },
+        {
+          "id": "hl-prac-2",
+          "kind": "multipleChoice",
+          "prompt": "△ABC: ∠B = 90°, AB = 6, AC = 10. △DEF: ∠E = 90°, DE = 6, DF = 10. Which theorem proves △ABC ≅ △DEF?",
+          "choices": ["HL", "SSS", "SAS", "AAS"],
+          "answerIndex": 0,
+          "hints": [
+            "Check: are both triangles right triangles? Yes — ∠B = 90° and ∠E = 90°.",
+            "Identify hypotenuses: AC (opposite ∠B) = 10; DF (opposite ∠E) = 10. They match.",
+            "One leg: AB = DE = 6. Right angles + hypotenuses + one leg → HL."
+          ]
+        },
+        {
+          "id": "hl-prac-3",
+          "kind": "multipleChoice",
+          "prompt": "△PQR: ∠P = 90°, PQ = 5, PR = 12, QR = 13. △XYZ: ∠X = 90°, XY = 5, XZ = 12. Are these congruent by HL?",
+          "choices": [
+            "Yes — hypotenuse QR = YZ = 13 and leg PQ = XY = 5",
+            "No — we need to know YZ first",
+            "Yes — leg PR = XZ and leg PQ = XY (SSS would work better)",
+            "No — HL requires the right angles to be at the same vertex label"
+          ],
+          "answerIndex": 0,
+          "hints": [
+            "Compute YZ using the Pythagorean theorem: YZ² = XY² + XZ² = 25 + 144 = 169, so YZ = 13.",
+            "Hypotenuses: QR = YZ = 13. Legs: PQ = XY = 5. Right angles at P and X.",
+            "Yes — HL applies: right angle + hypotenuse (13) + leg (5) match."
+          ]
+        },
+        {
+          "id": "hl-prac-4",
+          "kind": "multipleChoice",
+          "prompt": "Can HL be used if you know two legs are congruent but not the hypotenuse?",
+          "choices": [
+            "Yes — two legs are more than enough",
+            "No — HL specifically requires the hypotenuse",
+            "Yes — use the Pythagorean theorem to find the hypotenuse first, then apply HL",
+            "No — you would use SAS instead"
+          ],
+          "answerIndex": 3,
+          "hints": [
+            "HL needs: right angle + hypotenuse + one leg.",
+            "If you have two legs and a right angle, that is SAS (the right angle is included between the two legs).",
+            "Two congruent legs + right angles → SAS, not HL."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reflection",
+      "type": "Reflection",
+      "proseRef": "05-hl.md#reflection"
+    }
+  ],
+  "scenes": {
+    "scene_hl_concept": {
+      "viewport": { "xMin": -1, "xMax": 13, "yMin": -1, "yMax": 9 },
+      "points": [
+        { "id": "A", "x": 1, "y": 7, "label": "A", "draggable": false },
+        { "id": "B", "x": 1, "y": 2, "label": "B", "draggable": false },
+        { "id": "C", "x": 5, "y": 2, "label": "C", "draggable": false },
+        { "id": "D", "x": 7, "y": 7, "label": "D", "draggable": false },
+        { "id": "E", "x": 7, "y": 2, "label": "E", "draggable": false },
+        { "id": "F", "x": 11, "y": 2, "label": "F", "draggable": false }
+      ],
+      "segments": [
+        { "id": "AB", "from": "A", "to": "B", "label": "leg" },
+        { "id": "BC", "from": "B", "to": "C", "label": "leg" },
+        { "id": "CA", "from": "C", "to": "A", "label": "hypotenuse" },
+        { "id": "DE", "from": "D", "to": "E", "label": "leg" },
+        { "id": "EF", "from": "E", "to": "F", "label": "leg" },
+        { "id": "FD", "from": "F", "to": "D", "label": "hypotenuse" }
+      ],
+      "marks": [
+        { "type": "rightAngle", "at": "B" },
+        { "type": "rightAngle", "at": "E" },
+        { "type": "congruenceTick", "onSegment": "AB", "groupIndex": 1 },
+        { "type": "congruenceTick", "onSegment": "DE", "groupIndex": 1 },
+        { "type": "congruenceTick", "onSegment": "CA", "groupIndex": 2 },
+        { "type": "congruenceTick", "onSegment": "FD", "groupIndex": 2 }
+      ],
+      "annotations": [
+        { "type": "text", "x": 4.5, "y": 8.3, "text": "HL: right angle + hypotenuse + one leg → △ABC ≅ △DEF" }
+      ]
+    },
+    "scene_hl_manipulate": {
+      "viewport": { "xMin": -1, "xMax": 13, "yMin": -1, "yMax": 9 },
+      "points": [
+        { "id": "A", "x": 1, "y": 7, "label": "A", "draggable": false },
+        { "id": "B", "x": 1, "y": 2, "label": "B", "draggable": false },
+        { "id": "C", "x": 5, "y": 2, "label": "C", "draggable": false },
+        { "id": "D", "x": 7, "y": 7, "label": "D (drag via F)", "draggable": false },
+        { "id": "E", "x": 7, "y": 2, "label": "E", "draggable": false },
+        { "id": "F", "x": 11, "y": 5, "label": "F (drag me)", "draggable": true }
+      ],
+      "segments": [
+        { "id": "AB", "from": "A", "to": "B" },
+        { "id": "BC", "from": "B", "to": "C" },
+        { "id": "CA", "from": "C", "to": "A" },
+        { "id": "DE", "from": "D", "to": "E" },
+        { "id": "EF", "from": "E", "to": "F" },
+        { "id": "DF", "from": "D", "to": "F" }
+      ],
+      "marks": [
+        { "type": "rightAngle", "at": "B" },
+        { "type": "rightAngle", "at": "E" },
+        { "type": "congruenceTick", "onSegment": "AB", "groupIndex": 1 },
+        { "type": "congruenceTick", "onSegment": "DE", "groupIndex": 1 }
+      ],
+      "measurements": [
+        { "type": "length", "from": "C", "to": "A", "show": true, "label": "AC (hyp)" },
+        { "type": "length", "from": "D", "to": "F", "show": true, "label": "DF (hyp)" }
+      ]
+    },
+    "scene_hl_worked": {
+      "viewport": { "xMin": -1, "xMax": 13, "yMin": -1, "yMax": 9 },
+      "points": [
+        { "id": "A", "x": 1, "y": 7, "label": "A", "draggable": false },
+        { "id": "B", "x": 1, "y": 2, "label": "B", "draggable": false },
+        { "id": "C", "x": 5, "y": 2, "label": "C", "draggable": false },
+        { "id": "D", "x": 7, "y": 7, "label": "D", "draggable": false },
+        { "id": "E", "x": 7, "y": 2, "label": "E", "draggable": false },
+        { "id": "F", "x": 11, "y": 2, "label": "F", "draggable": false }
+      ],
+      "segments": [
+        { "id": "AB", "from": "A", "to": "B", "label": "5 (leg)" },
+        { "id": "BC", "from": "B", "to": "C", "label": "4 (leg)" },
+        { "id": "CA", "from": "C", "to": "A", "label": "√41 (hyp)" },
+        { "id": "DE", "from": "D", "to": "E", "label": "5 (leg)" },
+        { "id": "EF", "from": "E", "to": "F", "label": "4 (leg)" },
+        { "id": "FD", "from": "F", "to": "D", "label": "√41 (hyp)" }
+      ],
+      "marks": [
+        { "type": "rightAngle", "at": "B" },
+        { "type": "rightAngle", "at": "E" },
+        { "type": "congruenceTick", "onSegment": "AB", "groupIndex": 1 },
+        { "type": "congruenceTick", "onSegment": "DE", "groupIndex": 1 },
+        { "type": "congruenceTick", "onSegment": "CA", "groupIndex": 2 },
+        { "type": "congruenceTick", "onSegment": "FD", "groupIndex": 2 }
+      ],
+      "annotations": [
+        { "type": "text", "x": 4.5, "y": 8.3, "text": "△ABC ≅ △DEF by HL" }
+      ]
+    }
+  },
+  "testItems": [
+    {
+      "id": "hl-test-1",
+      "kind": "multipleChoice",
+      "category": "procedural",
+      "prompt": "What does HL stand for in triangle congruence?",
+      "choices": [
+        "Hypotenuse-Leg",
+        "Height-Length",
+        "Half-Line",
+        "Horizontal-Line"
+      ],
+      "answerIndex": 0,
+      "difficulty": 1
+    },
+    {
+      "id": "hl-test-2",
+      "kind": "multipleChoice",
+      "category": "procedural",
+      "prompt": "△ABC: right angle at C, hypotenuse AB = 13, leg BC = 5. △DEF: right angle at F, hypotenuse DE = 13, leg EF = 5. Are these congruent by HL?",
+      "choices": [
+        "Yes — right angles, matching hypotenuses, and matching legs",
+        "No — the right angles must be at the same letter",
+        "No — we need both legs",
+        "Yes — but only by SSS"
+      ],
+      "answerIndex": 0,
+      "difficulty": 1
+    },
+    {
+      "id": "hl-test-3",
+      "kind": "multipleChoice",
+      "category": "conceptual",
+      "prompt": "Why does HL work even though it looks like only two pieces of information (hypotenuse + one leg)?",
+      "choices": [
+        "Because right triangles are always congruent",
+        "Because the Pythagorean theorem forces the second leg once the hypotenuse and one leg are known",
+        "Because hypotenuses are always equal in length",
+        "Because HL is actually the same as SSS"
+      ],
+      "answerIndex": 1,
+      "difficulty": 2
+    },
+    {
+      "id": "hl-test-4",
+      "kind": "multipleChoice",
+      "category": "conceptual",
+      "prompt": "Two right triangles each have leg = 8 and leg = 15. Their hypotenuses are each 17. Are they congruent? Which theorem is most efficient?",
+      "choices": [
+        "Yes, by SSS — three pairs of sides match",
+        "Yes, by HL — right angles, hypotenuse 17, leg 8 (or 15)",
+        "No — the legs are in different positions",
+        "Both A and B are correct and equally efficient"
+      ],
+      "answerIndex": 1,
+      "difficulty": 2
+    },
+    {
+      "id": "hl-test-5",
+      "kind": "multipleChoice",
+      "category": "transfer",
+      "prompt": "Point P lies on the perpendicular bisector of segment AB. PA and PB are drawn, creating △PAM and △PBM where M is the midpoint of AB. ∠PMA = ∠PMB = 90°. Which theorem proves △PAM ≅ △PBM?",
+      "choices": ["HL", "SAS", "ASA", "SSS"],
+      "answerIndex": 0,
+      "explanation": "Right angles at M, PM is shared (a leg), AM = BM (M is midpoint — a leg). HL applies.",
+      "difficulty": 2
+    },
+    {
+      "id": "hl-test-6",
+      "kind": "multipleChoice",
+      "category": "transfer",
+      "prompt": "Can HL be applied to prove two obtuse triangles congruent?",
+      "choices": [
+        "Yes — any triangle can use HL",
+        "No — HL requires a right angle in each triangle",
+        "Yes — if one angle is close to 90°",
+        "No — only acute triangles can use HL"
+      ],
+      "answerIndex": 1,
+      "difficulty": 3
+    },
+    {
+      "id": "hl-test-7",
+      "kind": "multipleChoice",
+      "category": "transfer",
+      "prompt": "In right △ABC (right angle at B), the altitude from B meets AC at H. Are △ABH and △CBH congruent by HL?",
+      "choices": [
+        "Not necessarily — we need to verify the hypotenuses or a leg match",
+        "Yes — both are right triangles sharing BH",
+        "Yes — they always have equal hypotenuses",
+        "No — right triangles cannot share a leg"
+      ],
+      "answerIndex": 0,
+      "difficulty": 3
+    }
+  ]
+}

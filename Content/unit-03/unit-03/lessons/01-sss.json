@@ -1,0 +1,327 @@
+{
+  "skillId": "geo-u3-sss",
+  "lessonVersion": 1,
+  "beats": [
+    {
+      "id": "concept",
+      "type": "Concept",
+      "title": "SSS Congruence Postulate",
+      "scene": "scene_sss_concept",
+      "proseRef": "01-sss.md#concept"
+    },
+    {
+      "id": "manipulate",
+      "type": "Manipulate",
+      "title": "Match the third side",
+      "scene": "scene_sss_manipulate",
+      "instruction": "Drag point F until segment EF has the same length as segment BC (shown in blue). When all three pairs of sides are equal, the triangles are congruent by SSS.",
+      "successCondition": {
+        "type": "equalLengths",
+        "of": "EF",
+        "and": "BC",
+        "tolerance": 0.15
+      },
+      "successMessage": "All three pairs of sides are congruent! By SSS, △ABC ≅ △DEF.",
+      "maxAttempts": null
+    },
+    {
+      "id": "worked",
+      "type": "WorkedExample",
+      "title": "Proving △ABC ≅ △DEF by SSS",
+      "scene": "scene_sss_worked",
+      "steps": [
+        {
+          "order": 1,
+          "text": "Identify three pairs of sides. AB = DE = 5, so AB ≅ DE (first pair of congruent sides).",
+          "canvasAction": { "type": "highlight", "target": "AB" }
+        },
+        {
+          "order": 2,
+          "text": "BC = EF = 4, so BC ≅ EF (second pair of congruent sides).",
+          "canvasAction": { "type": "highlight", "target": "BC" }
+        },
+        {
+          "order": 3,
+          "text": "CA = FD = 3, so CA ≅ FD (third pair). All three pairs match — by SSS, △ABC ≅ △DEF.",
+          "canvasAction": { "type": "annotate", "target": "both_triangles", "text": "△ABC ≅ △DEF (SSS)" }
+        }
+      ]
+    },
+    {
+      "id": "check",
+      "type": "Check",
+      "items": [
+        {
+          "id": "sss-check-1",
+          "kind": "multipleChoice",
+          "prompt": "SSS stands for which combination of congruent parts?",
+          "choices": [
+            "Side-Side-Side",
+            "Side-Angle-Side",
+            "Angle-Side-Angle",
+            "Side-Angle-Angle"
+          ],
+          "answerIndex": 0,
+          "explanation": "SSS = Side-Side-Side: all three pairs of corresponding sides must be congruent."
+        },
+        {
+          "id": "sss-check-2",
+          "kind": "multipleChoice",
+          "prompt": "△PQR has PQ = 6, QR = 8, RP = 10. △XYZ has XY = 6, YZ = 8, ZX = 10. Which postulate proves △PQR ≅ △XYZ?",
+          "choices": ["SSS", "SAS", "ASA", "Cannot be determined"],
+          "answerIndex": 0,
+          "explanation": "All three pairs of corresponding sides are equal, so SSS applies."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "type": "Practice",
+      "items": [
+        {
+          "id": "sss-prac-1",
+          "kind": "multipleChoice",
+          "prompt": "To use SSS, how many pairs of congruent sides must you establish?",
+          "choices": ["1", "2", "3", "4"],
+          "answerIndex": 2,
+          "hints": [
+            "SSS uses three letters — one for each condition.",
+            "Each S stands for one pair of congruent sides.",
+            "You need all three pairs: AB≅DE, BC≅EF, and CA≅FD."
+          ]
+        },
+        {
+          "id": "sss-prac-2",
+          "kind": "multipleChoice",
+          "prompt": "△ABC has AB = 7, BC = 9, CA = 5. Which set of side lengths in △DEF would allow SSS congruence with △ABC?",
+          "choices": [
+            "DE = 7, EF = 9, FD = 5",
+            "DE = 7, EF = 5, FD = 9",
+            "DE = 9, EF = 7, FD = 5",
+            "All of the above"
+          ],
+          "answerIndex": 0,
+          "hints": [
+            "Corresponding vertices must match: A↔D, B↔E, C↔F.",
+            "AB corresponds to DE, BC to EF, CA to FD.",
+            "DE = 7 = AB, EF = 9 = BC, FD = 5 = CA."
+          ]
+        },
+        {
+          "id": "sss-prac-3",
+          "kind": "multipleChoice",
+          "prompt": "Two triangles share a common side. You also know two other pairs of sides are congruent. Which postulate applies?",
+          "choices": ["SSS", "SAS", "HL", "AAS"],
+          "answerIndex": 0,
+          "hints": [
+            "A shared side is congruent to itself (Reflexive Property).",
+            "Shared side + two other pairs gives three total pairs of congruent sides.",
+            "Three pairs of congruent sides → SSS."
+          ]
+        },
+        {
+          "id": "sss-prac-4",
+          "kind": "multipleChoice",
+          "prompt": "Can SSS be used if you only know that two pairs of sides are congruent and one pair of angles is congruent?",
+          "choices": [
+            "Yes, because two sides and an angle are enough",
+            "No, SSS requires all three pairs of sides",
+            "Yes, if the angle is between the two sides",
+            "No, you need all three angles"
+          ],
+          "answerIndex": 1,
+          "hints": [
+            "What does the third S in SSS require?",
+            "SSS needs Side-Side-Side — three pairs of sides, no angles.",
+            "No — SSS strictly requires three pairs of congruent sides."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reflection",
+      "type": "Reflection",
+      "proseRef": "01-sss.md#reflection"
+    }
+  ],
+  "scenes": {
+    "scene_sss_concept": {
+      "viewport": { "xMin": -1, "xMax": 13, "yMin": -1, "yMax": 9 },
+      "points": [
+        { "id": "A", "x": 1, "y": 7, "label": "A", "draggable": false },
+        { "id": "B", "x": 1, "y": 2, "label": "B", "draggable": false },
+        { "id": "C", "x": 5, "y": 2, "label": "C", "draggable": false },
+        { "id": "D", "x": 7, "y": 7, "label": "D", "draggable": false },
+        { "id": "E", "x": 7, "y": 2, "label": "E", "draggable": false },
+        { "id": "F", "x": 11, "y": 2, "label": "F", "draggable": false }
+      ],
+      "segments": [
+        { "id": "AB", "from": "A", "to": "B", "label": "AB" },
+        { "id": "BC", "from": "B", "to": "C", "label": "BC" },
+        { "id": "CA", "from": "C", "to": "A", "label": "CA" },
+        { "id": "DE", "from": "D", "to": "E", "label": "DE" },
+        { "id": "EF", "from": "E", "to": "F", "label": "EF" },
+        { "id": "FD", "from": "F", "to": "D", "label": "FD" }
+      ],
+      "marks": [
+        { "type": "congruenceTick", "onSegment": "AB", "groupIndex": 1 },
+        { "type": "congruenceTick", "onSegment": "DE", "groupIndex": 1 },
+        { "type": "congruenceTick", "onSegment": "BC", "groupIndex": 2 },
+        { "type": "congruenceTick", "onSegment": "EF", "groupIndex": 2 },
+        { "type": "congruenceTick", "onSegment": "CA", "groupIndex": 3 },
+        { "type": "congruenceTick", "onSegment": "FD", "groupIndex": 3 }
+      ],
+      "annotations": [
+        { "type": "text", "x": 2.5, "y": 8.3, "text": "△ABC" },
+        { "type": "text", "x": 8.5, "y": 8.3, "text": "△DEF" },
+        { "type": "text", "x": 5.5, "y": 4.5, "text": "△ABC ≅ △DEF (SSS)" }
+      ]
+    },
+    "scene_sss_manipulate": {
+      "viewport": { "xMin": -1, "xMax": 13, "yMin": -1, "yMax": 9 },
+      "points": [
+        { "id": "A", "x": 1, "y": 7, "label": "A", "draggable": false },
+        { "id": "B", "x": 1, "y": 2, "label": "B", "draggable": false },
+        { "id": "C", "x": 5, "y": 2, "label": "C", "draggable": false },
+        { "id": "D", "x": 7, "y": 7, "label": "D", "draggable": false },
+        { "id": "E", "x": 7, "y": 2, "label": "E", "draggable": false },
+        { "id": "F", "x": 11, "y": 5, "label": "F (drag me)", "draggable": true }
+      ],
+      "segments": [
+        { "id": "AB", "from": "A", "to": "B" },
+        { "id": "BC", "from": "B", "to": "C" },
+        { "id": "CA", "from": "C", "to": "A" },
+        { "id": "DE", "from": "D", "to": "E" },
+        { "id": "EF", "from": "E", "to": "F" },
+        { "id": "FD", "from": "F", "to": "D" }
+      ],
+      "marks": [
+        { "type": "congruenceTick", "onSegment": "AB", "groupIndex": 1 },
+        { "type": "congruenceTick", "onSegment": "DE", "groupIndex": 1 },
+        { "type": "congruenceTick", "onSegment": "CA", "groupIndex": 3 },
+        { "type": "congruenceTick", "onSegment": "FD", "groupIndex": 3 }
+      ],
+      "measurements": [
+        { "type": "length", "from": "B", "to": "C", "show": true, "label": "BC" },
+        { "type": "length", "from": "E", "to": "F", "show": true, "label": "EF" }
+      ]
+    },
+    "scene_sss_worked": {
+      "viewport": { "xMin": -1, "xMax": 13, "yMin": -1, "yMax": 9 },
+      "points": [
+        { "id": "A", "x": 1, "y": 7, "label": "A", "draggable": false },
+        { "id": "B", "x": 1, "y": 2, "label": "B", "draggable": false },
+        { "id": "C", "x": 5, "y": 2, "label": "C", "draggable": false },
+        { "id": "D", "x": 7, "y": 7, "label": "D", "draggable": false },
+        { "id": "E", "x": 7, "y": 2, "label": "E", "draggable": false },
+        { "id": "F", "x": 11, "y": 2, "label": "F", "draggable": false }
+      ],
+      "segments": [
+        { "id": "AB", "from": "A", "to": "B", "label": "5" },
+        { "id": "BC", "from": "B", "to": "C", "label": "4" },
+        { "id": "CA", "from": "C", "to": "A", "label": "3" },
+        { "id": "DE", "from": "D", "to": "E", "label": "5" },
+        { "id": "EF", "from": "E", "to": "F", "label": "4" },
+        { "id": "FD", "from": "F", "to": "D", "label": "3" }
+      ],
+      "marks": [
+        { "type": "congruenceTick", "onSegment": "AB", "groupIndex": 1 },
+        { "type": "congruenceTick", "onSegment": "DE", "groupIndex": 1 },
+        { "type": "congruenceTick", "onSegment": "BC", "groupIndex": 2 },
+        { "type": "congruenceTick", "onSegment": "EF", "groupIndex": 2 },
+        { "type": "congruenceTick", "onSegment": "CA", "groupIndex": 3 },
+        { "type": "congruenceTick", "onSegment": "FD", "groupIndex": 3 }
+      ],
+      "annotations": [
+        { "type": "text", "x": 5.5, "y": 8.3, "text": "△ABC ≅ △DEF by SSS" }
+      ]
+    }
+  },
+  "testItems": [
+    {
+      "id": "sss-test-1",
+      "kind": "multipleChoice",
+      "category": "procedural",
+      "prompt": "Which postulate states that if three sides of one triangle are congruent to three sides of another triangle, then the triangles are congruent?",
+      "choices": ["SSS", "SAS", "ASA", "AAS"],
+      "answerIndex": 0,
+      "difficulty": 1
+    },
+    {
+      "id": "sss-test-2",
+      "kind": "multipleChoice",
+      "category": "procedural",
+      "prompt": "△ABC has AB = 5, BC = 7, CA = 6. △DEF has DE = 5, EF = 7, FD = 6. Are the triangles congruent, and by which postulate?",
+      "choices": [
+        "Yes, by SSS",
+        "Yes, by SAS",
+        "No, not enough information",
+        "Yes, by ASA"
+      ],
+      "answerIndex": 0,
+      "difficulty": 1
+    },
+    {
+      "id": "sss-test-3",
+      "kind": "multipleChoice",
+      "category": "conceptual",
+      "prompt": "Two triangles have all three pairs of sides congruent. A student claims this does NOT guarantee congruence. Is the student correct?",
+      "choices": [
+        "Yes — you also need an angle",
+        "No — SSS is a valid congruence postulate",
+        "Yes — SSS only works for right triangles",
+        "No — but you need the sides in the same order"
+      ],
+      "answerIndex": 1,
+      "difficulty": 2
+    },
+    {
+      "id": "sss-test-4",
+      "kind": "multipleChoice",
+      "category": "conceptual",
+      "prompt": "△PQR and △STU share no common points. PQ ≅ ST and QR ≅ TU. What additional information is needed for SSS?",
+      "choices": [
+        "∠Q ≅ ∠T",
+        "RP ≅ US",
+        "∠P ≅ ∠S",
+        "QR = PQ"
+      ],
+      "answerIndex": 1,
+      "difficulty": 2
+    },
+    {
+      "id": "sss-test-5",
+      "kind": "multipleChoice",
+      "category": "transfer",
+      "prompt": "In the figure, M is the midpoint of both AC and BD (the diagonals bisect each other). Which postulate proves △ABM ≅ △CDM?",
+      "choices": ["SSS", "SAS", "ASA", "HL"],
+      "answerIndex": 1,
+      "explanation": "AM=CM and BM=DM (midpoint), and ∠AMB ≅ ∠CMD (vertical angles) — that is SAS, not SSS.",
+      "difficulty": 2
+    },
+    {
+      "id": "sss-test-6",
+      "kind": "multipleChoice",
+      "category": "transfer",
+      "prompt": "A surveyor needs to prove two triangular land plots are the same shape and size. She measures all three sides of each triangle and finds they match. Which postulate justifies her conclusion?",
+      "choices": ["SSS", "SAS", "ASA", "Cannot be determined from sides alone"],
+      "answerIndex": 0,
+      "difficulty": 3
+    },
+    {
+      "id": "sss-test-7",
+      "kind": "multipleChoice",
+      "category": "transfer",
+      "prompt": "△ABC has AB = 3, BC = 4, CA = 5. △DEF has DE = 4, EF = 5, FD = 3. With correspondence A↔D, B↔E, C↔F, are the triangles congruent by SSS?",
+      "choices": [
+        "Yes — the three side lengths are the same set",
+        "No — AB must equal DE, BC must equal EF, and CA must equal FD",
+        "Yes — order of vertices doesn't matter in SSS",
+        "No — one triangle is a right triangle and the other is not"
+      ],
+      "answerIndex": 1,
+      "explanation": "Under A↔D, B↔E, C↔F: AB=3 must equal DE=4 (fail). A different correspondence might work, but this specific one does not satisfy SSS.",
+      "difficulty": 3
+    }
+  ]
+}
