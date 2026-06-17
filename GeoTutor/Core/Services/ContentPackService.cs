@@ -62,6 +62,15 @@ public static class ContentPackService
         ["geo-u2-parallel-theorems"]   = ("unit-02/unit-02/lessons", "03-parallel-theorems"),
         ["geo-u2-proving-parallel"]    = ("unit-02/unit-02/lessons", "04-proving-parallel"),
         ["geo-u2-coordinate-parallel"] = ("unit-02/unit-02/lessons", "05-coordinate-parallel"),
+
+        // Unit 3 — Triangle Congruence
+        ["geo-u3-sss"]               = ("unit-03/unit-03/lessons", "01-sss"),
+        ["geo-u3-sas"]               = ("unit-03/unit-03/lessons", "02-sas"),
+        ["geo-u3-asa"]               = ("unit-03/unit-03/lessons", "03-asa"),
+        ["geo-u3-aas"]               = ("unit-03/unit-03/lessons", "04-aas"),
+        ["geo-u3-hl"]                = ("unit-03/unit-03/lessons", "05-hl"),
+        ["geo-u3-cpctc"]             = ("unit-03/unit-03/lessons", "06-cpctc"),
+        ["geo-u3-congruence-proofs"] = ("unit-03/unit-03/lessons", "07-congruence-proofs"),
     };
 
     /// <summary>

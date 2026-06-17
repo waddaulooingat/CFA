@@ -1,0 +1,80 @@
+{
+  "unit": {
+    "id": "unit-03",
+    "number": 3,
+    "name": "Triangle Congruence",
+    "description": "The five congruence shortcuts (SSS, SAS, ASA, AAS, HL), how to apply them in proofs, and how to use CPCTC to conclude about corresponding parts once congruence is established."
+  },
+  "skills": [
+    {
+      "id": "geo-u3-sss",
+      "name": "SSS Congruence Postulate",
+      "unit": "unit-03",
+      "order": 1,
+      "prereqIds": ["geo-u1-angle-measure", "geo-u2-transversal-angles"],
+      "startingDifficultyBand": 1,
+      "tags": ["congruence", "SSS", "triangles", "postulate"],
+      "estimatedMinutes": 20
+    },
+    {
+      "id": "geo-u3-sas",
+      "name": "SAS Congruence Postulate",
+      "unit": "unit-03",
+      "order": 2,
+      "prereqIds": ["geo-u3-sss"],
+      "startingDifficultyBand": 1,
+      "tags": ["congruence", "SAS", "included-angle", "postulate"],
+      "estimatedMinutes": 20
+    },
+    {
+      "id": "geo-u3-asa",
+      "name": "ASA Congruence Postulate",
+      "unit": "unit-03",
+      "order": 3,
+      "prereqIds": ["geo-u3-sss"],
+      "startingDifficultyBand": 1,
+      "tags": ["congruence", "ASA", "included-side", "postulate"],
+      "estimatedMinutes": 20
+    },
+    {
+      "id": "geo-u3-aas",
+      "name": "AAS Congruence Theorem",
+      "unit": "unit-03",
+      "order": 4,
+      "prereqIds": ["geo-u3-asa"],
+      "startingDifficultyBand": 2,
+      "tags": ["congruence", "AAS", "non-included-side", "theorem"],
+      "estimatedMinutes": 20
+    },
+    {
+      "id": "geo-u3-hl",
+      "name": "HL Theorem for Right Triangles",
+      "unit": "unit-03",
+      "order": 5,
+      "prereqIds": ["geo-u3-sas", "geo-u2-parallel-basics"],
+      "startingDifficultyBand": 2,
+      "tags": ["congruence", "HL", "right-triangle", "hypotenuse", "leg"],
+      "estimatedMinutes": 20
+    },
+    {
+      "id": "geo-u3-cpctc",
+      "name": "CPCTC",
+      "unit": "unit-03",
+      "order": 6,
+      "prereqIds": ["geo-u3-sss", "geo-u3-sas", "geo-u3-asa"],
+      "startingDifficultyBand": 2,
+      "tags": ["congruence", "CPCTC", "corresponding-parts"],
+      "estimatedMinutes": 25
+    },
+    {
+      "id": "geo-u3-congruence-proofs",
+      "name": "Triangle Congruence Proofs",
+      "unit": "unit-03",
+      "order": 7,
+      "prereqIds": ["geo-u3-cpctc", "geo-u1-if-then-logic"],
+      "startingDifficultyBand": 3,
+      "tags": ["proof", "two-column", "congruence", "deductive-reasoning"],
+      "estimatedMinutes": 35
+    }
+  ]
+}

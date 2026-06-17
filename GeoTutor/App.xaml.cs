@@ -51,6 +51,7 @@ public partial class App : Application
             skills.SeedIfEmpty();
             skills.MigrateUnit1Skills();
             skills.MigrateUnit2Skills();
+            skills.MigrateUnit3Skills();
 
             SeedAlgebraItems(db);
             SeedGeometryPrereqSkills(db);

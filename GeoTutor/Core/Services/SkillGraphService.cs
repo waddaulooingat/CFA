@@ -484,6 +484,53 @@ public class SkillGraphService
         }
     }
 
+    /// <summary>
+    /// Upserts the 7 Unit 3 skill nodes from BuildSkillSeed into gt_skills.
+    /// Safe to call on every startup.
+    /// </summary>
+    public void MigrateUnit3Skills()
+    {
+        var conn = _db.GetConnection();
+        var unit3Skills = BuildSkillSeed()
+            .Where(s => s.Id.StartsWith("geo-u3-", StringComparison.Ordinal))
+            .ToList();
+
+        using var tx = conn.BeginTransaction();
+        try
+        {
+            foreach (var s in unit3Skills)
+            {
+                using var ins = conn.CreateCommand();
+                ins.Transaction = tx;
+                ins.CommandText = """
+                    INSERT INTO gt_skills
+                        (id, name, unit, prereq_ids, difficulty_band, current_mastery, last_seen, is_unlocked)
+                    VALUES
+                        (@id, @name, @unit, @prereq_ids, @diff, @mastery, NULL, @unlocked)
+                    ON CONFLICT(id) DO UPDATE SET
+                        name            = excluded.name,
+                        unit            = excluded.unit,
+                        prereq_ids      = excluded.prereq_ids,
+                        difficulty_band = excluded.difficulty_band;
+                    """;
+                ins.Parameters.AddWithValue("@id",         s.Id);
+                ins.Parameters.AddWithValue("@name",       s.Name);
+                ins.Parameters.AddWithValue("@unit",       s.Unit);
+                ins.Parameters.AddWithValue("@prereq_ids", JsonSerializer.Serialize(s.PrereqIds));
+                ins.Parameters.AddWithValue("@diff",       s.DifficultyBand);
+                ins.Parameters.AddWithValue("@mastery",    s.CurrentMastery);
+                ins.Parameters.AddWithValue("@unlocked",   s.PrereqIds.Count == 0 ? 1 : 0);
+                ins.ExecuteNonQuery();
+            }
+            tx.Commit();
+        }
+        catch
+        {
+            tx.Rollback();
+            throw;
+        }
+    }
+
     private static List<Skill> BuildSkillSeed()
     {
         // Helper: unit 0 = algebra prereq pseudo-unit rendered before geo work begins
