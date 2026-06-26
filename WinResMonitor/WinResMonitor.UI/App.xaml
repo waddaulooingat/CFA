@@ -1,0 +1,10 @@
+<Application x:Class="WinResMonitor.UI.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:WinResMonitor.UI"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <local:BlockedToBoolConverter x:Key="BlockedConverter"/>
+        <local:BlockedToColorConverter x:Key="BlockedColorConverter"/>
+    </Application.Resources>
+</Application>

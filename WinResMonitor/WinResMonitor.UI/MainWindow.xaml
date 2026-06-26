@@ -1,0 +1,167 @@
+<Window x:Class="WinResMonitor.UI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Windows Resource Monitor" Height="700" Width="960"
+        WindowStartupLocation="CenterScreen"
+        Closing="Window_Closing">
+
+    <Window.Resources>
+        <Style x:Key="HeaderText" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,0,6"/>
+        </Style>
+        <Style x:Key="ActionButton" TargetType="Button">
+            <Setter Property="Padding" Value="12,5"/>
+            <Setter Property="Margin" Value="4,0"/>
+            <Setter Property="MinWidth" Value="80"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Status Bar -->
+        <Border Grid.Row="0" Background="#2C3E50" Padding="16,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                    <Ellipse x:Name="StatusDot" Width="12" Height="12"
+                             Fill="LimeGreen" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="StatusLabel" Text="Proxy Running — Port 8877"
+                               Foreground="White" FontSize="13" VerticalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button x:Name="BtnStartStop" Content="Stop Proxy"
+                            Click="BtnStartStop_Click" Style="{StaticResource ActionButton}"/>
+                    <Button Content="Refresh Log" Click="BtnRefreshLog_Click"
+                            Style="{StaticResource ActionButton}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Main Content -->
+        <TabControl Grid.Row="1" Margin="8">
+
+            <!-- TAB: Activity Log -->
+            <TabItem Header="Activity Log">
+                <Grid Margin="8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,8">
+                        <RadioButton x:Name="FilterAll" Content="All" IsChecked="True"
+                                     Margin="0,0,12,0" Checked="Filter_Changed"/>
+                        <RadioButton x:Name="FilterBlocked" Content="Blocked Only"
+                                     Margin="0,0,12,0" Checked="Filter_Changed"/>
+                        <RadioButton x:Name="FilterAllowed" Content="Allowed Only"
+                                     Checked="Filter_Changed"/>
+                    </StackPanel>
+                    <DataGrid Grid.Row="1" x:Name="LogGrid" AutoGenerateColumns="False"
+                              IsReadOnly="True" CanUserSortColumns="True"
+                              AlternatingRowBackground="#F9F9F9">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Time" Binding="{Binding Timestamp, StringFormat='{}{0:MM/dd HH:mm:ss}'}" Width="130"/>
+                            <DataGridTextColumn Header="Host" Binding="{Binding Host}" Width="200"/>
+                            <DataGridTextColumn Header="URL" Binding="{Binding Url}" Width="*"/>
+                            <DataGridTemplateColumn Header="Status" Width="80">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Blocked, Converter={StaticResource BlockedConverter}}"
+                                                   Foreground="{Binding Blocked, Converter={StaticResource BlockedColorConverter}}"
+                                                   FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+
+            <!-- TAB: Blocked Domains -->
+            <TabItem Header="Blocked Domains">
+                <Grid Margin="8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="Blocked Domains (one per entry):" Style="{StaticResource HeaderText}"/>
+                    <ListBox Grid.Row="1" x:Name="DomainList" Margin="0,0,0,8"/>
+                    <StackPanel Grid.Row="2" Orientation="Horizontal">
+                        <TextBox x:Name="NewDomainBox" Width="300" Margin="0,0,8,0"
+                                 ToolTip="e.g. example.com"/>
+                        <Button Content="Add Domain" Click="BtnAddDomain_Click"
+                                Style="{StaticResource ActionButton}"/>
+                        <Button Content="Remove Selected" Click="BtnRemoveDomain_Click"
+                                Style="{StaticResource ActionButton}"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+            <!-- TAB: Keywords -->
+            <TabItem Header="Keywords">
+                <Grid Margin="8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="Block URLs containing these keywords:" Style="{StaticResource HeaderText}"/>
+                    <ListBox Grid.Row="1" x:Name="KeywordList" Margin="0,0,0,8"/>
+                    <StackPanel Grid.Row="2" Orientation="Horizontal">
+                        <TextBox x:Name="NewKeywordBox" Width="300" Margin="0,0,8,0"
+                                 ToolTip="e.g. adult, xxx, nsfw"/>
+                        <Button Content="Add Keyword" Click="BtnAddKeyword_Click"
+                                Style="{StaticResource ActionButton}"/>
+                        <Button Content="Remove Selected" Click="BtnRemoveKeyword_Click"
+                                Style="{StaticResource ActionButton}"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+            <!-- TAB: Settings -->
+            <TabItem Header="Settings">
+                <StackPanel Margin="16">
+                    <TextBlock Text="Proxy Settings" Style="{StaticResource HeaderText}"/>
+                    <TextBlock Text="The proxy runs on localhost:8877. Configure your browsers to use this proxy." Margin="0,0,0,12" TextWrapping="Wrap"/>
+
+                    <TextBlock Text="Log Retention" Style="{StaticResource HeaderText}"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                        <TextBlock Text="Purge logs older than:" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <ComboBox x:Name="RetentionDays" Width="100" SelectedIndex="1">
+                            <ComboBoxItem Content="7 days"/>
+                            <ComboBoxItem Content="30 days"/>
+                            <ComboBoxItem Content="90 days"/>
+                        </ComboBox>
+                        <Button Content="Purge Now" Click="BtnPurge_Click" Margin="8,0,0,0"/>
+                    </StackPanel>
+
+                    <TextBlock Text="Service Management" Style="{StaticResource HeaderText}"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="Install Service" Click="BtnInstallService_Click"
+                                Style="{StaticResource ActionButton}"/>
+                        <Button Content="Uninstall Service" Click="BtnUninstallService_Click"
+                                Style="{StaticResource ActionButton}"/>
+                    </StackPanel>
+                    <TextBlock Text="Run as Administrator to install/uninstall the Windows Service."
+                               FontStyle="Italic" Foreground="Gray" Margin="0,8,0,0"/>
+                </StackPanel>
+            </TabItem>
+
+        </TabControl>
+
+        <!-- Bottom status -->
+        <StatusBar Grid.Row="2">
+            <TextBlock x:Name="StatusBarText" Text="Ready"/>
+        </StatusBar>
+    </Grid>
+</Window>
