@@ -145,6 +145,14 @@
                         <Button Content="Purge Now" Click="BtnPurge_Click" Margin="8,0,0,0"/>
                     </StackPanel>
 
+                    <TextBlock Text="Blocklist Update" Style="{StaticResource HeaderText}"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                        <Button x:Name="BtnUpdateBlocklist" Content="Update Blocklist Now" Click="BtnUpdateBlocklist_Click"
+                                Style="{StaticResource ActionButton}"/>
+                    </StackPanel>
+                    <TextBlock x:Name="BlocklistStatusText" Text="Loading status..."
+                               Foreground="Gray" Margin="0,4,0,12"/>
+
                     <TextBlock Text="Service Management" Style="{StaticResource HeaderText}"/>
                     <StackPanel Orientation="Horizontal">
                         <Button Content="Install Service" Click="BtnInstallService_Click"

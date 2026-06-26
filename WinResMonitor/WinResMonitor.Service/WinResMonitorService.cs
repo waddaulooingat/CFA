@@ -1,7 +1,7 @@
 using System;
+using System.IO;
 using System.ServiceProcess;
 using System.Threading;
-using System.Threading.Tasks;
 using WinResMonitor.Core;
 
 namespace WinResMonitor.Service
@@ -10,7 +10,12 @@ namespace WinResMonitor.Service
     {
         private ProxyEngine _proxy;
         private Timer _watchdog;
-        private const int WatchdogIntervalMs = 15000; // check every 15s
+        private Timer _blocklistRefresh;
+        private const int WatchdogIntervalMs = 15000;
+        private const int OneDayMs = 24 * 60 * 60 * 1000;
+
+        private string DbConnString =>
+            $"Data Source={Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "WinResMonitor", "requests.db")}";
 
         public WinResMonitorService()
         {
@@ -24,10 +29,13 @@ namespace WinResMonitor.Service
         {
             StartProxy();
             _watchdog = new Timer(WatchdogTick, null, WatchdogIntervalMs, WatchdogIntervalMs);
+            // Fire immediately on start, then every 24 hours
+            _blocklistRefresh = new Timer(BlocklistRefreshTick, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(OneDayMs));
         }
 
         protected override void OnStop()
         {
+            _blocklistRefresh?.Dispose();
             _watchdog?.Dispose();
             _proxy?.Stop();
         }
@@ -55,9 +63,23 @@ namespace WinResMonitor.Service
             }
         }
 
+        private void BlocklistRefreshTick(object state)
+        {
+            try
+            {
+                var updater = new BlocklistUpdater(DbConnString);
+                var task = updater.UpdateAsync();
+                task.Wait();
+                EventLog.WriteEntry($"Blocklist updated: {task.Result} domains loaded.", System.Diagnostics.EventLogEntryType.Information);
+            }
+            catch (Exception ex)
+            {
+                EventLog.WriteEntry($"Blocklist update failed: {ex.Message}", System.Diagnostics.EventLogEntryType.Warning);
+            }
+        }
+
         public static void Main(string[] args)
         {
-            // Allow running as console for debugging
             if (Environment.UserInteractive)
             {
                 Console.WriteLine("WinResMonitor Service - Running in console mode. Press Ctrl+C to stop.");

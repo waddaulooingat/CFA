@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using Microsoft.Data.Sqlite;
 
 namespace WinResMonitor.Core
 {
@@ -11,30 +12,54 @@ namespace WinResMonitor.Core
         private HashSet<string> _blockedDomains = new(StringComparer.OrdinalIgnoreCase);
         private List<string> _keywords = new();
         private readonly string _configPath;
+        private readonly string _connString;
 
         public BlocklistManager()
         {
-            _configPath = Path.Combine(
+            var dir = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-                "WinResMonitor", "blocklist.json");
+                "WinResMonitor");
+
+            _configPath = Path.Combine(dir, "blocklist.json");
+            _connString = $"Data Source={Path.Combine(dir, "requests.db")}";
 
             EnsureConfigDirectory();
             LoadFromDisk();
             LoadBuiltInAdultDomains();
         }
 
+        public void ReloadExternalBlocklist()
+        {
+            // Re-check external list is reflected in IsBlocked via direct DB query — no in-memory copy needed
+        }
+
         public bool IsBlocked(string host, string url)
         {
-            // Strip www. prefix
             var cleanHost = host.StartsWith("www.", StringComparison.OrdinalIgnoreCase)
                 ? host[4..] : host;
 
             if (_blockedDomains.Contains(cleanHost)) return true;
             if (_blockedDomains.Contains(host)) return true;
 
-            // Keyword match against URL
+            if (IsBlockedByExternalList(cleanHost) || IsBlockedByExternalList(host)) return true;
+
             var lowerUrl = url.ToLowerInvariant();
             return _keywords.Any(k => lowerUrl.Contains(k.ToLowerInvariant()));
+        }
+
+        private bool IsBlockedByExternalList(string host)
+        {
+            if (string.IsNullOrEmpty(host)) return false;
+            try
+            {
+                using var conn = new SqliteConnection(_connString);
+                conn.Open();
+                using var cmd = conn.CreateCommand();
+                cmd.CommandText = "SELECT 1 FROM ExternalBlocklist WHERE Domain = $d LIMIT 1";
+                cmd.Parameters.AddWithValue("$d", host.ToLowerInvariant());
+                return cmd.ExecuteScalar() != null;
+            }
+            catch { return false; }
         }
 
         public void AddDomain(string domain)

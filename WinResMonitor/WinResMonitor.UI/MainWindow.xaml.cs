@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
@@ -14,12 +16,16 @@ namespace WinResMonitor.UI
     {
         private ProxyEngine _proxy;
 
+        private string DbConnString =>
+            $"Data Source={Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "WinResMonitor", "requests.db")}";
+
         public MainWindow()
         {
             InitializeComponent();
             _proxy = new ProxyEngine(port: 8877);
             _proxy.Start();
             RefreshAll();
+            RefreshBlocklistStatus();
         }
 
         private void RefreshAll()
@@ -27,6 +33,52 @@ namespace WinResMonitor.UI
             RefreshLog();
             RefreshDomains();
             RefreshKeywords();
+        }
+
+        private void RefreshBlocklistStatus()
+        {
+            try
+            {
+                var updater = new BlocklistUpdater(DbConnString);
+                var (lastUpdated, count) = updater.GetStatus();
+                BlocklistStatusText.Text = lastUpdated.HasValue
+                    ? $"Last updated: {lastUpdated:g} — {count:N0} domains"
+                    : "Blocklist not yet downloaded.";
+            }
+            catch
+            {
+                BlocklistStatusText.Text = "Status unavailable.";
+            }
+        }
+
+        private async void BtnUpdateBlocklist_Click(object sender, RoutedEventArgs e)
+        {
+            BtnUpdateBlocklist_SetEnabled(false);
+            BlocklistStatusText.Text = "Updating...";
+            StatusBarText.Text = "Downloading blocklist...";
+
+            try
+            {
+                var updater = new BlocklistUpdater(DbConnString);
+                updater.OnProgress += msg => Dispatcher.Invoke(() => StatusBarText.Text = msg);
+                int count = await updater.UpdateAsync();
+                RefreshBlocklistStatus();
+                StatusBarText.Text = $"Blocklist updated: {count:N0} domains.";
+            }
+            catch (Exception ex)
+            {
+                BlocklistStatusText.Text = "Update failed.";
+                StatusBarText.Text = $"Update error: {ex.Message}";
+            }
+            finally
+            {
+                BtnUpdateBlocklist_SetEnabled(true);
+            }
+        }
+
+        private void BtnUpdateBlocklist_SetEnabled(bool enabled)
+        {
+            Dispatcher.Invoke(() => BtnUpdateBlocklist.IsEnabled = enabled);
         }
 
         private void RefreshLog()
