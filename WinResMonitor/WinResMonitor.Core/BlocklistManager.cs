@@ -93,6 +93,15 @@ namespace WinResMonitor.Core
         public IReadOnlyList<string> GetDomains() => _blockedDomains.OrderBy(d => d).ToList();
         public IReadOnlyList<string> GetKeywords() => _keywords.AsReadOnly();
 
+        private string _giphyApiKey = "";
+        public string GiphyApiKey => _giphyApiKey;
+
+        public void SetGiphyApiKey(string key)
+        {
+            _giphyApiKey = key?.Trim() ?? "";
+            SaveToDisk();
+        }
+
         private void LoadFromDisk()
         {
             if (!File.Exists(_configPath)) return;
@@ -104,6 +113,7 @@ namespace WinResMonitor.Core
 
                 foreach (var d in config.Domains ?? new()) _blockedDomains.Add(d);
                 _keywords = config.Keywords ?? new();
+                _giphyApiKey = config.GiphyApiKey ?? "";
             }
             catch { }
         }
@@ -115,7 +125,8 @@ namespace WinResMonitor.Core
                 var config = new BlocklistConfig
                 {
                     Domains = _blockedDomains.ToList(),
-                    Keywords = _keywords
+                    Keywords = _keywords,
+                    GiphyApiKey = _giphyApiKey
                 };
                 var json = JsonSerializer.Serialize(config, new JsonSerializerOptions { WriteIndented = true });
                 File.WriteAllText(_configPath, json);
@@ -153,5 +164,6 @@ namespace WinResMonitor.Core
     {
         public List<string> Domains { get; set; } = new();
         public List<string> Keywords { get; set; } = new();
+        public string GiphyApiKey { get; set; } = "";
     }
 }

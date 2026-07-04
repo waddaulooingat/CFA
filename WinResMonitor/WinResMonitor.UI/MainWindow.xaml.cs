@@ -33,6 +33,7 @@ namespace WinResMonitor.UI
             RefreshLog();
             RefreshDomains();
             RefreshKeywords();
+            GiphyApiKeyBox.Text = _proxy.Blocklist.GiphyApiKey;
         }
 
         private void RefreshBlocklistStatus()
@@ -176,6 +177,15 @@ namespace WinResMonitor.UI
             new Logger().PurgeOlderThan(d);
             RefreshLog();
             StatusBarText.Text = $"Purged logs older than {d} days.";
+        }
+
+        private void BtnSaveGiphyKey_Click(object sender, RoutedEventArgs e)
+        {
+            var key = GiphyApiKeyBox.Text.Trim();
+            _proxy.Blocklist.SetGiphyApiKey(key);
+            StatusBarText.Text = string.IsNullOrEmpty(key)
+                ? "Giphy API key cleared."
+                : "Giphy API key saved. Block page will show a new GIF within 10 minutes.";
         }
 
         private void BtnInstallService_Click(object sender, RoutedEventArgs e)

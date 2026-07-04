@@ -134,6 +134,16 @@
                     <TextBlock Text="Proxy Settings" Style="{StaticResource HeaderText}"/>
                     <TextBlock Text="The proxy runs on localhost:8877. Configure your browsers to use this proxy." Margin="0,0,0,12" TextWrapping="Wrap"/>
 
+                    <TextBlock Text="Giphy API Key" Style="{StaticResource HeaderText}"/>
+                    <TextBlock Text="Used to show a random stop-themed GIF on the block page. Get a free key at developers.giphy.com."
+                               TextWrapping="Wrap" Foreground="Gray" Margin="0,0,0,6"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                        <TextBox x:Name="GiphyApiKeyBox" Width="320" Margin="0,0,8,0"
+                                 ToolTip="Paste your Giphy API key here"/>
+                        <Button Content="Save Key" Click="BtnSaveGiphyKey_Click"
+                                Style="{StaticResource ActionButton}"/>
+                    </StackPanel>
+
                     <TextBlock Text="Log Retention" Style="{StaticResource HeaderText}"/>
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
                         <TextBlock Text="Purge logs older than:" VerticalAlignment="Center" Margin="0,0,8,0"/>

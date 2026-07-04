@@ -3,7 +3,6 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,6 +16,10 @@ namespace WinResMonitor.Core
         private readonly int _port;
         private bool _running;
         private CancellationTokenSource _cts;
+
+        private string? _cachedGifUrl;
+        private Timer? _gifRefreshTimer;
+        private const int GifRefreshMinutes = 10;
 
         public event Action<string, bool> OnRequestEvaluated;
 
@@ -36,6 +39,10 @@ namespace WinResMonitor.Core
             _running = true;
 
             Task.Run(() => AcceptLoopAsync(_cts.Token));
+
+            // Fetch an initial GIF and refresh every 10 minutes
+            _gifRefreshTimer = new Timer(_ => _ = RefreshGifAsync(), null,
+                TimeSpan.Zero, TimeSpan.FromMinutes(GifRefreshMinutes));
         }
 
         public void Stop()
@@ -43,6 +50,16 @@ namespace WinResMonitor.Core
             _running = false;
             _cts?.Cancel();
             _listener?.Stop();
+            _gifRefreshTimer?.Dispose();
+        }
+
+        private async Task RefreshGifAsync()
+        {
+            var key = _blocklist.GiphyApiKey;
+            if (string.IsNullOrWhiteSpace(key)) return;
+
+            var gif = await new GiphyClient(key).GetRandomGifUrlAsync();
+            if (gif != null) _cachedGifUrl = gif;
         }
 
         private async Task AcceptLoopAsync(CancellationToken ct)
@@ -83,16 +100,21 @@ namespace WinResMonitor.Core
         {
             try
             {
-                string html = @"<!DOCTYPE html>
+                var gifSection = _cachedGifUrl != null
+                    ? $"<img src='{_cachedGifUrl}' alt='Stop' style='max-width:320px;border-radius:8px;margin:16px 0;'/>"
+                    : "";
+
+                string html = $@"<!DOCTYPE html>
 <html>
 <head><title>Access Blocked</title>
 <style>
-  body { font-family: Arial, sans-serif; text-align: center; padding: 80px; background: #f0f0f0; }
-  .box { background: white; padding: 40px; border-radius: 8px; display: inline-block; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-  h1 { color: #c0392b; } p { color: #555; }
+  body {{ font-family: Arial, sans-serif; text-align: center; padding: 80px; background: #f0f0f0; }}
+  .box {{ background: white; padding: 40px; border-radius: 8px; display: inline-block; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }}
+  h1 {{ color: #c0392b; }} p {{ color: #555; }}
 </style></head>
 <body><div class='box'>
   <h1>&#128683; Access Blocked</h1>
+  {gifSection}
   <p>This website has been blocked by Windows Resource Monitor.</p>
   <p>If you believe this is an error, please contact your administrator.</p>
 </div></body></html>";
