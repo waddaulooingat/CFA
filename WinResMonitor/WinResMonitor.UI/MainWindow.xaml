@@ -1,7 +1,7 @@
 <Window x:Class="WinResMonitor.UI.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Windows Resource Monitor" Height="700" Width="960"
+        Title="Windows Resource Monitor" Height="780" Width="1000"
         WindowStartupLocation="CenterScreen"
         Closing="Window_Closing">
 
@@ -43,6 +43,8 @@
                             Click="BtnStartStop_Click" Style="{StaticResource ActionButton}"/>
                     <Button Content="Refresh Log" Click="BtnRefreshLog_Click"
                             Style="{StaticResource ActionButton}"/>
+                    <Button Content="Weekly Report" Click="BtnWeeklyReport_Click"
+                            Style="{StaticResource ActionButton}" Background="#27ae60" Foreground="White"/>
                 </StackPanel>
             </Grid>
         </Border>
@@ -128,8 +130,57 @@
                 </Grid>
             </TabItem>
 
+            <!-- TAB: Education Whitelist -->
+            <TabItem Header="Education Whitelist">
+                <Grid Margin="8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="Always-allowed educational domains (bypass all blocks):"
+                               Style="{StaticResource HeaderText}"/>
+                    <ListBox Grid.Row="1" x:Name="WhitelistDomainList" Margin="0,0,0,8"/>
+                    <StackPanel Grid.Row="2" Orientation="Horizontal">
+                        <TextBox x:Name="NewWhitelistBox" Width="300" Margin="0,0,8,0"
+                                 ToolTip="e.g. khanacademy.org"/>
+                        <Button Content="Add Domain" Click="BtnAddWhitelist_Click"
+                                Style="{StaticResource ActionButton}"/>
+                        <Button Content="Remove Selected" Click="BtnRemoveWhitelist_Click"
+                                Style="{StaticResource ActionButton}"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+            <!-- TAB: Time Limits -->
+            <TabItem Header="Time Limits">
+                <Grid Margin="8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="Time-limited sites (warning at 1h, blocked for 24h at 1h 15m):"
+                               Style="{StaticResource HeaderText}"/>
+                    <ListBox Grid.Row="1" x:Name="TimeLimitList" Margin="0,0,0,8"/>
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,12">
+                        <TextBox x:Name="NewTimeLimitBox" Width="300" Margin="0,0,8,0"
+                                 ToolTip="e.g. youtube.com"/>
+                        <Button Content="Add Site" Click="BtnAddTimeLimitSite_Click"
+                                Style="{StaticResource ActionButton}"/>
+                        <Button Content="Remove Selected" Click="BtnRemoveTimeLimitSite_Click"
+                                Style="{StaticResource ActionButton}"/>
+                    </StackPanel>
+                    <TextBlock Grid.Row="3" Text="Currently temp-blocked (24h):" Style="{StaticResource HeaderText}"/>
+                    <ListBox Grid.Row="4" x:Name="TempBlockedList" Height="100"/>
+                </Grid>
+            </TabItem>
+
             <!-- TAB: Settings -->
             <TabItem Header="Settings">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <StackPanel Margin="16">
                     <TextBlock Text="Proxy Settings" Style="{StaticResource HeaderText}"/>
                     <TextBlock Text="The proxy runs on localhost:8877. Configure your browsers to use this proxy." Margin="0,0,0,12" TextWrapping="Wrap"/>
@@ -173,6 +224,7 @@
                     <TextBlock Text="Run as Administrator to install/uninstall the Windows Service."
                                FontStyle="Italic" Foreground="Gray" Margin="0,8,0,0"/>
                 </StackPanel>
+                </ScrollViewer>
             </TabItem>
 
         </TabControl>

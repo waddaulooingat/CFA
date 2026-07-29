@@ -20,6 +20,8 @@ namespace WinResMonitor.Core
         private string? _cachedGifUrl;
         private Timer? _gifRefreshTimer;
         private const int GifRefreshMinutes = 10;
+        private const int WarnThresholdSeconds = 60 * 60;      // 1 hour
+        private const int BlockThresholdSeconds = 60 * 75;     // 1h 15m
 
         public event Action<string, bool> OnRequestEvaluated;
 
@@ -40,7 +42,6 @@ namespace WinResMonitor.Core
 
             Task.Run(() => AcceptLoopAsync(_cts.Token));
 
-            // Fetch an initial GIF and refresh every 10 minutes
             _gifRefreshTimer = new Timer(_ => _ = RefreshGifAsync(), null,
                 TimeSpan.Zero, TimeSpan.FromMinutes(GifRefreshMinutes));
         }
@@ -57,7 +58,6 @@ namespace WinResMonitor.Core
         {
             var key = _blocklist.GiphyApiKey;
             if (string.IsNullOrWhiteSpace(key)) return;
-
             var gif = await new GiphyClient(key).GetRandomGifUrlAsync();
             if (gif != null) _cachedGifUrl = gif;
         }
@@ -93,7 +93,10 @@ namespace WinResMonitor.Core
                 return;
             }
 
-            await ForwardRequest(ctx);
+            // Track time for time-limit sites
+            int secondsToday = _blocklist.TrackIfTimeLimitSite(host);
+
+            await ForwardRequest(ctx, host, secondsToday);
         }
 
         private async Task ServeBlockPage(HttpListenerContext ctx)
@@ -119,17 +122,12 @@ namespace WinResMonitor.Core
   <p>If you believe this is an error, please contact your administrator.</p>
 </div></body></html>";
 
-                byte[] bytes = Encoding.UTF8.GetBytes(html);
-                ctx.Response.StatusCode = 403;
-                ctx.Response.ContentType = "text/html";
-                ctx.Response.ContentLength64 = bytes.Length;
-                await ctx.Response.OutputStream.WriteAsync(bytes, 0, bytes.Length);
-                ctx.Response.Close();
+                await WriteHtmlResponse(ctx, 403, html);
             }
-            catch { /* client disconnected */ }
+            catch { }
         }
 
-        private async Task ForwardRequest(HttpListenerContext ctx)
+        private async Task ForwardRequest(HttpListenerContext ctx, string host, int secondsToday)
         {
             try
             {
@@ -154,10 +152,20 @@ namespace WinResMonitor.Core
                 }
 
                 var response = await client.SendAsync(reqMsg);
-                ctx.Response.StatusCode = (int)response.StatusCode;
-                ctx.Response.ContentType = response.Content.Headers.ContentType?.ToString();
-
+                var contentType = response.Content.Headers.ContentType?.ToString() ?? "";
                 var respBytes = await response.Content.ReadAsByteArrayAsync();
+
+                // Inject obnoxious banner if over warning threshold on a time-limit site
+                if (secondsToday >= WarnThresholdSeconds && contentType.Contains("text/html"))
+                {
+                    var tracker = new TimeTracker(_blocklist.ConnString);
+                    var message = tracker.GetObnoxiousMessage(secondsToday);
+                    var mins = secondsToday / 60;
+                    respBytes = InjectBanner(respBytes, message, mins);
+                }
+
+                ctx.Response.StatusCode = (int)response.StatusCode;
+                ctx.Response.ContentType = contentType;
                 ctx.Response.ContentLength64 = respBytes.Length;
                 await ctx.Response.OutputStream.WriteAsync(respBytes, 0, respBytes.Length);
                 ctx.Response.Close();
@@ -168,6 +176,50 @@ namespace WinResMonitor.Core
                 try { ctx.Response.StatusCode = 502; ctx.Response.Close(); } catch { }
             }
         }
+
+        private static byte[] InjectBanner(byte[] htmlBytes, string message, int minutesSpent)
+        {
+            try
+            {
+                var html = Encoding.UTF8.GetString(htmlBytes);
+                var banner = $@"
+<div id='wrm-banner' style='position:fixed;top:0;left:0;right:0;z-index:2147483647;
+  background:#c0392b;color:white;font-family:Arial,sans-serif;font-size:16px;
+  padding:14px 20px;display:flex;align-items:center;justify-content:space-between;
+  box-shadow:0 2px 8px rgba(0,0,0,0.3);'>
+  <span>&#9888;&#65039; <strong>{EscapeHtml(message)}</strong> &nbsp;({minutesSpent} min spent here today)</span>
+  <button onclick=""document.getElementById('wrm-banner').remove()""
+    style='background:transparent;border:2px solid white;color:white;padding:4px 12px;
+    border-radius:4px;cursor:pointer;font-size:13px;'>Dismiss</button>
+</div>
+<div style='height:52px'></div>";
+
+                var bodyIdx = html.IndexOf("<body", StringComparison.OrdinalIgnoreCase);
+                if (bodyIdx >= 0)
+                {
+                    var insertAt = html.IndexOf('>', bodyIdx) + 1;
+                    html = html.Insert(insertAt, banner);
+                }
+                else
+                {
+                    html = banner + html;
+                }
+                return Encoding.UTF8.GetBytes(html);
+            }
+            catch { return htmlBytes; }
+        }
+
+        private static async Task WriteHtmlResponse(HttpListenerContext ctx, int statusCode, string html)
+        {
+            var bytes = Encoding.UTF8.GetBytes(html);
+            ctx.Response.StatusCode = statusCode;
+            ctx.Response.ContentType = "text/html";
+            ctx.Response.ContentLength64 = bytes.Length;
+            await ctx.Response.OutputStream.WriteAsync(bytes, 0, bytes.Length);
+            ctx.Response.Close();
+        }
+
+        private static string EscapeHtml(string s) => s.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;").Replace("\"", "&quot;");
 
         public bool IsRunning => _running;
         public int Port => _port;

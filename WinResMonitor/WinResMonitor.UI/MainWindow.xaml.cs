@@ -33,54 +33,12 @@ namespace WinResMonitor.UI
             RefreshLog();
             RefreshDomains();
             RefreshKeywords();
+            RefreshWhitelist();
+            RefreshTimeLimitSites();
             GiphyApiKeyBox.Text = _proxy.Blocklist.GiphyApiKey;
         }
 
-        private void RefreshBlocklistStatus()
-        {
-            try
-            {
-                var updater = new BlocklistUpdater(DbConnString);
-                var (lastUpdated, count) = updater.GetStatus();
-                BlocklistStatusText.Text = lastUpdated.HasValue
-                    ? $"Last updated: {lastUpdated:g} — {count:N0} domains"
-                    : "Blocklist not yet downloaded.";
-            }
-            catch
-            {
-                BlocklistStatusText.Text = "Status unavailable.";
-            }
-        }
-
-        private async void BtnUpdateBlocklist_Click(object sender, RoutedEventArgs e)
-        {
-            BtnUpdateBlocklist_SetEnabled(false);
-            BlocklistStatusText.Text = "Updating...";
-            StatusBarText.Text = "Downloading blocklist...";
-
-            try
-            {
-                var updater = new BlocklistUpdater(DbConnString);
-                updater.OnProgress += msg => Dispatcher.Invoke(() => StatusBarText.Text = msg);
-                int count = await updater.UpdateAsync();
-                RefreshBlocklistStatus();
-                StatusBarText.Text = $"Blocklist updated: {count:N0} domains.";
-            }
-            catch (Exception ex)
-            {
-                BlocklistStatusText.Text = "Update failed.";
-                StatusBarText.Text = $"Update error: {ex.Message}";
-            }
-            finally
-            {
-                BtnUpdateBlocklist_SetEnabled(true);
-            }
-        }
-
-        private void BtnUpdateBlocklist_SetEnabled(bool enabled)
-        {
-            Dispatcher.Invoke(() => BtnUpdateBlocklist.IsEnabled = enabled);
-        }
+        // --- Activity Log ---
 
         private void RefreshLog()
         {
@@ -88,25 +46,15 @@ namespace WinResMonitor.UI
             if (FilterBlocked?.IsChecked == true) filter = true;
             else if (FilterAllowed?.IsChecked == true) filter = false;
 
-            var entries = _proxy.Blocklist == null
-                ? new List<RequestEntry>()
-                : new Logger().GetRecentRequests(300, filter);
-
+            var entries = new Logger().GetRecentRequests(300, filter);
             LogGrid.ItemsSource = entries;
             StatusBarText.Text = $"Showing {entries.Count} entries";
         }
 
-        private void RefreshDomains()
-        {
-            DomainList.ItemsSource = null;
-            DomainList.ItemsSource = _proxy.Blocklist.GetDomains().ToList();
-        }
+        private void BtnRefreshLog_Click(object sender, RoutedEventArgs e) => RefreshLog();
+        private void Filter_Changed(object sender, RoutedEventArgs e) => RefreshLog();
 
-        private void RefreshKeywords()
-        {
-            KeywordList.ItemsSource = null;
-            KeywordList.ItemsSource = _proxy.Blocklist.GetKeywords().ToList();
-        }
+        // --- Proxy Start/Stop ---
 
         private void BtnStartStop_Click(object sender, RoutedEventArgs e)
         {
@@ -126,9 +74,13 @@ namespace WinResMonitor.UI
             }
         }
 
-        private void BtnRefreshLog_Click(object sender, RoutedEventArgs e) => RefreshLog();
+        // --- Blocked Domains ---
 
-        private void Filter_Changed(object sender, RoutedEventArgs e) => RefreshLog();
+        private void RefreshDomains()
+        {
+            DomainList.ItemsSource = null;
+            DomainList.ItemsSource = _proxy.Blocklist.GetDomains().ToList();
+        }
 
         private void BtnAddDomain_Click(object sender, RoutedEventArgs e)
         {
@@ -148,6 +100,14 @@ namespace WinResMonitor.UI
                 RefreshDomains();
                 StatusBarText.Text = $"Removed domain: {domain}";
             }
+        }
+
+        // --- Keywords ---
+
+        private void RefreshKeywords()
+        {
+            KeywordList.ItemsSource = null;
+            KeywordList.ItemsSource = _proxy.Blocklist.GetKeywords().ToList();
         }
 
         private void BtnAddKeyword_Click(object sender, RoutedEventArgs e)
@@ -170,13 +130,118 @@ namespace WinResMonitor.UI
             }
         }
 
-        private void BtnPurge_Click(object sender, RoutedEventArgs e)
+        // --- Education Whitelist ---
+
+        private void RefreshWhitelist()
         {
-            int[] days = { 7, 30, 90 };
-            int d = days[RetentionDays.SelectedIndex];
-            new Logger().PurgeOlderThan(d);
-            RefreshLog();
-            StatusBarText.Text = $"Purged logs older than {d} days.";
+            WhitelistDomainList.ItemsSource = null;
+            WhitelistDomainList.ItemsSource = _proxy.Blocklist.GetWhitelistedDomains().ToList();
+        }
+
+        private void BtnAddWhitelist_Click(object sender, RoutedEventArgs e)
+        {
+            var domain = NewWhitelistBox.Text.Trim();
+            if (string.IsNullOrWhiteSpace(domain)) return;
+            _proxy.Blocklist.AddWhitelistedDomain(domain);
+            NewWhitelistBox.Clear();
+            RefreshWhitelist();
+            StatusBarText.Text = $"Whitelisted: {domain}";
+        }
+
+        private void BtnRemoveWhitelist_Click(object sender, RoutedEventArgs e)
+        {
+            if (WhitelistDomainList.SelectedItem is string domain)
+            {
+                _proxy.Blocklist.RemoveWhitelistedDomain(domain);
+                RefreshWhitelist();
+                StatusBarText.Text = $"Removed from whitelist: {domain}";
+            }
+        }
+
+        // --- Time Limit Sites ---
+
+        private void RefreshTimeLimitSites()
+        {
+            TimeLimitList.ItemsSource = null;
+            TimeLimitList.ItemsSource = _proxy.Blocklist.GetTimeLimitSites().ToList();
+
+            var tracker = new TimeTracker(DbConnString);
+            var tempBlocks = tracker.GetTempBlocks();
+            TempBlockedList.ItemsSource = tempBlocks
+                .Select(t => $"{t.Domain} — unblocks in {t.TotalSeconds / 3600}h {(t.TotalSeconds % 3600) / 60}m")
+                .ToList();
+        }
+
+        private void BtnAddTimeLimitSite_Click(object sender, RoutedEventArgs e)
+        {
+            var domain = NewTimeLimitBox.Text.Trim();
+            if (string.IsNullOrWhiteSpace(domain)) return;
+            _proxy.Blocklist.AddTimeLimitSite(domain);
+            NewTimeLimitBox.Clear();
+            RefreshTimeLimitSites();
+            StatusBarText.Text = $"Added time-limit site: {domain}";
+        }
+
+        private void BtnRemoveTimeLimitSite_Click(object sender, RoutedEventArgs e)
+        {
+            if (TimeLimitList.SelectedItem is string domain)
+            {
+                _proxy.Blocklist.RemoveTimeLimitSite(domain);
+                RefreshTimeLimitSites();
+                StatusBarText.Text = $"Removed time-limit site: {domain}";
+            }
+        }
+
+        // --- Weekly Report ---
+
+        private void BtnWeeklyReport_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var gen = new ReportGenerator(DbConnString);
+                var path = gen.GenerateWeeklyReport();
+                Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
+                StatusBarText.Text = $"Report saved: {path}";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to generate report: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        // --- Settings ---
+
+        private void RefreshBlocklistStatus()
+        {
+            try
+            {
+                var updater = new BlocklistUpdater(DbConnString);
+                var (lastUpdated, count) = updater.GetStatus();
+                BlocklistStatusText.Text = lastUpdated.HasValue
+                    ? $"Last updated: {lastUpdated:g} — {count:N0} domains"
+                    : "Blocklist not yet downloaded.";
+            }
+            catch { BlocklistStatusText.Text = "Status unavailable."; }
+        }
+
+        private async void BtnUpdateBlocklist_Click(object sender, RoutedEventArgs e)
+        {
+            BtnUpdateBlocklist.IsEnabled = false;
+            StatusBarText.Text = "Downloading blocklist...";
+            try
+            {
+                var updater = new BlocklistUpdater(DbConnString);
+                updater.OnProgress += msg => Dispatcher.Invoke(() => StatusBarText.Text = msg);
+                int count = await updater.UpdateAsync();
+                RefreshBlocklistStatus();
+                StatusBarText.Text = $"Blocklist updated: {count:N0} domains.";
+            }
+            catch (Exception ex)
+            {
+                BlocklistStatusText.Text = "Update failed.";
+                StatusBarText.Text = $"Update error: {ex.Message}";
+            }
+            finally { BtnUpdateBlocklist.IsEnabled = true; }
         }
 
         private void BtnSaveGiphyKey_Click(object sender, RoutedEventArgs e)
@@ -186,6 +251,15 @@ namespace WinResMonitor.UI
             StatusBarText.Text = string.IsNullOrEmpty(key)
                 ? "Giphy API key cleared."
                 : "Giphy API key saved. Block page will show a new GIF within 10 minutes.";
+        }
+
+        private void BtnPurge_Click(object sender, RoutedEventArgs e)
+        {
+            int[] days = { 7, 30, 90 };
+            int d = days[RetentionDays.SelectedIndex];
+            new Logger().PurgeOlderThan(d);
+            RefreshLog();
+            StatusBarText.Text = $"Purged logs older than {d} days.";
         }
 
         private void BtnInstallService_Click(object sender, RoutedEventArgs e)
@@ -222,12 +296,10 @@ namespace WinResMonitor.UI
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            // Service handles the proxy — just close the UI
             _proxy?.Stop();
         }
     }
 
-    // Converters
     public class BlockedToBoolConverter : IValueConverter
     {
         public object Convert(object v, Type t, object p, CultureInfo c)
