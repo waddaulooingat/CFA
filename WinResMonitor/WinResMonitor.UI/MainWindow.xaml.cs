@@ -211,6 +211,21 @@ namespace WinResMonitor.UI
 
         // --- Settings ---
 
+        private void BtnChangePassword_Click(object sender, RoutedEventArgs e)
+        {
+            var pm = new WinResMonitor.Core.PasswordManager();
+            // Verify current password first
+            var verify = new PasswordDialog(pm, isSetup: false);
+            verify.Title = "Verify Current Password";
+            if (verify.ShowDialog() != true) return;
+
+            // Then set new password
+            var setup = new PasswordDialog(pm, isSetup: true);
+            setup.Title = "Set New Password";
+            if (setup.ShowDialog() == true)
+                StatusBarText.Text = "Password changed successfully.";
+        }
+
         private void RefreshBlocklistStatus()
         {
             try

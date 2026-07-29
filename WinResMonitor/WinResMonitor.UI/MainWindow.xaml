@@ -182,6 +182,12 @@
             <TabItem Header="Settings">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <StackPanel Margin="16">
+                    <TextBlock Text="Password" Style="{StaticResource HeaderText}"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                        <Button Content="Change Password" Click="BtnChangePassword_Click"
+                                Style="{StaticResource ActionButton}"/>
+                    </StackPanel>
+
                     <TextBlock Text="Proxy Settings" Style="{StaticResource HeaderText}"/>
                     <TextBlock Text="The proxy runs on localhost:8877. Configure your browsers to use this proxy." Margin="0,0,0,12" TextWrapping="Wrap"/>
 
