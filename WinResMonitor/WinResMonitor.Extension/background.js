@@ -1,3 +1,22 @@
+// ─── Config API sync ──────────────────────────────────────────────────────────
+const CONFIG_API      = 'http://localhost:8878/config';
+const SYNC_ALARM      = 'wrm-sync';
+const SYNC_MINUTES    = 5;
+
+async function syncFromApp() {
+  try {
+    const res  = await fetch(CONFIG_API, { signal: AbortSignal.timeout(3000) });
+    if (!res.ok) return;
+    const cfg  = await res.json();
+    const patch = {};
+    if (Array.isArray(cfg.timeLimitSites) && cfg.timeLimitSites.length)
+      patch.timeLimitSites = cfg.timeLimitSites.map(d => d.toLowerCase());
+    if (Array.isArray(cfg.whitelist) && cfg.whitelist.length)
+      patch.whitelist = cfg.whitelist.map(d => d.toLowerCase());
+    if (Object.keys(patch).length) await chrome.storage.local.set(patch);
+  } catch { /* app not running — keep existing settings */ }
+}
+
 // ─── Constants ────────────────────────────────────────────────────────────────
 const TICK_SECONDS    = 30;
 const WARN_SECONDS    = 60 * 60;       // 1 hour
@@ -48,10 +67,14 @@ chrome.runtime.onInstalled.addListener(async () => {
   if (!data.timeLimitSites) await chrome.storage.local.set({ timeLimitSites: DEFAULT_TIME_LIMIT_SITES });
   if (!data.whitelist)      await chrome.storage.local.set({ whitelist: DEFAULT_WHITELIST });
   chrome.alarms.create(TICK_ALARM, { periodInMinutes: TICK_SECONDS / 60 });
+  chrome.alarms.create(SYNC_ALARM, { periodInMinutes: SYNC_MINUTES });
+  syncFromApp();
 });
 
 chrome.runtime.onStartup.addListener(() => {
   chrome.alarms.create(TICK_ALARM, { periodInMinutes: TICK_SECONDS / 60 });
+  chrome.alarms.create(SYNC_ALARM, { periodInMinutes: SYNC_MINUTES });
+  syncFromApp();
 });
 
 // ─── Track active tab domain ──────────────────────────────────────────────────
@@ -84,6 +107,7 @@ chrome.windows.onFocusChanged.addListener(windowId => {
 
 // ─── Tick ─────────────────────────────────────────────────────────────────────
 chrome.alarms.onAlarm.addListener(async alarm => {
+  if (alarm.name === SYNC_ALARM) { syncFromApp(); return; }
   if (alarm.name !== TICK_ALARM) return;
   if (!windowFocused || !activeDomain) return;
 

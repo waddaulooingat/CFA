@@ -58,67 +58,27 @@ async function loadTodayStats() {
   });
 }
 
-// ─── Time limit sites ─────────────────────────────────────────────────────────
+// ─── Time limit sites (read-only — managed by WinResMonitor app) ──────────────
 async function loadLimits() {
   const data = await sendMsg({ type: 'GET_SETTINGS' });
   const el   = document.getElementById('limit-list');
   const list = data.timeLimitSites || [];
 
   el.innerHTML = list.length
-    ? list.map(d => `
-        <div class="list-item">
-          <span>${d}</span>
-          <button class="remove-btn" data-key="limit" data-domain="${d}">✕</button>
-        </div>`).join('')
+    ? list.map(d => `<div class="list-item"><span>${d}</span></div>`).join('')
     : '<div class="empty">No sites configured.</div>';
-
-  el.querySelectorAll('.remove-btn').forEach(btn => {
-    btn.addEventListener('click', async () => {
-      await sendMsg({ type: 'REMOVE_TIME_LIMIT_SITE', domain: btn.dataset.domain });
-      loadLimits();
-    });
-  });
 }
 
-document.getElementById('limit-add-btn').addEventListener('click', async () => {
-  const input = document.getElementById('limit-input');
-  const domain = input.value.trim().toLowerCase();
-  if (!domain) return;
-  await sendMsg({ type: 'ADD_TIME_LIMIT_SITE', domain });
-  input.value = '';
-  loadLimits();
-});
-
-// ─── Whitelist ────────────────────────────────────────────────────────────────
+// ─── Whitelist (read-only — managed by WinResMonitor app) ────────────────────
 async function loadWhitelist() {
   const data = await sendMsg({ type: 'GET_SETTINGS' });
   const el   = document.getElementById('white-list');
   const list = data.whitelist || [];
 
   el.innerHTML = list.length
-    ? list.map(d => `
-        <div class="list-item">
-          <span>${d}</span>
-          <button class="remove-btn" data-key="white" data-domain="${d}">✕</button>
-        </div>`).join('')
+    ? list.map(d => `<div class="list-item"><span>${d}</span></div>`).join('')
     : '<div class="empty">No sites whitelisted.</div>';
-
-  el.querySelectorAll('.remove-btn').forEach(btn => {
-    btn.addEventListener('click', async () => {
-      await sendMsg({ type: 'REMOVE_WHITELIST', domain: btn.dataset.domain });
-      loadWhitelist();
-    });
-  });
 }
-
-document.getElementById('white-add-btn').addEventListener('click', async () => {
-  const input = document.getElementById('white-input');
-  const domain = input.value.trim().toLowerCase();
-  if (!domain) return;
-  await sendMsg({ type: 'ADD_WHITELIST', domain });
-  input.value = '';
-  loadWhitelist();
-});
 
 // ─── Utils ────────────────────────────────────────────────────────────────────
 function fmt(seconds) {

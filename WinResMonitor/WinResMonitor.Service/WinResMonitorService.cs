@@ -9,6 +9,7 @@ namespace WinResMonitor.Service
     public class WinResMonitorService : ServiceBase
     {
         private ProxyEngine _proxy;
+        private ExtensionConfigApi _configApi;
         private Timer _watchdog;
         private Timer _blocklistRefresh;
         private const int WatchdogIntervalMs = 15000;
@@ -28,6 +29,8 @@ namespace WinResMonitor.Service
         protected override void OnStart(string[] args)
         {
             StartProxy();
+            _configApi = new ExtensionConfigApi(_proxy.Blocklist);
+            _configApi.Start();
             _watchdog = new Timer(WatchdogTick, null, WatchdogIntervalMs, WatchdogIntervalMs);
             // Fire immediately on start, then every 24 hours
             _blocklistRefresh = new Timer(BlocklistRefreshTick, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(OneDayMs));
@@ -37,6 +40,7 @@ namespace WinResMonitor.Service
         {
             _blocklistRefresh?.Dispose();
             _watchdog?.Dispose();
+            _configApi?.Stop();
             _proxy?.Stop();
         }
 
