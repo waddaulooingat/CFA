@@ -178,6 +178,15 @@ chrome.runtime.onMessage.addListener((msg, _sender, reply) => {
     unblockDomain(msg.domain).then(reply);
     return true;
   }
+  if (msg.type === 'GET_REPORT_DATA') {
+    chrome.storage.local.get(['timeData', 'timeLimitSites']).then(data => {
+      reply({
+        timeData:      data.timeData      || {},
+        timeLimitSites: data.timeLimitSites || DEFAULT_TIME_LIMIT_SITES,
+      });
+    });
+    return true;
+  }
 });
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────

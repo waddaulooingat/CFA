@@ -125,6 +125,7 @@
     <div class="tab active" data-tab="today">Today</div>
     <div class="tab" data-tab="limits">Time Limits</div>
     <div class="tab" data-tab="whitelist">Whitelist</div>
+    <div class="tab" data-tab="report">Report</div>
   </div>
 
   <!-- TODAY panel -->
@@ -148,6 +149,19 @@
       <button id="white-add-btn">Add</button>
     </div>
     <div id="white-list"><div class="empty">Loading...</div></div>
+  </div>
+
+  <!-- REPORT panel -->
+  <div class="panel" id="tab-report">
+    <h3 style="margin-bottom:10px">Weekly Report</h3>
+    <p style="font-size:12px;color:#666;margin-bottom:12px;line-height:1.5">
+      Generates an HTML report of the past 7 days showing time spent on each tracked site.
+    </p>
+    <div style="display:flex;gap:6px;margin-bottom:10px">
+      <button id="report-week-btn" class="btn" style="flex:1">Last 7 Days</button>
+      <button id="report-month-btn" class="btn" style="flex:1">Last 30 Days</button>
+    </div>
+    <div id="report-status" style="font-size:11px;color:#27ae60;text-align:center;min-height:16px"></div>
   </div>
 
   <script src="popup.js"></script>
