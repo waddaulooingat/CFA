@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Site Blocked — WinResMonitor</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Segoe UI, Arial, sans-serif;
+      background: #f0f0f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 48px 56px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+      max-width: 480px;
+      width: 90%;
+    }
+    .icon { font-size: 72px; margin-bottom: 16px; }
+    h1 { color: #c0392b; font-size: 28px; margin-bottom: 12px; }
+    .domain { font-size: 20px; font-weight: bold; color: #2C3E50; margin-bottom: 8px; }
+    .reason { color: #666; font-size: 15px; margin-bottom: 24px; line-height: 1.5; }
+    .countdown {
+      background: #fff3f3;
+      border: 2px solid #e74c3c;
+      border-radius: 8px;
+      padding: 16px;
+      color: #c0392b;
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+    .messages {
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 16px;
+      color: #555;
+      font-style: italic;
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+    .tip { font-size: 13px; color: #999; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">🚫</div>
+    <h1>Time's Up</h1>
+    <div class="domain" id="domain-name">this site</div>
+    <div class="reason">
+      You've hit your daily time limit and this site has been blocked for 24 hours.
+    </div>
+    <div class="countdown" id="countdown">Unblocks in: calculating...</div>
+    <div class="messages" id="message-box">
+      "Somewhere, a version of you who closed this tab is doing great."
+    </div>
+    <div class="tip">Go do something awesome instead. 💪</div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(location.search);
+    const domain = params.get('domain') || 'this site';
+    let minutes  = parseInt(params.get('minutes') || '1440', 10);
+
+    document.getElementById('domain-name').textContent = domain;
+
+    const msgs = [
+      "\"Somewhere, a version of you who closed this tab is doing great.\"",
+      "\"Your goals called. They miss you.\"",
+      "\"Every minute here was a minute you could have spent differently.\"",
+      "\"Time to find out what you're actually capable of.\"",
+    ];
+    document.getElementById('message-box').textContent = msgs[Math.floor(Math.random() * msgs.length)];
+
+    function updateCountdown() {
+      const h = Math.floor(minutes / 60);
+      const m = minutes % 60;
+      document.getElementById('countdown').textContent =
+        `Unblocks in: ${h}h ${m}m`;
+      if (minutes > 0) {
+        setTimeout(() => { minutes--; updateCountdown(); }, 60000);
+      } else {
+        document.getElementById('countdown').textContent = 'You can reload to try again.';
+      }
+    }
+    updateCountdown();
+  </script>
+</body>
+</html>
