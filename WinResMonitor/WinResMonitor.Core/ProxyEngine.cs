@@ -120,12 +120,21 @@ namespace WinResMonitor.Core
             "dns.msft.net", "ctldl.windowsupdate.com"
         };
 
-        // Domain suffixes that should always tunnel silently (system/Microsoft services)
+        // Domain suffixes that should always tunnel silently
         private static readonly string[] _systemSuffixes = new[]
         {
+            // Microsoft
             ".msftncsi.com", ".live.com", ".microsoft.com", ".microsoftonline.com",
             ".windows.com", ".windowsupdate.com", ".office.com", ".office365.com",
-            ".teams.microsoft.com", ".skype.com", ".azure.com", ".azureedge.net"
+            ".skype.com", ".azure.com", ".azureedge.net",
+            // Google / YouTube
+            ".google.com", ".googleapis.com", ".googlevideo.com", ".gstatic.com",
+            ".youtube.com", ".youtu.be", ".ggpht.com", ".ytimg.com",
+            // Apple
+            ".apple.com", ".icloud.com", ".mzstatic.com",
+            // Cloudflare / general CDN
+            ".cloudflare.com", ".cloudflaressl.com", ".fastly.net", ".akamai.net",
+            ".akamaihd.net", ".edgecastcdn.net"
         };
 
         private static bool IsSystemDomain(string host) =>
