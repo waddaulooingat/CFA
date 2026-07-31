@@ -112,12 +112,31 @@ namespace WinResMonitor.Core
             }
         }
 
+        // Domains Windows uses for connectivity checks — pass through silently, never log
+        private static readonly HashSet<string> _systemDomains = new(StringComparer.OrdinalIgnoreCase)
+        {
+            "msftncsi.com", "ipv6.msftncsi.com", "ipv4.msftncsi.com",
+            "msftconnecttest.com", "www.msftconnecttest.com",
+            "dns.msft.net", "ctldl.windowsupdate.com"
+        };
+
+        private static bool IsSystemDomain(string host) =>
+            _systemDomains.Contains(host) || host.EndsWith(".msftncsi.com", StringComparison.OrdinalIgnoreCase);
+
         // ── HTTPS tunnel (CONNECT) ────────────────────────────────────────────
         private async Task HandleConnectAsync(NetworkStream clientStream, string target)
         {
             var (host, port) = ParseHostPort(target, 443);
-            var url          = $"https://{host}/";
-            var blocked      = _blocklist.IsBlocked(host, url);
+
+            // Pass Windows system connectivity checks through without logging
+            if (IsSystemDomain(host))
+            {
+                await TunnelAsync(clientStream, host, port);
+                return;
+            }
+
+            var url     = $"https://{host}/";
+            var blocked = _blocklist.IsBlocked(host, url);
 
             _logger.LogRequest(url, host, blocked);
             OnRequestEvaluated?.Invoke(url, blocked);
@@ -130,14 +149,17 @@ namespace WinResMonitor.Core
                 return;
             }
 
-            // Establish tunnel to real server
+            await TunnelAsync(clientStream, host, port);
+        }
+
+        private async Task TunnelAsync(NetworkStream clientStream, string host, int port)
+        {
             try
             {
-                using var remote       = new TcpClient();
+                using var remote = new TcpClient();
                 await remote.ConnectAsync(host, port);
                 var ok = "HTTP/1.1 200 Connection Established\r\n\r\n";
                 await clientStream.WriteAsync(Encoding.ASCII.GetBytes(ok));
-
                 using var remoteStream = remote.GetStream();
                 await Task.WhenAny(
                     PipeAsync(clientStream, remoteStream),
