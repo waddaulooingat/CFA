@@ -24,13 +24,20 @@ namespace WinResMonitor.Core
         private Timer? _gifRefreshTimer;
         private const int GifRefreshMinutes = 10;
 
+        // Shared HttpClient — reusing avoids socket exhaustion and connection overhead
+        private static readonly HttpClient _httpClient = new HttpClient(
+            new HttpClientHandler { AllowAutoRedirect = true, UseProxy = false })
+        {
+            Timeout = TimeSpan.FromSeconds(30)
+        };
+
         public event Action<string, bool>? OnRequestEvaluated;
 
         public ProxyEngine(int port = 8877)
         {
-            _port     = port;
+            _port      = port;
             _blocklist = new BlocklistManager();
-            _logger   = new Logger();
+            _logger    = new Logger();
         }
 
         public void Start()
@@ -162,9 +169,6 @@ namespace WinResMonitor.Core
 
             try
             {
-                using var http = new HttpClient(new HttpClientHandler
-                    { AllowAutoRedirect = true, UseProxy = false });
-
                 var req = new HttpRequestMessage(new HttpMethod(method), url);
                 foreach (var line in headerText.Split(new[] { "\r\n" }, StringSplitOptions.None).Skip(1))
                 {
@@ -176,7 +180,7 @@ namespace WinResMonitor.Core
                     try { req.Headers.TryAddWithoutValidation(name, value); } catch { }
                 }
 
-                var resp      = await http.SendAsync(req);
+                var resp      = await _httpClient.SendAsync(req);
                 var bodyBytes = await resp.Content.ReadAsByteArrayAsync();
                 var ct        = resp.Content.Headers.ContentType?.ToString() ?? "";
 
@@ -239,17 +243,24 @@ namespace WinResMonitor.Core
         private static async Task<byte[]?> ReadUntilBlankLineAsync(NetworkStream stream)
         {
             var ms  = new MemoryStream();
-            var buf = new byte[1];
+            var buf = new byte[4096];
+
             while (ms.Length < 65_536)
             {
-                if (await stream.ReadAsync(buf, 0, 1) == 0) break;
-                ms.WriteByte(buf[0]);
+                // Only read what's available to avoid blocking waiting for more data
+                int toRead = stream.DataAvailable ? buf.Length : 1;
+                int n = await stream.ReadAsync(buf, 0, toRead);
+                if (n == 0) break;
+                ms.Write(buf, 0, n);
+
+                // Scan for \r\n\r\n
                 var arr = ms.GetBuffer();
                 var len = (int)ms.Length;
-                if (len >= 4 &&
-                    arr[len-4] == '\r' && arr[len-3] == '\n' &&
-                    arr[len-2] == '\r' && arr[len-1] == '\n')
-                    return ms.ToArray();
+                for (int i = 0; i <= len - 4; i++)
+                {
+                    if (arr[i] == '\r' && arr[i+1] == '\n' && arr[i+2] == '\r' && arr[i+3] == '\n')
+                        return ms.ToArray()[..(i + 4)];
+                }
             }
             return ms.Length > 0 ? ms.ToArray() : null;
         }
