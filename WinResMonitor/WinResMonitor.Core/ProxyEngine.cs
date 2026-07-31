@@ -120,8 +120,17 @@ namespace WinResMonitor.Core
             "dns.msft.net", "ctldl.windowsupdate.com"
         };
 
+        // Domain suffixes that should always tunnel silently (system/Microsoft services)
+        private static readonly string[] _systemSuffixes = new[]
+        {
+            ".msftncsi.com", ".live.com", ".microsoft.com", ".microsoftonline.com",
+            ".windows.com", ".windowsupdate.com", ".office.com", ".office365.com",
+            ".teams.microsoft.com", ".skype.com", ".azure.com", ".azureedge.net"
+        };
+
         private static bool IsSystemDomain(string host) =>
-            _systemDomains.Contains(host) || host.EndsWith(".msftncsi.com", StringComparison.OrdinalIgnoreCase);
+            _systemDomains.Contains(host) ||
+            _systemSuffixes.Any(s => host.EndsWith(s, StringComparison.OrdinalIgnoreCase));
 
         // ── HTTPS tunnel (CONNECT) ────────────────────────────────────────────
         private async Task HandleConnectAsync(NetworkStream clientStream, string target)
