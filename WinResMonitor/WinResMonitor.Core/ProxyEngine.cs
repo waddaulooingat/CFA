@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,35 +13,32 @@ namespace WinResMonitor.Core
 {
     public class ProxyEngine
     {
-        private HttpListener _listener;
+        private TcpListener _listener;
         private readonly BlocklistManager _blocklist;
         private readonly Logger _logger;
         private readonly int _port;
-        private bool _running;
+        private volatile bool _running;
         private CancellationTokenSource _cts;
 
         private string? _cachedGifUrl;
         private Timer? _gifRefreshTimer;
         private const int GifRefreshMinutes = 10;
-        private const int WarnThresholdSeconds = 60 * 60;      // 1 hour
-        private const int BlockThresholdSeconds = 60 * 75;     // 1h 15m
 
-        public event Action<string, bool> OnRequestEvaluated;
+        public event Action<string, bool>? OnRequestEvaluated;
 
         public ProxyEngine(int port = 8877)
         {
-            _port = port;
+            _port     = port;
             _blocklist = new BlocklistManager();
-            _logger = new Logger();
+            _logger   = new Logger();
         }
 
         public void Start()
         {
-            _cts = new CancellationTokenSource();
-            _listener = new HttpListener();
-            _listener.Prefixes.Add($"http://127.0.0.1:{_port}/");
+            _cts      = new CancellationTokenSource();
+            _listener = new TcpListener(IPAddress.Loopback, _port);
             _listener.Start();
-            _running = true;
+            _running  = true;
 
             Task.Run(() => AcceptLoopAsync(_cts.Token));
 
@@ -50,10 +50,184 @@ namespace WinResMonitor.Core
         {
             _running = false;
             _cts?.Cancel();
-            _listener?.Stop();
+            try { _listener?.Stop(); } catch { }
             _gifRefreshTimer?.Dispose();
         }
 
+        // ── Accept loop ───────────────────────────────────────────────────────
+        private async Task AcceptLoopAsync(CancellationToken ct)
+        {
+            while (_running && !ct.IsCancellationRequested)
+            {
+                try
+                {
+                    var client = await _listener.AcceptTcpClientAsync(ct);
+                    client.ReceiveTimeout = 30_000;
+                    client.SendTimeout    = 30_000;
+                    _ = Task.Run(() => HandleClientAsync(client), ct);
+                }
+                catch when (!_running) { break; }
+                catch (Exception ex) when (_running)
+                {
+                    _logger.LogError($"Accept loop: {ex.Message}");
+                }
+            }
+        }
+
+        // ── Per-connection handler ────────────────────────────────────────────
+        private async Task HandleClientAsync(TcpClient client)
+        {
+            using (client)
+            {
+                try
+                {
+                    var stream = client.GetStream();
+                    var headerBytes = await ReadUntilBlankLineAsync(stream);
+                    if (headerBytes == null || headerBytes.Length == 0) return;
+
+                    var headerText = Encoding.ASCII.GetString(headerBytes);
+                    var firstLine  = headerText.Split(new[] { "\r\n" }, 2, StringSplitOptions.None)[0];
+                    var parts      = firstLine.Split(' ');
+                    if (parts.Length < 2) return;
+
+                    var method = parts[0].ToUpperInvariant();
+                    var target = parts[1];
+
+                    if (method == "CONNECT")
+                        await HandleConnectAsync(stream, target);
+                    else
+                        await HandleHttpAsync(stream, method, target, headerText);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Client handler: {ex.Message}");
+                }
+            }
+        }
+
+        // ── HTTPS tunnel (CONNECT) ────────────────────────────────────────────
+        private async Task HandleConnectAsync(NetworkStream clientStream, string target)
+        {
+            var (host, port) = ParseHostPort(target, 443);
+            var url          = $"https://{host}/";
+            var blocked      = _blocklist.IsBlocked(host, url);
+
+            _logger.LogRequest(url, host, blocked);
+            OnRequestEvaluated?.Invoke(url, blocked);
+
+            if (blocked)
+            {
+                // Browser will show a connection error — enough to stop access
+                var deny = "HTTP/1.1 403 Forbidden\r\nContent-Length: 0\r\nConnection: close\r\n\r\n";
+                await clientStream.WriteAsync(Encoding.ASCII.GetBytes(deny));
+                return;
+            }
+
+            // Establish tunnel to real server
+            try
+            {
+                using var remote       = new TcpClient();
+                await remote.ConnectAsync(host, port);
+                var ok = "HTTP/1.1 200 Connection Established\r\n\r\n";
+                await clientStream.WriteAsync(Encoding.ASCII.GetBytes(ok));
+
+                using var remoteStream = remote.GetStream();
+                await Task.WhenAny(
+                    PipeAsync(clientStream, remoteStream),
+                    PipeAsync(remoteStream, clientStream)
+                );
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"CONNECT tunnel {host}: {ex.Message}");
+            }
+        }
+
+        // ── Plain HTTP forward ────────────────────────────────────────────────
+        private async Task HandleHttpAsync(NetworkStream clientStream, string method, string target, string headerText)
+        {
+            var host = ExtractHost(target, headerText);
+            var url  = target.StartsWith("http", StringComparison.OrdinalIgnoreCase)
+                       ? target : $"http://{host}{target}";
+
+            var blocked = _blocklist.IsBlocked(host, url);
+            _logger.LogRequest(url, host, blocked);
+            OnRequestEvaluated?.Invoke(url, blocked);
+
+            if (blocked)
+            {
+                await ServeBlockPageAsync(clientStream);
+                return;
+            }
+
+            try
+            {
+                using var http = new HttpClient(new HttpClientHandler
+                    { AllowAutoRedirect = true, UseProxy = false });
+
+                var req = new HttpRequestMessage(new HttpMethod(method), url);
+                foreach (var line in headerText.Split(new[] { "\r\n" }, StringSplitOptions.None).Skip(1))
+                {
+                    var idx = line.IndexOf(':');
+                    if (idx < 1) continue;
+                    var name  = line[..idx].Trim();
+                    var value = line[(idx + 1)..].Trim();
+                    if (IsHopByHop(name)) continue;
+                    try { req.Headers.TryAddWithoutValidation(name, value); } catch { }
+                }
+
+                var resp      = await http.SendAsync(req);
+                var bodyBytes = await resp.Content.ReadAsByteArrayAsync();
+                var ct        = resp.Content.Headers.ContentType?.ToString() ?? "";
+
+                var sb = new StringBuilder();
+                sb.Append($"HTTP/1.1 {(int)resp.StatusCode} {resp.ReasonPhrase}\r\n");
+                foreach (var h in resp.Headers)
+                    foreach (var v in h.Value)
+                        sb.Append($"{h.Key}: {v}\r\n");
+                sb.Append($"Content-Type: {ct}\r\nContent-Length: {bodyBytes.Length}\r\nConnection: close\r\n\r\n");
+
+                await clientStream.WriteAsync(Encoding.ASCII.GetBytes(sb.ToString()));
+                await clientStream.WriteAsync(bodyBytes);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"HTTP forward: {ex.Message}");
+                var err = "HTTP/1.1 502 Bad Gateway\r\nContent-Length: 0\r\nConnection: close\r\n\r\n";
+                try { await clientStream.WriteAsync(Encoding.ASCII.GetBytes(err)); } catch { }
+            }
+        }
+
+        // ── Block page ────────────────────────────────────────────────────────
+        private async Task ServeBlockPageAsync(NetworkStream stream)
+        {
+            try
+            {
+                var gifSection = _cachedGifUrl != null
+                    ? $"<img src='{_cachedGifUrl}' alt='Stop' style='max-width:320px;border-radius:8px;margin:16px 0'/>"
+                    : "";
+
+                var html = $@"<!DOCTYPE html>
+<html><head><title>Access Blocked</title><style>
+  body{{font-family:Arial,sans-serif;text-align:center;padding:80px;background:#f0f0f0}}
+  .box{{background:white;padding:40px;border-radius:8px;display:inline-block;box-shadow:0 2px 8px rgba(0,0,0,.1)}}
+  h1{{color:#c0392b}}p{{color:#555}}
+</style></head><body><div class='box'>
+  <h1>&#128683; Access Blocked</h1>
+  {gifSection}
+  <p>This website has been blocked by Windows Resource Monitor.</p>
+  <p>If you believe this is an error, please contact your administrator.</p>
+</div></body></html>";
+
+                var body   = Encoding.UTF8.GetBytes(html);
+                var header = $"HTTP/1.1 403 Forbidden\r\nContent-Type: text/html\r\nContent-Length: {body.Length}\r\nConnection: close\r\n\r\n";
+                await stream.WriteAsync(Encoding.ASCII.GetBytes(header));
+                await stream.WriteAsync(body);
+            }
+            catch { }
+        }
+
+        // ── Helpers ───────────────────────────────────────────────────────────
         private async Task RefreshGifAsync()
         {
             var key = _blocklist.GiphyApiKey;
@@ -62,164 +236,70 @@ namespace WinResMonitor.Core
             if (gif != null) _cachedGifUrl = gif;
         }
 
-        private async Task AcceptLoopAsync(CancellationToken ct)
+        private static async Task<byte[]?> ReadUntilBlankLineAsync(NetworkStream stream)
         {
-            while (_running && !ct.IsCancellationRequested)
+            var ms  = new MemoryStream();
+            var buf = new byte[1];
+            while (ms.Length < 65_536)
             {
-                try
-                {
-                    var ctx = await _listener.GetContextAsync();
-                    _ = Task.Run(() => HandleRequestAsync(ctx), ct);
-                }
-                catch (Exception ex) when (_running)
-                {
-                    _logger.LogError($"Accept loop error: {ex.Message}");
-                }
+                if (await stream.ReadAsync(buf, 0, 1) == 0) break;
+                ms.WriteByte(buf[0]);
+                var arr = ms.GetBuffer();
+                var len = (int)ms.Length;
+                if (len >= 4 &&
+                    arr[len-4] == '\r' && arr[len-3] == '\n' &&
+                    arr[len-2] == '\r' && arr[len-1] == '\n')
+                    return ms.ToArray();
             }
+            return ms.Length > 0 ? ms.ToArray() : null;
         }
 
-        private async Task HandleRequestAsync(HttpListenerContext ctx)
-        {
-            var url = ctx.Request.Url?.ToString() ?? "";
-            var host = ctx.Request.Url?.Host ?? "";
-
-            bool blocked = _blocklist.IsBlocked(host, url);
-            OnRequestEvaluated?.Invoke(url, blocked);
-            _logger.LogRequest(url, host, blocked);
-
-            if (blocked)
-            {
-                await ServeBlockPage(ctx);
-                return;
-            }
-
-            // Track time for time-limit sites
-            int secondsToday = _blocklist.TrackIfTimeLimitSite(host);
-
-            await ForwardRequest(ctx, host, secondsToday);
-        }
-
-        private async Task ServeBlockPage(HttpListenerContext ctx)
+        private static async Task PipeAsync(Stream from, Stream to)
         {
             try
             {
-                var gifSection = _cachedGifUrl != null
-                    ? $"<img src='{_cachedGifUrl}' alt='Stop' style='max-width:320px;border-radius:8px;margin:16px 0;'/>"
-                    : "";
-
-                string html = $@"<!DOCTYPE html>
-<html>
-<head><title>Access Blocked</title>
-<style>
-  body {{ font-family: Arial, sans-serif; text-align: center; padding: 80px; background: #f0f0f0; }}
-  .box {{ background: white; padding: 40px; border-radius: 8px; display: inline-block; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }}
-  h1 {{ color: #c0392b; }} p {{ color: #555; }}
-</style></head>
-<body><div class='box'>
-  <h1>&#128683; Access Blocked</h1>
-  {gifSection}
-  <p>This website has been blocked by Windows Resource Monitor.</p>
-  <p>If you believe this is an error, please contact your administrator.</p>
-</div></body></html>";
-
-                await WriteHtmlResponse(ctx, 403, html);
+                var buf = new byte[65_536];
+                int n;
+                while ((n = await from.ReadAsync(buf, 0, buf.Length)) > 0)
+                    await to.WriteAsync(buf, 0, n);
             }
             catch { }
         }
 
-        private async Task ForwardRequest(HttpListenerContext ctx, string host, int secondsToday)
+        private static (string host, int port) ParseHostPort(string target, int defaultPort)
+        {
+            var idx = target.LastIndexOf(':');
+            if (idx > 0 && int.TryParse(target[(idx + 1)..], out int p))
+                return (target[..idx], p);
+            return (target, defaultPort);
+        }
+
+        private static string ExtractHost(string target, string headers)
         {
             try
             {
-                using var client = new HttpClient(new HttpClientHandler { AllowAutoRedirect = true });
-                var targetUrl = ctx.Request.Url?.ToString();
-                if (string.IsNullOrEmpty(targetUrl)) return;
-
-                var reqMsg = new HttpRequestMessage(new HttpMethod(ctx.Request.HttpMethod), targetUrl);
-
-                foreach (string header in ctx.Request.Headers)
-                {
-                    if (header == null) continue;
-                    try { reqMsg.Headers.TryAddWithoutValidation(header, ctx.Request.Headers[header]); }
-                    catch { }
-                }
-
-                if (ctx.Request.HasEntityBody)
-                {
-                    var body = new byte[ctx.Request.ContentLength64];
-                    await ctx.Request.InputStream.ReadAsync(body, 0, body.Length);
-                    reqMsg.Content = new ByteArrayContent(body);
-                }
-
-                var response = await client.SendAsync(reqMsg);
-                var contentType = response.Content.Headers.ContentType?.ToString() ?? "";
-                var respBytes = await response.Content.ReadAsByteArrayAsync();
-
-                // Inject obnoxious banner if over warning threshold on a time-limit site
-                if (secondsToday >= WarnThresholdSeconds && contentType.Contains("text/html"))
-                {
-                    var tracker = new TimeTracker(_blocklist.ConnString);
-                    var message = tracker.GetObnoxiousMessage(secondsToday);
-                    var mins = secondsToday / 60;
-                    respBytes = InjectBanner(respBytes, message, mins);
-                }
-
-                ctx.Response.StatusCode = (int)response.StatusCode;
-                ctx.Response.ContentType = contentType;
-                ctx.Response.ContentLength64 = respBytes.Length;
-                await ctx.Response.OutputStream.WriteAsync(respBytes, 0, respBytes.Length);
-                ctx.Response.Close();
+                if (target.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+                    return new Uri(target).Host;
             }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Forward error: {ex.Message}");
-                try { ctx.Response.StatusCode = 502; ctx.Response.Close(); } catch { }
-            }
+            catch { }
+
+            foreach (var line in headers.Split(new[] { "\r\n" }, StringSplitOptions.None))
+                if (line.StartsWith("Host:", StringComparison.OrdinalIgnoreCase))
+                    return line[5..].Trim().Split(':')[0];
+
+            return "";
         }
 
-        private static byte[] InjectBanner(byte[] htmlBytes, string message, int minutesSpent)
-        {
-            try
-            {
-                var html = Encoding.UTF8.GetString(htmlBytes);
-                var banner = $@"
-<div id='wrm-banner' style='position:fixed;top:0;left:0;right:0;z-index:2147483647;
-  background:#c0392b;color:white;font-family:Arial,sans-serif;font-size:16px;
-  padding:14px 20px;display:flex;align-items:center;justify-content:space-between;
-  box-shadow:0 2px 8px rgba(0,0,0,0.3);'>
-  <span>&#9888;&#65039; <strong>{EscapeHtml(message)}</strong> &nbsp;({minutesSpent} min spent here today)</span>
-  <button onclick=""document.getElementById('wrm-banner').remove()""
-    style='background:transparent;border:2px solid white;color:white;padding:4px 12px;
-    border-radius:4px;cursor:pointer;font-size:13px;'>Dismiss</button>
-</div>
-<div style='height:52px'></div>";
-
-                var bodyIdx = html.IndexOf("<body", StringComparison.OrdinalIgnoreCase);
-                if (bodyIdx >= 0)
-                {
-                    var insertAt = html.IndexOf('>', bodyIdx) + 1;
-                    html = html.Insert(insertAt, banner);
-                }
-                else
-                {
-                    html = banner + html;
-                }
-                return Encoding.UTF8.GetBytes(html);
-            }
-            catch { return htmlBytes; }
-        }
-
-        private static async Task WriteHtmlResponse(HttpListenerContext ctx, int statusCode, string html)
-        {
-            var bytes = Encoding.UTF8.GetBytes(html);
-            ctx.Response.StatusCode = statusCode;
-            ctx.Response.ContentType = "text/html";
-            ctx.Response.ContentLength64 = bytes.Length;
-            await ctx.Response.OutputStream.WriteAsync(bytes, 0, bytes.Length);
-            ctx.Response.Close();
-        }
-
-        private static string EscapeHtml(string s) => s.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;").Replace("\"", "&quot;");
+        private static bool IsHopByHop(string name) =>
+            name.Equals("Connection",          StringComparison.OrdinalIgnoreCase) ||
+            name.Equals("Keep-Alive",          StringComparison.OrdinalIgnoreCase) ||
+            name.Equals("Transfer-Encoding",   StringComparison.OrdinalIgnoreCase) ||
+            name.Equals("Proxy-Connection",    StringComparison.OrdinalIgnoreCase) ||
+            name.Equals("Proxy-Authenticate",  StringComparison.OrdinalIgnoreCase) ||
+            name.Equals("Proxy-Authorization", StringComparison.OrdinalIgnoreCase) ||
+            name.Equals("TE",                  StringComparison.OrdinalIgnoreCase) ||
+            name.Equals("Trailers",            StringComparison.OrdinalIgnoreCase) ||
+            name.Equals("Upgrade",             StringComparison.OrdinalIgnoreCase);
 
         public bool IsRunning => _running;
         public int Port => _port;
