@@ -28,6 +28,8 @@ namespace WinResMonitor.Service
 
         protected override void OnStart(string[] args)
         {
+            // Clear any temp blocks left over from the old proxy-based time tracking
+            new TimeTracker(DbConnString).ClearAllTempBlocks();
             StartProxy();
             _configApi = new ExtensionConfigApi(_proxy.Blocklist);
             _configApi.Start();

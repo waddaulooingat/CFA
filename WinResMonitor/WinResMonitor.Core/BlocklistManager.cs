@@ -44,11 +44,7 @@ namespace WinResMonitor.Core
             if (_whitelistedDomains.Contains(cleanHost) || _whitelistedDomains.Contains(host))
                 return false;
 
-            // Temp-blocked (time limit exceeded)
-            var tracker = new TimeTracker(_connString);
-            if (tracker.IsTempBlocked(cleanHost) || tracker.IsTempBlocked(host))
-                return true;
-
+            // Time-based blocking is handled by the browser extension — not the proxy
             if (_blockedDomains.Contains(cleanHost) || _blockedDomains.Contains(host)) return true;
             if (IsBlockedByExternalList(cleanHost) || IsBlockedByExternalList(host)) return true;
 

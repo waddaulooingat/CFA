@@ -198,5 +198,18 @@ namespace WinResMonitor.Core
             catch { }
             return results;
         }
+
+        public void ClearAllTempBlocks()
+        {
+            try
+            {
+                using var conn = new SqliteConnection(_connString);
+                conn.Open();
+                using var cmd = conn.CreateCommand();
+                cmd.CommandText = "DELETE FROM TempBlocked";
+                cmd.ExecuteNonQuery();
+            }
+            catch { }
+        }
     }
 }
